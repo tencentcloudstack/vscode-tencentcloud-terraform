@@ -1,0 +1,205 @@
+{
+    "name": "vscode-tencentcloud-terraform",
+    "displayName": "Tencnet Terraform",
+    "description": "VS Code extension for developing with Terraform on Tencent Cloud",
+    "version": "0.0.1",
+    "license": "MIT",
+    "publisher": "Tencent-Cloud",
+    "icon": "images/tc-tf-logo.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tencentcloudstack/vscode-tencentcloud-terraform.git"
+    },
+    "engines": {
+        "vscode": "^1.50.1"
+    },
+    "categories": [
+        "Programming Languages",
+        "Extension Packs",
+        "Other"
+    ],
+    "keywords": [
+        "cloudshell",
+        "devops",
+        "terraform",
+        "tencentcloud"
+    ],
+    "capabilities": {
+        "completionProvider": {
+            "resolveProvider": "true",
+            "triggerCharacters": [
+                "."
+            ]
+        }
+    },
+    "activationEvents": [
+        "onCommand:tcTerraform.login",
+        "onCommand:tcTerraform.init",
+        "onCommand:tcTerraform.plan",
+        "onCommand:tcTerraform.apply",
+        "onCommand:tcTerraform.import",
+        "onCommand:tcTerraform.validate",
+        "onCommand:tcTerraform.refresh",
+        "onCommand:tcTerraform.destroy",
+        "onCommand:tcTerraform.visualize",
+        "onCommand:tcTerraform.test",
+        "onCommand:tcTerraform.push",
+        "onLanguage:terraform"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "languages": [
+            {
+                "id": "terraform",
+                "aliases": [
+                    "Terraform",
+                    "terraform"
+                ],
+                "extensions": [
+                    ".tf",
+                    ".tfvars",
+                    ".hcl"
+                ],
+                "configuration": "./terraform.configuration.json"
+            }
+        ],
+        "commands": [
+            {
+                "command": "tcTerraform.login",
+                "title": "Login",
+                "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraform.init",
+                "title": "Init",
+                "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraform.plan",
+                "title": "Plan",
+                "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraform.apply",
+                "title": "Apply",
+                "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraform.import",
+                "title": "Import",
+                "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraform.validate",
+                "title": "Validate",
+                "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraform.refresh",
+                "title": "Refresh",
+                "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraform.destroy",
+                "title": "Destroy",
+                "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraform.visualize",
+                "title": "Visualize",
+                "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraform.test",
+                "title": "Test",
+                "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraform.push",
+                "title": "Push",
+                "category": "TencentCloud Terraform"
+            }
+        ],
+        "configuration": {
+            "title": "TencentCloud Terraform",
+            "properties": {
+                "tcTerraform.terminal": {
+                    "type": "string",
+                    "default": "integrated",
+                    "enum": [
+                        "integrated",
+                        "cloudshell"
+                    ],
+                    "description": "Specifies terminal used to run Terraform commands. Valid settings are `cloudshell` or `integrated`."
+                },
+                "tcTerraform.checkTerraformCmd": {
+                    "type": "boolean",
+                    "default": "true",
+                    "description": "Specifies whether or not check terraform installed in the PATH."
+                },
+                "tcTerraform.checkTCCLI": {
+                    "type": "boolean",
+                    "default": "true",
+                    "description": "Specifies whether or not TCCLI installed in the PATH."
+                },
+                "tcTerraform.secretid.cmd": {
+                    "type": "string",
+                    "default": "tccli configure list | grep 'secretId'",
+                    "description": "Indicates how to get the secretid."
+                },
+                "tcTerraform.secretkey.cmd": {
+                    "type": "string",
+                    "default": "tccli configure list | grep 'secretKey'",
+                    "description": "Indicates how to get the secretkey."
+                },
+                "tcTerraform.secretid": {
+                    "type": "string",
+                    "default": "your_secretid",
+                    "description": "Input your tencentcloud secret key id."
+                },
+                "tcTerraform.secretkey": {
+                    "type": "string",
+                    "default": "your_secretkey",
+                    "description": "Input your tencentcloud secret key."
+                },
+                "tcTerraform.test.path": {
+                    "type": "string",
+                    "default": "./",
+                    "description": "Indicates the path of e2e test case."
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "npm run compile && node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "^11.0.1",
+        "@types/glob": "^8.0.1",
+        "@types/lodash": "^4.14.191",
+        "@types/mocha": "^10.0.1",
+        "@types/node": "16.x",
+        "@types/opn": "^3.0.28",
+        "@typescript-eslint/eslint-plugin": "^5.49.0",
+        "@typescript-eslint/parser": "^5.49.0",
+        "@vscode/test-electron": "^2.2.2",
+        "eslint": "^8.33.0",
+        "glob": "^8.1.0",
+        "mocha": "^10.1.0",
+        "typescript": "^4.9.4",
+        "vscode": "^1.1.37"
+    },
+    "dependencies": {
+        "all": "^0.0.0",
+        "fs-extra": "^11.1.0",
+        "lodash": "^4.17.21",
+        "opn": "^6.0.0",
+        "shared": "^0.2.0",
+        "vscode-extension-telemetry-wrapper": "^0.13.3"
+    }
+}
