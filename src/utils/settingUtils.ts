@@ -81,6 +81,29 @@ export async function checkTerraformInstalled(): Promise<void> {
     }
 }
 
+export function getCheckTerraformerCmd(): boolean {
+    return vscode.workspace.getConfiguration().get("tcTerraform.checkTerraformerCmd");
+}
+
+export function setCheckTerraformerCmd(checked: boolean): void {
+    vscode.workspace.getConfiguration().update("tcTerraform.checkTerraformerCmd", checked);
+}
+
+export async function checkTerraformerInstalled(): Promise<void> {
+    if (isTerminalSetToCloudShell() || !getCheckTerraformerCmd()) {
+        return;
+    }
+    try {
+        await cpUtils.executeCommand("terraformer", ["-v"], { shell: true });
+    } catch (error) {
+        uiUtils.openUrlHintOrNotShowAgain("Terraformer is not installed, please make sure Terraformer is in the PATH environment variable.",
+            "https://github.com/GoogleCloudPlatform/terraformer",
+            () => {
+                setCheckTerraformerCmd(false);
+            });
+    }
+}
+
 // export function getSecretId(): Promise<void> {
 //     if (isTerminalSetToCloudShell() || !checkTCCLIInstalled()) {
 //         return;

@@ -7,7 +7,8 @@ import {
 } from "vscode";
 import * as _ from "lodash";
 import * as opn from "opn";
-var urls = require("../../config/snippets/tiat-urls.json");
+// var urls = require("../../config/snippets/tiat-urls.json");
+import urls from "../../config/snippets/tiat-urls.json";
 
 export class TerraformDefinitionProvider implements DefinitionProvider {
     public provideDefinition (document: TextDocument, position: Position, token: CancellationToken): Definition {
