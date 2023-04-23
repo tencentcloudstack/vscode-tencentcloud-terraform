@@ -8,12 +8,13 @@ This extension supports the following features:
 
 - Terraform commands: init, plan, apply, validate, refresh and destroy.
 - Auto complete: Autocomplete resource types, parameters, and resource definitions.
+- Import resource: display the existing `CVM` resource and then import it as a tf file by `terraform import`.
 
 *TO-DO(Features to be supported in the future):*
 - Visualize: graph the terraform resources and modules.
-- Resource Import: takeover and manage the existing resources on Tencent Cloud.
-- Auto complete: provider code snippets of specified.
-- Cloud shell: connect to Tencnet Cloud.
+- Resource Import: support import of more kinds of resources by [Terraformer](https://github.com/GoogleCloudPlatform/terraformer).
+- Autocomplete: provider code snippets of the specified resource.
+- Connect to Tencent Cloud: login to Tencent Cloud and sync your account info(eg: obtain AKSK/Token automatically).
 
 ## Commands
 
