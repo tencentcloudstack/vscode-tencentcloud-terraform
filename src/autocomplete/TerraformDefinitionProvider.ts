@@ -6,7 +6,8 @@ import {
     Definition
 } from "vscode";
 import * as _ from "lodash";
-import * as opn from "opn";
+// import * as opn from "opn";
+import opn from "opn";
 // var urls = require("../../config/snippets/tiat-urls.json");
 import urls from "../../config/snippets/tiat-urls.json";
 

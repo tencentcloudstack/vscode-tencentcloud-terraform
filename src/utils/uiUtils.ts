@@ -5,7 +5,8 @@
 
 "use strict";
 
-import * as opn from "opn";
+// import * as opn from "opn";
+import opn from "opn";
 import * as vscode from "vscode";
 import { terraformChannel } from "../terraformChannel";
 

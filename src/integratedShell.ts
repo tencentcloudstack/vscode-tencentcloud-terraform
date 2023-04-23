@@ -18,8 +18,14 @@ import { drawGraph } from "./utils/dotUtils";
 import { isDotInstalled } from "./utils/dotUtils";
 import { selectWorkspaceFolder } from "./utils/workspaceUtils";
 import { checkTerraformInstalled } from "./terraformUtils";
+import { TerraformCommand } from "./common";
+import * as helper from "./utils/helper";
+import { command } from "./commons/tencent/commands";
+import { promisify } from "util";
+import { ChildProcess } from "child_process";
+import * as cp from "child_process";
+
 // import stripAnsi from 'strip-ansi';
-import stripAnsi from 'strip-ansi';
 
 export class IntegratedShell extends BaseShell {
     private static readonly GRAPH_FILE_NAME = "graph.png";
@@ -72,32 +78,29 @@ export class IntegratedShell extends BaseShell {
         const fileName = (file === undefined) ? params.resource.type + '.tf' : file;
 
         const defaultContents = `resource "${params.resource.type}" "${params.resource.name}" {}`;
+        const resAddress = `${params.resource.type}.${params.resource.name}`;
 
         const tfFile: string = path.join(cwd, fileName);
 
-        if (!fse.existsSync(tfFile)) {
-            fse.writeFileSync(tfFile, defaultContents);
-        } else {
-            await fse.writeFile(tfFile, defaultContents);
-        }
+        // reset file
+        await this.resetFileContent(tfFile, defaultContents);
+        // reset state
+        await this.resetTFState(resAddress);
 
         const importArgs = ['import ', params.resource.type, '.', params.resource.name, ' ', params.resource.id].join('');
-        console.debug("[DEBUG]#### import cmd: args=[$s], defaultContents=[%s]", importArgs, defaultContents);
+        console.debug("[DEBUG]#### import cmd: args=[%s], defaultContents=[%s]", importArgs, defaultContents);
 
-        // await this.deleteFile(cwd, fileName);
-        // const output: string = await executeCommand(
-        //     "terraform",
-        //     [args],
-        //     {
-        //         shell: true,
-        //         cwd,
-        //     },
-        // );
+        const importRet: string = await executeCommand(
+            "terraform",
+            [importArgs],
+            {
+                shell: true,
+                cwd,
+            },
+        );
 
-        await this.runTerraformCmd("terraform " + importArgs);
+        // await this.runTerraformCmd("terraform " + importArgs);
 
-        // const stripAnsiPromise = import('strip-ansi');
-        // const stripAnsi = (await stripAnsiPromise).default;
         const content: string =
             await executeCommand(
                 "terraform",
@@ -107,10 +110,6 @@ export class IntegratedShell extends BaseShell {
                     cwd,
                 }
             );
-        // const content = stripAnsi(output);
-
-        const my = stripAnsi('\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007');
-        console.debug("my:%s", my);
 
         console.debug("[DEBUG]#### import content:[%s]", content);
         fse.writeFileSync(tfFile, content);
@@ -119,10 +118,36 @@ export class IntegratedShell extends BaseShell {
         await commands.executeCommand("vscode.open", Uri.file(tfFile), ViewColumn.Active || ViewColumn.One);
     }
 
-    public async runTerraformCmd(tfCommand: string) {
+    private async resetFileContent(tfFile: string, defaultContents: string) {
+        if (!fse.existsSync(tfFile)) {
+            fse.writeFileSync(tfFile, defaultContents);
+        } else {
+            await fse.writeFile(tfFile, defaultContents);
+        }
+    }
+
+    private async resetTFState(resAddress: string) {
+        // const runFunc = () => this.runTerraformCmdWithoutTerminal(TerraformCommand.State, ['rm', '-lock=false', resAddress]);
+        // await helper.retryF(runFunc);
+
+        await this.runTerraformCmd(TerraformCommand.State, ['rm', '-lock=false', resAddress]);
+    }
+
+    public async runTerraformCmdWithoutTerminal(tfCommand: string, args?: string[]) {
+        const cmd = [tfCommand, ...(args || [])].join(' ');
+        const { stdout, stderr } = await promisify(cp.exec)(cmd);
+        return { stdout, stderr };
+    }
+
+    public async runTerraformCmd(tfCommand: string, args?: string[]) {
         this.checkCreateTerminal();
         this.terminal.show();
-        this.terminal.sendText(tfCommand);
+
+        // const cmd= [tfCommand, args.values].join(' ');
+        let tmp: string[] = [tfCommand];
+        args.forEach((arg) => tmp.push(arg));
+        const cmd = tmp.join(' ');
+        this.terminal.sendText(cmd);
     }
 
     public async runNormalCmd(tfCommand: string, newLine = true) {
