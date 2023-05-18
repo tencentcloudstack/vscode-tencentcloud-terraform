@@ -24,12 +24,12 @@ export async function executeCommand(command: string, args: string[], options: c
 
         childProc.stderr.on("data", (raw: string | Buffer) => {
             const data = stripAnsi(raw.toString());
+            console.error("Error found in stderr.on: %s", data);
             terraformChannel.append(data);
         });
 
-        // childProc.on("error", reject);
         childProc.on("error", (err: any) => {
-            console.error(err);
+            console.error("Error found in childProc.on error: %s", err);
             // reject(err);
         });
 

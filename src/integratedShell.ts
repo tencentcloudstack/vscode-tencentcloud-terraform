@@ -17,13 +17,14 @@ import { executeCommand } from "./utils/cpUtils";
 import { drawGraph } from "./utils/dotUtils";
 import { isDotInstalled } from "./utils/dotUtils";
 import { selectWorkspaceFolder } from "./utils/workspaceUtils";
-import { checkTerraformInstalled } from "./terraformUtils";
-import { TerraformCommand } from "./common";
+import { TerraformCommand } from "./commons/commands";
 import * as helper from "./utils/helper";
 import { command } from "./commons/tencent/commands";
 import { promisify } from "util";
 import { ChildProcess } from "child_process";
 import * as cp from "child_process";
+import { TerraformerRunner, CommandType, FlagType, FlagsMap } from "./utils/terraformerRunner";
+import { values } from "lodash";
 
 // import stripAnsi from 'strip-ansi';
 
@@ -66,8 +67,10 @@ export class IntegratedShell extends BaseShell {
     }
 
     public async import(params: any, file?: string): Promise<void> {
-        // const fileName = "cvm.tf";
-        await checkTerraformInstalled();
+
+        const runner = TerraformerRunner.getInstance();// terraform or terraformer
+
+        await runner.checkInstalled();
 
         const cwd: string = await selectWorkspaceFolder();
         if (!cwd) {
@@ -75,63 +78,43 @@ export class IntegratedShell extends BaseShell {
             return;
         }
 
-        const fileName = (file === undefined) ? params.resource.type + '.tf' : file;
-
-        const defaultContents = `resource "${params.resource.type}" "${params.resource.name}" {}`;
-        const resAddress = `${params.resource.type}.${params.resource.name}`;
-
-        const tfFile: string = path.join(cwd, fileName);
-
-        // reset file
-        await this.resetFileContent(tfFile, defaultContents);
-        // reset state
-        await this.resetTFState(resAddress);
-
-        const importArgs = ['import ', params.resource.type, '.', params.resource.name, ' ', params.resource.id].join('');
-        console.debug("[DEBUG]#### import cmd: args=[%s], defaultContents=[%s]", importArgs, defaultContents);
-
-        const importRet: string = await executeCommand(
-            "terraform",
-            [importArgs],
+        const cmd = CommandType.Import;
+        const flags: FlagsMap[] = [
             {
-                shell: true,
-                cwd,
+                flag: FlagType.Resources,
+                value: ["mysql", "vpc", "subnet", "security_group"].join(",")
             },
-        );
+            {
+                flag: FlagType.Filter,
+                value: ["tencentcloud_mysql_instance", "cdb-fitq5t9h"].join("=")
+            },
+            {
+                flag: FlagType.Regions,
+                value: "ap-guangzhou"
+            },
+            {
+                flag: FlagType.Redirect,
+                value: "terraformer_default_result"
+            },
+        ];
 
-        // await this.runTerraformCmd("terraform " + importArgs);
+        console.debug("[DEBUG]#### Executing import command. cwd:[%s], cmd:[%s], flags:[%s]", cwd, cmd.toString, flags.toString);
+        const result = await runner.executeImport(cwd, "", cmd, flags);
+        console.debug("[DEBUG]#### Executed import command. result:[%s]", result);
 
-        const content: string =
-            await executeCommand(
-                "terraform",
-                ["show"],
-                {
-                    shell: true,
-                    cwd,
-                }
-            );
 
-        console.debug("[DEBUG]#### import content:[%s]", content);
-        fse.writeFileSync(tfFile, content);
+
+        const content: string = await runner.executeShow(cwd);
+
+
+        const tfFile: string = result;
 
         vscode.window.showInformationMessage(`The resource:[${params.resource.type}] has been imported successfully, generated tf file:[${tfFile}].`);
+
         await commands.executeCommand("vscode.open", Uri.file(tfFile), ViewColumn.Active || ViewColumn.One);
     }
 
-    private async resetFileContent(tfFile: string, defaultContents: string) {
-        if (!fse.existsSync(tfFile)) {
-            fse.writeFileSync(tfFile, defaultContents);
-        } else {
-            await fse.writeFile(tfFile, defaultContents);
-        }
-    }
 
-    private async resetTFState(resAddress: string) {
-        // const runFunc = () => this.runTerraformCmdWithoutTerminal(TerraformCommand.State, ['rm', '-lock=false', resAddress]);
-        // await helper.retryF(runFunc);
-
-        await this.runTerraformCmd(TerraformCommand.State, ['rm', '-lock=false', resAddress]);
-    }
 
     public async runTerraformCmdWithoutTerminal(tfCommand: string, args?: string[]) {
         const cmd = [tfCommand, ...(args || [])].join(' ');

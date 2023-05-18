@@ -1,15 +1,17 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as settingUtils from "./utils/settingUtils";
 import { init } from "vscode-nls-i18n";
-import { TerraformCommand } from './common';
+import { TerraformCommand } from "./commons/commands";
 import { terraformShellManager } from "./terraformShellManager";
-import * as settingUtils from './utils/settingUtils';
 import { DialogOption } from "./utils/uiUtils";
 import { TerraformCompletionProvider } from './autocomplete/TerraformCompletionProvider';
 import { TerraformDefinitionProvider } from './autocomplete/TerraformDefinitionProvider';
 import { registerCommon } from './commons';
 import { registerView } from './views';
+import { TerraformRunner } from './utils/terraformRunner';
+import { TerraformerRunner } from './utils/terraformerRunner';
 
 const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' };
 
@@ -18,8 +20,8 @@ const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' }
 export async function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "TencentCloud Terraform" is now active!');
 
-    await settingUtils.checkTerraformInstalled();
-    await settingUtils.checkTCCLIInstalled();
+    await TerraformRunner.getInstance().checkInstalled();
+    await TerraformerRunner.getInstance().checkInstalled();
 
     let disposableLogin = vscode.commands.registerCommand('tcTerraform.login', async () => {
         // to-do
@@ -95,6 +97,19 @@ export async function activate(context: vscode.ExtensionContext) {
     });
 
     context.subscriptions.push(disposablePush);
+
+    // terraformer
+    let disposableTferImport = vscode.commands.registerCommand('tcTerraformer.import', async () => {
+        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Destroy);
+    });
+
+    context.subscriptions.push(disposableTferImport);
+
+    let disposableTferPlan = vscode.commands.registerCommand('tcTerraformer.plan', async () => {
+        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Destroy);
+    });
+
+    context.subscriptions.push(disposableTferPlan);
 
     // auto-complete
     console.log('activate the auto complete(snippets and lint) feature');

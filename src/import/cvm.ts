@@ -15,7 +15,7 @@ export class CvmService implements ITencentCloudAPI {
                 //'xxx': "yyy"
             },
             'import': {
-                'filename': 'cvm.tf'
+                'file': 'cvm.tf'
             }
         };
     }
@@ -25,7 +25,7 @@ export class CvmService implements ITencentCloudAPI {
             // find all instances   
         }).then(
             (result) => {
-                console.debug('[DEBUG]--------------------------------result:', result);
+                // console.debug('[DEBUG]--------------------------------result:', result);
                 if (result.TotalCount === 0) {
                     throw new Error('[Warn] DescribeInstances result.TotalCount is 0.');
                 }

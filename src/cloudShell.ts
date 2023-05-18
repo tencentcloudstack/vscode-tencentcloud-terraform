@@ -14,7 +14,7 @@ import * as TelemetryWrapper from "vscode-extension-telemetry-wrapper";
 import { BaseShell } from "./baseShell";
 // import { aciConfig, Constants, exportContainerCmd, exportTestScript } from "./constants";
 // import { azFileDelete, azFilePush, escapeFile, TerraformCommand, TestOption } from "./shared";
-import { TerraformCommand } from "./common";
+import { TerraformCommand } from "./commons/commands";
 import { terraformChannel } from "./terraformChannel";
 // import { getStorageAccountforCloudShell, IStorageAccount } from "./utils/cloudShellUtils";
 import * as settingUtils from "./utils/settingUtils";
