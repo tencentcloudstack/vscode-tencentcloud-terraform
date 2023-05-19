@@ -14,7 +14,7 @@ import * as TelemetryWrapper from "vscode-extension-telemetry-wrapper";
 import { BaseShell } from "./baseShell";
 // import { aciConfig, Constants, exportContainerCmd, exportTestScript } from "./constants";
 // import { azFileDelete, azFilePush, escapeFile, TerraformCommand, TestOption } from "./shared";
-import { TerraformCommand } from "./common";
+import { TerraformCommand } from "./commons/commands";
 import { terraformChannel } from "./terraformChannel";
 // import { getStorageAccountforCloudShell, IStorageAccount } from "./utils/cloudShellUtils";
 import * as settingUtils from "./utils/settingUtils";
@@ -100,51 +100,9 @@ export class TencentCloudShell extends BaseShell {
     private async connectedToCloudShell(): Promise<boolean> {
         vscode.window.showWarningMessage("The cloud shell is unimplemented.");
         return false;
-        // if (this.terminal) {
-        //     return true;
-        // }
-
-        // const message = "Do you want to open CloudShell?";
-        // const response: MessageItem = await vscode.window.showWarningMessage(message, DialogOption.ok, DialogOption.cancel);
-        // if (response === DialogOption.ok) {
-        //     const accountAPI: AzureAccount = vscode.extensions
-        //         .getExtension<AzureAccount>("ms-vscode.azure-account")!.exports;
-
-        //     this.cloudShell =  accountAPI.createCloudShell("Linux");
-
-        //     this.terminal = await this.cloudShell.terminal;
-        //     this.terminal.show();
-        //     const storageAccount: IStorageAccount = await getStorageAccountforCloudShell(this.cloudShell);
-        //     if (!storageAccount) {
-        //         vscode.window.showErrorMessage("Failed to get the Storage Account information for Cloud Shell, please try again later.");
-        //         return false;
-        //     }
-
-        //     this.resourceGroup = storageAccount.resourceGroup;
-        //     this.storageAccountName = storageAccount.storageAccountName;
-        //     this.storageAccountKey = storageAccount.storageAccountKey;
-        //     this.fileShareName = storageAccount.fileShareName;
-
-        //     terraformChannel.appendLine("Cloudshell terminal opened.");
-
-        //     return true;
-        // }
-
-        // console.log("Open CloudShell cancelled by user.");
-        // return false;
     }
 
     private async pushFilePromise(file: string): Promise<void> {
-        // if (await fsExtra.pathExists(file)) {
-        //     terraformChannel.appendLine(`Uploading file ${file} to cloud shell`);
-        //     await azFilePush(
-        //         vscode.workspace.getWorkspaceFolder(vscode.Uri.file(file)).name,
-        //         this.storageAccountName,
-        //         this.storageAccountKey,
-        //         this.fileShareName,
-        //         file,
-        //     );
-        // }
         vscode.window.showWarningMessage("The cloud shell is unimplemented.", file);
     }
 
@@ -160,21 +118,4 @@ export class TencentCloudShell extends BaseShell {
                 return false;
         }
     }
-
-    // private async resolveContainerCmd(TestType: string): Promise<string> {
-    //     switch (TestType) {
-    //         case TestOption.lint:
-    //             return "rake -f ../Rakefile build";
-    //         case TestOption.e2e:
-    //             return "ssh-keygen -t rsa -b 2048 -C terraformTest -f /root/.ssh/id_rsa -N ''; rake -f ../Rakefile e2e";
-    //         case TestOption.custom:
-    //             const cmd: string = await vscode.window.showInputBox({
-    //                 prompt: "Type your custom test command",
-    //                 value: "rake -f ../Rakefile build",
-    //             });
-    //             return cmd ? cmd : "";
-    //         default:
-    //             return "";
-    //     }
-    // }
 }

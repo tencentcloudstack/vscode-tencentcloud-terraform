@@ -1,5 +1,6 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionItemKind } from "vscode";
-var resources = require('../../config/snippets/tiat-resources.json');
+// var resources = require('../../config/snippets/tiat-resources.json');
+import resources from '../../config/snippets/tiat-resources.json';
 import * as _ from "lodash";
 
 var topLevelTypes = ["output", "provider", "resource", "variable", "data"];

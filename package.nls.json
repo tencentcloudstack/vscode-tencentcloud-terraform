@@ -1,0 +1,13 @@
+{
+    "TcTerraform.title": "TencentCloud Terraofrm",
+    "TcTerraform.view.session.explorer": "Connect to TencentCloud",
+    "TcTerraform.view.template.explorer": "Tempaltes Management",
+    "TcTerraform.view.resource.explorer": "Resources Explorer",
+    "TcTerraform.view.resource.explorer.cvm": "Import Resouce: CVM",
+    "TcTerraform.view.resource.explorer.tke": "Import Resouce: TKE",
+    "TcTerraform.view.help.explorer": "Help",
+    "TcTerraform.view.help.explorer.provider": "TencentCloud Terraform Provider",
+    "TcTerraform.view.help.explorer.doc": "Documentation",
+    "TcTerraform.view.help.explorer.repo": "GitHub Repository",
+    "TcTerraform.productName": "TcTerraform Toolkit"
+}

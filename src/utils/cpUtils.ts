@@ -11,17 +11,28 @@ import { terraformChannel } from "../terraformChannel";
 export async function executeCommand(command: string, args: string[], options: cp.SpawnOptions): Promise<string> {
     return new Promise((resolve: (res: string) => void, reject: (e: Error) => void): void => {
         let result: string = "";
+        const stripAnsi = require('strip-ansi');
         const childProc: cp.ChildProcess = cp.spawn(command, args, options);
 
-        childProc.stdout.on("data", (data: string | Buffer) => {
-            data = data.toString();
+        childProc.stdout.on("data", (raw: string | Buffer) => {
+            const data = stripAnsi(raw.toString());
+            console.debug("[DEBUG]#### executeCommand received data:[%s]", data);
+
             result = result.concat(data);
             terraformChannel.append(data);
         });
 
-        childProc.stderr.on("data", (data: string | Buffer) => terraformChannel.append(data.toString()));
+        childProc.stderr.on("data", (raw: string | Buffer) => {
+            const data = stripAnsi(raw.toString());
+            console.error("Error found in stderr.on: %s", data);
+            terraformChannel.append(data);
+        });
 
-        childProc.on("error", reject);
+        childProc.on("error", (err: any) => {
+            console.error("Error found in childProc.on error: %s", err);
+            // reject(err);
+        });
+
         childProc.on("close", (code: number) => {
             if (code !== 0) {
                 reject(new Error(`Command "${command} ${args.toString()}" failed with exit code "${code}".`));

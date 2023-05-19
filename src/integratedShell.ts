@@ -13,13 +13,20 @@ import { commands, Uri, ViewColumn } from "vscode";
 import * as TelemetryWrapper from "vscode-extension-telemetry-wrapper";
 import { BaseShell } from "./baseShell";
 import { Constants } from "./constants";
-// import { TestOption } from "./shared";
 import { executeCommand } from "./utils/cpUtils";
-// import { isDockerInstalled, runCustomCommandInDocker, runE2EInDocker, runLintInDocker } from "./utils/dockerUtils";
 import { drawGraph } from "./utils/dotUtils";
 import { isDotInstalled } from "./utils/dotUtils";
-// import * as settingUtils from "./utils/settingUtils";
 import { selectWorkspaceFolder } from "./utils/workspaceUtils";
+import { TerraformCommand } from "./commons/commands";
+import * as helper from "./utils/helper";
+import { command } from "./commons/tencent/commands";
+import { promisify } from "util";
+import { ChildProcess } from "child_process";
+import * as cp from "child_process";
+import { TerraformerRunner, CommandType, FlagType, FlagsMap, defaultProduct } from "./utils/terraformerRunner";
+import { values } from "lodash";
+
+// import stripAnsi from 'strip-ansi';
 
 export class IntegratedShell extends BaseShell {
     private static readonly GRAPH_FILE_NAME = "graph.png";
@@ -59,13 +66,81 @@ export class IntegratedShell extends BaseShell {
         await commands.executeCommand("vscode.open", Uri.file(path.join(cwd, IntegratedShell.GRAPH_FILE_NAME)), ViewColumn.Two);
     }
 
-    public runTerraformCmd(tfCommand: string) {
-        this.checkCreateTerminal();
-        this.terminal.show();
-        this.terminal.sendText(tfCommand);
+    public async import(params: any, file?: string): Promise<void> {
+
+        const runner = TerraformerRunner.getInstance();// terraform or terraformer
+
+        await runner.checkInstalled();
+
+        const cwd: string = await selectWorkspaceFolder();
+        if (!cwd) {
+            TelemetryWrapper.sendError(Error("noWorkspaceSelected"));
+            return;
+        }
+
+        const preRet = await runner.preImport(cwd);
+        console.debug("[DEBUG]#### Executed pre-import. result:[%s]", preRet);
+
+        const resource = defaultProduct;
+        if (!defaultProduct.includes(params.product)) {
+            resource.push(params.product);
+        }
+
+        const cmd = CommandType.Import;
+        const flags: FlagsMap[] = [
+            {
+                flag: FlagType.Resources,
+                value: resource.join(",")
+            },
+            {
+                flag: FlagType.Filter,
+                value: [params.resource.type, params.resource.id].join("=")
+            },
+            {
+                flag: FlagType.Regions,
+                value: "ap-guangzhou"
+            },
+            {
+                flag: FlagType.Redirect,
+                value: "terraformer_default_result"
+            },
+        ];
+
+        const importRet = await runner.executeImport(cwd, "", cmd, flags);
+        console.debug("[DEBUG]#### Executed import command. result:[%s]", importRet);
+
+        // terraform state replace-provider registry.terraform.io/-/tencentcloud tencentcloudstack/tencentcloud
+        const args = "";
+        const postRet = await runner.postImport(cwd, args);
+
+        const content: string = await runner.executeShow(cwd);
+
+        const tfFile: string = importRet;
+
+        vscode.window.showInformationMessage(`The resource:[${params.resource.type}] has been imported successfully, generated tf file:[${tfFile}].`);
+
+        await commands.executeCommand("vscode.open", Uri.file(tfFile), ViewColumn.Active || ViewColumn.One);
     }
 
-    public runNormalCmd(tfCommand: string, newLine=true) {
+
+    public async runTerraformCmdWithoutTerminal(tfCommand: string, args?: string[]) {
+        const cmd = [tfCommand, ...(args || [])].join(' ');
+        const { stdout, stderr } = await promisify(cp.exec)(cmd);
+        return { stdout, stderr };
+    }
+
+    public async runTerraformCmd(tfCommand: string, args?: string[]) {
+        this.checkCreateTerminal();
+        this.terminal.show();
+
+        // const cmd= [tfCommand, args.values].join(' ');
+        let tmp: string[] = [tfCommand];
+        args.forEach((arg) => tmp.push(arg));
+        const cmd = tmp.join(' ');
+        this.terminal.sendText(cmd);
+    }
+
+    public async runNormalCmd(tfCommand: string, newLine = true) {
         this.checkCreateTerminal();
         this.terminal.show();
         this.terminal.sendText(tfCommand, newLine);
@@ -83,6 +158,13 @@ export class IntegratedShell extends BaseShell {
         const graphPath: string = path.join(cwd, IntegratedShell.GRAPH_FILE_NAME);
         if (await fse.pathExists(graphPath)) {
             await fse.remove(graphPath);
+        }
+    }
+
+    private async deleteFile(cwd, file: string): Promise<void> {
+        const filePath: string = path.join(cwd, file);
+        if (await fse.pathExists(filePath)) {
+            await fse.remove(filePath);
         }
     }
 

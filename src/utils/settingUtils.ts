@@ -53,30 +53,7 @@ export async function checkTCCLIInstalled(): Promise<void> {
         uiUtils.openUrlHintOrNotShowAgain("TCCLI is not installed, please install it before use extension.",
             "https://www.tencentcloud.com/document/product/1013/33464",
             () => {
-                setCheckTerraformCmd(false);
-            });
-    }
-}
-
-export function getCheckTerraformCmd(): boolean {
-    return vscode.workspace.getConfiguration().get("tcTerraform.checkTerraformCmd");
-}
-
-export function setCheckTerraformCmd(checked: boolean): void {
-    vscode.workspace.getConfiguration().update("tcTerraform.checkTerraformCmd", checked);
-}
-
-export async function checkTerraformInstalled(): Promise<void> {
-    if (isTerminalSetToCloudShell() || !getCheckTerraformCmd()) {
-        return;
-    }
-    try {
-        await cpUtils.executeCommand("terraform", ["-v"], { shell: true });
-    } catch (error) {
-        uiUtils.openUrlHintOrNotShowAgain("Terraform is not installed, please make sure Terraform is in the PATH environment variable.",
-            "https://cloud.tencent.com/document/product/1653/82868",
-            () => {
-                setCheckTerraformCmd(false);
+                // setCheckTerraformCmd(false);
             });
     }
 }

@@ -2,16 +2,18 @@
     "name": "vscode-tencentcloud-terraform",
     "displayName": "Tencent Cloud Terraform",
     "description": "VS Code extension for developing with Terraform on Tencent Cloud",
-    "version": "0.0.1",
+    "version": "0.0.5",
     "license": "MIT",
     "publisher": "Tencent-Cloud",
     "icon": "images/tc-tf-logo.png",
+    "main": "./out/src/extension.js",
+    "type": "commonjs",
     "repository": {
         "type": "git",
         "url": "https://github.com/tencentcloudstack/vscode-tencentcloud-terraform.git"
     },
     "engines": {
-        "vscode": "^1.50.1"
+        "vscode": "^1.70.0"
     },
     "categories": [
         "Programming Languages",
@@ -44,10 +46,43 @@
         "onCommand:tcTerraform.visualize",
         "onCommand:tcTerraform.test",
         "onCommand:tcTerraform.push",
+        "onCommand:tcTerraformer.import",
+        "onCommand:tcTerraformer.plan",
+        "workspaceContains:**/*.tf",
         "onLanguage:terraform"
     ],
-    "main": "./out/extension.js",
     "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "tc-terraform-resources",
+                    "title": "%TcTerraform.title%",
+                    "icon": "images/logo.svg",
+                    "when": "workspaceFolderCount > 0"
+                }
+            ]
+        },
+        "views": {
+            "tc-terraform-resources": [
+                {
+                    "id": "tcTerraform.sessionExplorer",
+                    "name": "%TcTerraform.view.session.explorer%",
+                    "contextualTitle": "Session Explorer",
+                    "visibility": "collapsed"
+                },
+                {
+                    "id": "tcTerraform.resourcesExplorer.cvm",
+                    "name": "%TcTerraform.view.resource.explorer.cvm%",
+                    "contextualTitle": "Resources Explorer",
+                    "visibility": "collapsed"
+                },
+                {
+                    "id": "tcTerraform.helpExplorer",
+                    "name": "%TcTerraform.view.help.explorer%",
+                    "visibility": "collapsed"
+                }
+            ]
+        },
         "languages": [
             {
                 "id": "terraform",
@@ -118,6 +153,16 @@
                 "command": "tcTerraform.push",
                 "title": "Push",
                 "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraformer.import",
+                "title": "Import",
+                "category": "TencentCloud Terraformer"
+            },
+            {
+                "command": "tcTerraformer.plan",
+                "title": "Plan",
+                "category": "TencentCloud Terraformer"
             }
         ],
         "configuration": {
@@ -136,6 +181,11 @@
                     "type": "boolean",
                     "default": "true",
                     "description": "Specifies whether or not check terraform installed in the PATH."
+                },
+                "tcTerraform.checkTerraformerCmd": {
+                    "type": "boolean",
+                    "default": "true",
+                    "description": "Specifies whether or not check terraformer installed."
                 },
                 "tcTerraform.checkTCCLI": {
                     "type": "boolean",
@@ -185,21 +235,35 @@
         "@types/mocha": "^10.0.1",
         "@types/node": "16.x",
         "@types/opn": "^3.0.28",
+        "@types/vscode": "^1.70.0",
         "@typescript-eslint/eslint-plugin": "^5.49.0",
         "@typescript-eslint/parser": "^5.49.0",
         "@vscode/test-electron": "^2.2.2",
         "eslint": "^8.33.0",
         "glob": "^8.1.0",
         "mocha": "^10.1.0",
+        "tsconfig-paths": "^4.2.0",
         "typescript": "^4.9.4",
-        "vscode": "^1.1.37"
+        "vscode": "^1.1.34"
     },
     "dependencies": {
+        "@types/strip-ansi": "^5.2.1",
         "all": "^0.0.0",
+        "asynckit": "^0.4.0",
+        "axios": "^1.3.5",
+        "chalk": "^4.1.2",
         "fs-extra": "^11.1.0",
+        "inversify": "^6.0.1",
         "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
         "opn": "^6.0.0",
+        "reflect-metadata": "^0.1.13",
         "shared": "^0.2.0",
-        "vscode-extension-telemetry-wrapper": "^0.13.3"
+        "strip-ansi": "=6.0.0",
+        "tencentcloud-sdk-nodejs": "^4.0.580",
+        "tencentcloud-sdk-nodejs-cvm": "^4.0.580",
+        "tencentcloud-sdk-nodejs-tke": "^4.0.576",
+        "vscode-extension-telemetry-wrapper": "^0.13.3",
+        "vscode-nls-i18n": "^0.2.4"
     }
 }
