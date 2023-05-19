@@ -36,7 +36,9 @@ export class CvmResProvider extends tencent.tree.TreeDataProvider {
                                     name: defaultResourceName,
                                     id: instance.InstanceId
                                 },
-                                fileName: config.import.file
+                                product: config.product,
+                                fileName: config.import.file,
+                                this: config
                             }],
                         },
                     }))

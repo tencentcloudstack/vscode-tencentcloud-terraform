@@ -6,10 +6,10 @@ import { Instance } from "tencentcloud-sdk-nodejs-cvm/tencentcloud/services/cvm/
 import { ITencentCloudAPI } from "../commons/tencent/sdkApi";
 import { error } from "console";
 
-
 export class CvmService implements ITencentCloudAPI {
     async getConfig(params?: any): Promise<any> {
         return {
+            'product': 'cvm',
             'resource': {
                 'name': "tencentcloud_instance",
                 //'xxx': "yyy"
@@ -39,9 +39,6 @@ export class CvmService implements ITencentCloudAPI {
 
         return res;
     }
-
-
-
 }
 
 // export async function describeInstances(params:any): Promise<Instance[]> {

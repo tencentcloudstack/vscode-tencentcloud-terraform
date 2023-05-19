@@ -9,6 +9,8 @@ import { executeCommand } from "./cpUtils";
 import { BaseRunner } from "./baseRunner";
 import { openUrlHintOrNotShowAgain } from "./uiUtils";
 
+export const defaultProduct = ["vpc", "subnet", "security_group"];
+
 export enum CommandType {
     Import = "import tencentcloud",
     Plan = "plan tencentcloud",
@@ -34,6 +36,7 @@ export interface FlagsMap {
 }
 
 export class TerraformerRunner extends BaseRunner {
+    static defaultProduct: any;
     private constructor() {
         super();
     }
@@ -48,12 +51,13 @@ export class TerraformerRunner extends BaseRunner {
     }
 
     public init(): void {
-        throw new Error("Method not implemented.");
+        // throw new Error("Method not implemented.");
     }
 
 
     public async preImport(cwd: string, args?: any, path?: string): Promise<any> {
-        await executeCommand(
+        console.debug("[DEBUG]#### TerraformerRunner.preImport begin, cwd:[%s], args:[%s], path:[%s]", cwd, args, path);
+        return await executeCommand(
             "terraform",
             ["init", "-upgrade"],
             {
@@ -61,21 +65,12 @@ export class TerraformerRunner extends BaseRunner {
                 cwd,
             },
         );
-
-
-        // return await executeCommand(
-        //     "terraformer",
-        //     exeArgs,
-        //     {
-        //         shell: true,
-        //         cwd,
-        //     }
-        // );
     }
 
     public async executeImport(cwd: string, args?: string, cmd?: CommandType, flags?: FlagsMap[]): Promise<string> {
+        console.debug("[DEBUG]#### TerraformerRunner.executeImport begin, cwd:[%s], args:[%s], cmd:[%s], flags:[%s]", cwd, args, cmd.toString(), flags.toString());
         const exeArgs: string[] = [];
-        if (args){
+        if (args) {
             exeArgs.push(args);
         }
 
@@ -85,13 +80,13 @@ export class TerraformerRunner extends BaseRunner {
 
         if (flags) {
             flags.forEach((vv) => {
-                exeArgs.push(vv.flag.toString(), " ", vv.value);
+                exeArgs.push(vv.flag.toString(), vv.value);
             });
         }
 
         const opExeArgs: string = exeArgs.join(" ");
 
-        console.debug("[DEBUG]#### import opExeArgs:[%s]", "terraformer" + opExeArgs);
+        console.debug("[DEBUG]#### import exeArgs:[%s]", opExeArgs);
 
         return await executeCommand(
             "terraformer",
@@ -104,11 +99,21 @@ export class TerraformerRunner extends BaseRunner {
     }
 
     public async postImport(cwd: string, args?: string): Promise<any> {
-        throw new Error("Method not implemented.");
+        console.debug("[DEBUG]#### TerraformerRunner.postImport begin, cwd:[%s], args:[%s]", cwd, args);
+        const exeArgs = args.split(",");
+        
+        return await executeCommand(
+            "terraformer",
+            exeArgs,
+            {
+                shell: true,
+                cwd,
+            }
+        );
     }
 
     public async executeShow(cwd: string, args?: string): Promise<string> {
-        console.debug("[DEBUG]#### terraformer not need this step, skip it.");
+        console.debug("[DEBUG]#### TerraformerRunner not need this step, skip it.");
         return "";
     }
 

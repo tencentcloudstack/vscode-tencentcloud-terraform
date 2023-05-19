@@ -23,7 +23,7 @@ import { command } from "./commons/tencent/commands";
 import { promisify } from "util";
 import { ChildProcess } from "child_process";
 import * as cp from "child_process";
-import { TerraformerRunner, CommandType, FlagType, FlagsMap } from "./utils/terraformerRunner";
+import { TerraformerRunner, CommandType, FlagType, FlagsMap, defaultProduct } from "./utils/terraformerRunner";
 import { values } from "lodash";
 
 // import stripAnsi from 'strip-ansi';
@@ -78,15 +78,23 @@ export class IntegratedShell extends BaseShell {
             return;
         }
 
+        const preRet = await runner.preImport(cwd);
+        console.debug("[DEBUG]#### Executed pre-import. result:[%s]", preRet);
+
+        const resource = defaultProduct;
+        if (!defaultProduct.includes(params.product)) {
+            resource.push(params.product);
+        }
+
         const cmd = CommandType.Import;
         const flags: FlagsMap[] = [
             {
                 flag: FlagType.Resources,
-                value: ["mysql", "vpc", "subnet", "security_group"].join(",")
+                value: resource.join(",")
             },
             {
                 flag: FlagType.Filter,
-                value: ["tencentcloud_mysql_instance", "cdb-fitq5t9h"].join("=")
+                value: [params.resource.type, params.resource.id].join("=")
             },
             {
                 flag: FlagType.Regions,
@@ -98,22 +106,21 @@ export class IntegratedShell extends BaseShell {
             },
         ];
 
-        console.debug("[DEBUG]#### Executing import command. cwd:[%s], cmd:[%s], flags:[%s]", cwd, cmd.toString, flags.toString);
-        const result = await runner.executeImport(cwd, "", cmd, flags);
-        console.debug("[DEBUG]#### Executed import command. result:[%s]", result);
+        const importRet = await runner.executeImport(cwd, "", cmd, flags);
+        console.debug("[DEBUG]#### Executed import command. result:[%s]", importRet);
 
-
+        // terraform state replace-provider registry.terraform.io/-/tencentcloud tencentcloudstack/tencentcloud
+        const args = "";
+        const postRet = await runner.postImport(cwd, args);
 
         const content: string = await runner.executeShow(cwd);
 
-
-        const tfFile: string = result;
+        const tfFile: string = importRet;
 
         vscode.window.showInformationMessage(`The resource:[${params.resource.type}] has been imported successfully, generated tf file:[${tfFile}].`);
 
         await commands.executeCommand("vscode.open", Uri.file(tfFile), ViewColumn.Active || ViewColumn.One);
     }
-
 
 
     public async runTerraformCmdWithoutTerminal(tfCommand: string, args?: string[]) {

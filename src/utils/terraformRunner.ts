@@ -30,7 +30,7 @@ export class TerraformRunner extends BaseRunner {
     }
 
     public init(): void {
-        throw new Error("Method not implemented.");
+        // throw new Error("Method not implemented.");
     }
 
     public async executeShow(cwd: string, args?: string): Promise<string> {
@@ -91,8 +91,8 @@ export class TerraformRunner extends BaseRunner {
      * @param cwd 
      * @param args 
      */
-    public postImport(cwd: string, args?: string): Promise<any> {
-        throw new Error("Method not implemented.");
+    public async postImport(cwd: string, args?: string): Promise<any> {
+        console.debug("[DEBUG]#### terraform postImport TODO.");
     }
 
     public async checkInstalled(): Promise<void> {
