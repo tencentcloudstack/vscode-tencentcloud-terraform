@@ -28,7 +28,7 @@ export class CvmResProvider extends tencent.tree.TreeDataProvider {
                         id: instance.InstanceId,
                         // iconPath: Icons.getIcon("book"),
                         command: {
-                            command: cmds.executeImport,
+                            command: cmds.executeTferImport,
                             title: "",
                             arguments: [{
                                 resource: {

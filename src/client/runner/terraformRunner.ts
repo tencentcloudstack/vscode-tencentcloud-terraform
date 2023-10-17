@@ -7,12 +7,12 @@
 import * as path from "path";
 import * as fse from "fs-extra";
 import * as vscode from "vscode";
-import { executeCommand } from "./cpUtils";
 import { BaseRunner } from "./baseRunner";
-import { TerraformCommand } from "../commons/commands";
-import { terraformShellManager } from "../terraformShellManager";
-import * as settingUtils from "./settingUtils";
-import { openUrlHintOrNotShowAgain } from "./uiUtils";
+import { TerraformCommand } from "../../commons/customCmdRegister";
+import { terraformShellManager } from "../terminal/terraformShellManager";
+import { executeCommand } from "../../utils/cpUtils";
+import * as settingUtils from "../../utils/settingUtils";
+import { openUrlHintOrNotShowAgain } from "../../utils/uiUtils";
 
 
 export class TerraformRunner extends BaseRunner {
@@ -33,7 +33,20 @@ export class TerraformRunner extends BaseRunner {
         // throw new Error("Method not implemented.");
     }
 
-    public async executeShow(cwd: string, args?: string): Promise<string> {
+    public async executePlan(cwd: string, args: any): Promise<string> {
+        console.debug("[DEBUG]#### TerraformRunner executePlan begin.");
+
+        const resAddress = `${args.resource.type}.${args.resource.name}`;
+
+        // reset state
+        await this.resetTFState(resAddress);
+
+        terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).runTerraformCmd(TerraformCommand.Plan);
+
+        return "";
+    }
+
+    public async executeShow(cwd: string, args?: any): Promise<string> {
         return await executeCommand(
             "terraform",
             ["show"],
@@ -42,6 +55,24 @@ export class TerraformRunner extends BaseRunner {
                 cwd,
             }
         );
+    }
+
+    public async preImport(cwd: string, args: any, file: string): Promise<{ importArgs: string, tfFile: string }> {
+        const fileName = (file === undefined) ? args.resource.type + '.tf' : file;
+
+        const defaultContents = `resource "${args.resource.type}" "${args.resource.name}" {}`;
+        const resAddress = `${args.resource.type}.${args.resource.name}`;
+
+        const tfFile: string = path.join(cwd, fileName);
+
+        // reset file
+        await this.resetFileContent(tfFile, defaultContents);
+        // reset state
+        await this.resetTFState(resAddress);
+
+        const importArgs = ['import ', args.resource.type, '.', args.resource.name, ' ', args.resource.id].join('');
+        console.debug("[DEBUG]#### import cmd: args=[%s], defaultContents=[%s]", importArgs, defaultContents);
+        return { importArgs, tfFile };
     }
 
     public async executeImport(cwd: string, args?: string): Promise<string> {
@@ -53,37 +84,6 @@ export class TerraformRunner extends BaseRunner {
                 cwd,
             }
         );
-    }
-
-    public async preImport(cwd: string, params: any, file: string): Promise<{ importArgs: string, tfFile: string }> {
-        const fileName = (file === undefined) ? params.resource.type + '.tf' : file;
-
-        const defaultContents = `resource "${params.resource.type}" "${params.resource.name}" {}`;
-        const resAddress = `${params.resource.type}.${params.resource.name}`;
-
-        const tfFile: string = path.join(cwd, fileName);
-
-        // reset file
-        await this.resetFileContent(tfFile, defaultContents);
-        // reset state
-        await this.resetTFState(resAddress);
-
-        const importArgs = ['import ', params.resource.type, '.', params.resource.name, ' ', params.resource.id].join('');
-        console.debug("[DEBUG]#### import cmd: args=[%s], defaultContents=[%s]", importArgs, defaultContents);
-        return { importArgs, tfFile };
-    }
-
-
-    private async resetFileContent(tfFile: string, defaultContents: string) {
-        if (!fse.existsSync(tfFile)) {
-            fse.writeFileSync(tfFile, defaultContents);
-        } else {
-            await fse.writeFile(tfFile, defaultContents);
-        }
-    }
-
-    private async resetTFState(resAddress: string) {
-        await terraformShellManager.getIntegratedShell().runTerraformCmd(TerraformCommand.State, ['rm', '-lock=false', resAddress]);
     }
 
     /**
@@ -109,6 +109,21 @@ export class TerraformRunner extends BaseRunner {
                 });
         }
         return;
+    }
+
+    private async resetFileContent(tfFile: string, defaultContents: string) {
+        if (!fse.existsSync(tfFile)) {
+            fse.writeFileSync(tfFile, defaultContents);
+        } else {
+            await fse.writeFile(tfFile, defaultContents);
+        }
+    }
+
+    public async resetTFState(resAddress: string) {
+        console.debug("[DEBUG]#### TerraformRunner resetTFState begin.");
+
+        await terraformShellManager.getIntegratedShell(TerraformRunner.getInstance())
+            .runTerraformCmd(TerraformCommand.State, ['rm', '-lock=false', resAddress]);
     }
 }
 

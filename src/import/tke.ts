@@ -1,4 +1,4 @@
-import { ITencentCloudAPI } from "@/commons/tencent/sdkApi";
+import { ITencentCloudAPI } from "../commons/tencent/sdkApi";
 
 export class TkeService implements ITencentCloudAPI {
     describeInstances(params?: any): Promise<any> {

@@ -8,7 +8,7 @@
 // import * as opn from "opn";
 import opn from "opn";
 import * as vscode from "vscode";
-import { terraformChannel } from "../terraformChannel";
+import { terraformChannel } from "../client/terminal/terraformChannel";
 
 export async function openUrlHintOrNotShowAgain(message: string, url: string, notShowCallback: () => void): Promise<void> {
     const response = await vscode.window.showInformationMessage(message, DialogOption.learnMore, DialogOption.notShownAgain);

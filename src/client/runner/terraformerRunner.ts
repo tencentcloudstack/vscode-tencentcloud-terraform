@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Tencent Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 "use strict";
 import * as vscode from "vscode";
-import * as settingUtils from "./settingUtils";
-import { executeCommand } from "./cpUtils";
+import * as settingUtils from "../../utils/settingUtils";
+import { executeCommand } from "../../utils/cpUtils";
 import { BaseRunner } from "./baseRunner";
-import { openUrlHintOrNotShowAgain } from "./uiUtils";
+import { openUrlHintOrNotShowAgain } from "../../utils/uiUtils";
 
 export const defaultProduct = ["vpc", "subnet", "security_group"];
 
@@ -55,8 +56,8 @@ export class TerraformerRunner extends BaseRunner {
     }
 
 
-    public async preImport(cwd: string, args?: any, path?: string): Promise<any> {
-        console.debug("[DEBUG]#### TerraformerRunner.preImport begin, cwd:[%s], args:[%s], path:[%s]", cwd, args, path);
+    public async preImport(cwd: string, args?: any, file?: string): Promise<any> {
+        console.debug("[DEBUG]#### TerraformerRunner.preImport begin, cwd:[%s], args:[%s], path:[%s]", cwd, args, file);
         return await executeCommand(
             "terraform",
             ["init", "-upgrade"],
@@ -101,7 +102,7 @@ export class TerraformerRunner extends BaseRunner {
     public async postImport(cwd: string, args?: string): Promise<any> {
         console.debug("[DEBUG]#### TerraformerRunner.postImport begin, cwd:[%s], args:[%s]", cwd, args);
         const exeArgs = args.split(",");
-        
+
         return await executeCommand(
             "terraformer",
             exeArgs,
@@ -110,6 +111,11 @@ export class TerraformerRunner extends BaseRunner {
                 cwd,
             }
         );
+    }
+
+    public async executePlan(cwd: string, args?: string): Promise<string> {
+        console.debug("[DEBUG]#### TerraformerRunner not need this step, skip it.");
+        return "";
     }
 
     public async executeShow(cwd: string, args?: string): Promise<string> {

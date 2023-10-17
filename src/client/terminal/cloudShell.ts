@@ -5,21 +5,16 @@
 
 "use strict";
 
-import * as fsExtra from "fs-extra";
-import * as path from "path";
-import { MessageItem } from "vscode";
 import * as vscode from "vscode";
 import * as TelemetryWrapper from "vscode-extension-telemetry-wrapper";
 // import { AzureAccount, CloudShell } from "./azure-account.api";
 import { BaseShell } from "./baseShell";
 // import { aciConfig, Constants, exportContainerCmd, exportTestScript } from "./constants";
 // import { azFileDelete, azFilePush, escapeFile, TerraformCommand, TestOption } from "./shared";
-import { TerraformCommand } from "./commons/commands";
+import { TerraformCommand } from "../../commons/customCmdRegister";
 import { terraformChannel } from "./terraformChannel";
 // import { getStorageAccountforCloudShell, IStorageAccount } from "./utils/cloudShellUtils";
-import * as settingUtils from "./utils/settingUtils";
-import { DialogOption, DialogType, promptForOpenOutputChannel } from "./utils/uiUtils";
-import { selectWorkspaceFolder } from "./utils/workspaceUtils";
+import { DialogOption, DialogType, promptForOpenOutputChannel } from "../../utils/uiUtils";
 
 export class TencentCloudShell extends BaseShell {
 

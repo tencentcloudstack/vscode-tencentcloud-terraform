@@ -12,29 +12,35 @@ import * as vscode from "vscode";
 import { commands, Uri, ViewColumn } from "vscode";
 import * as TelemetryWrapper from "vscode-extension-telemetry-wrapper";
 import { BaseShell } from "./baseShell";
-import { Constants } from "./constants";
-import { executeCommand } from "./utils/cpUtils";
-import { drawGraph } from "./utils/dotUtils";
-import { isDotInstalled } from "./utils/dotUtils";
-import { selectWorkspaceFolder } from "./utils/workspaceUtils";
-import { TerraformCommand } from "./commons/commands";
-import * as helper from "./utils/helper";
-import { command } from "./commons/tencent/commands";
+import { Constants } from "../../commons/constants";
+import { executeCommand } from "../../utils/cpUtils";
+import { drawGraph } from "../../utils/dotUtils";
+import { isDotInstalled } from "../../utils/dotUtils";
+import { selectWorkspaceFolder } from "../../utils/workspaceUtils";
 import { promisify } from "util";
-import { ChildProcess } from "child_process";
 import * as cp from "child_process";
-import { TerraformerRunner, CommandType, FlagType, FlagsMap, defaultProduct } from "./utils/terraformerRunner";
-import { values } from "lodash";
+import { BaseRunner } from "../runner/baseRunner";
+import { TerraformerRunner, CommandType, FlagType, FlagsMap, defaultProduct } from "../../client/runner/terraformerRunner";
+import { TerraformRunner } from "../runner/terraformRunner";
 
 // import stripAnsi from 'strip-ansi';
 
 export class IntegratedShell extends BaseShell {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private static readonly GRAPH_FILE_NAME = "graph.png";
+    private readonly runner: BaseRunner;
+
+    constructor(rr: BaseRunner) {
+        super();
+        // terraform or terraformer?
+        this.runner = rr;
+    }
 
     // Creates a png of terraform resource graph to visualize the resources under management.
     public async visualize(): Promise<void> {
-        if (!await isDotInstalled()) {
+        console.debug("[DEBUG]#### IntegratedShell visualize begin.");
 
+        if (!await isDotInstalled()) {
             TelemetryWrapper.sendError(Error("dotNotInstalled"));
             return;
         }
@@ -66,11 +72,12 @@ export class IntegratedShell extends BaseShell {
         await commands.executeCommand("vscode.open", Uri.file(path.join(cwd, IntegratedShell.GRAPH_FILE_NAME)), ViewColumn.Two);
     }
 
+    // import a existed resource into terraform
     public async import(params: any, file?: string): Promise<void> {
+        console.debug("[DEBUG]#### IntegratedShell import begin.");
 
-        const runner = TerraformerRunner.getInstance();// terraform or terraformer
-
-        await runner.checkInstalled();
+        // const runner = TerraformerRunner.getInstance();
+        await this.runner.checkInstalled();
 
         const cwd: string = await selectWorkspaceFolder();
         if (!cwd) {
@@ -78,7 +85,7 @@ export class IntegratedShell extends BaseShell {
             return;
         }
 
-        const preRet = await runner.preImport(cwd);
+        const preRet = await this.runner.preImport(cwd, params);
         console.debug("[DEBUG]#### Executed pre-import. result:[%s]", preRet);
 
         const resource = defaultProduct;
@@ -106,14 +113,14 @@ export class IntegratedShell extends BaseShell {
             },
         ];
 
-        const importRet = await runner.executeImport(cwd, "", cmd, flags);
+        const importRet = await this.runner.executeImport(cwd, "", cmd, flags);
         console.debug("[DEBUG]#### Executed import command. result:[%s]", importRet);
 
         // terraform state replace-provider registry.terraform.io/-/tencentcloud tencentcloudstack/tencentcloud
         const args = "";
-        const postRet = await runner.postImport(cwd, args);
+        const postRet = await this.runner.postImport(cwd, args);
 
-        const content: string = await runner.executeShow(cwd);
+        const content: string = await this.runner.executeShow(cwd);
 
         const tfFile: string = importRet;
 
@@ -122,6 +129,30 @@ export class IntegratedShell extends BaseShell {
         await commands.executeCommand("vscode.open", Uri.file(tfFile), ViewColumn.Active || ViewColumn.One);
     }
 
+    // run terraform plan command
+    public async plan(params: any): Promise<void> {
+        console.debug("[DEBUG]#### IntegratedShell plan begin. params:[%v]", params);
+
+        await this.runner.checkInstalled();
+        if (this.runner instanceof TerraformRunner) {
+
+            const cwd: string = await selectWorkspaceFolder();
+            if (!cwd) {
+                TelemetryWrapper.sendError(Error("noWorkspaceSelected"));
+                return;
+            }
+
+            const result = await this.runner.executePlan(cwd, params);
+            console.debug("[DEBUG]#### Executed plan. result:[%s]", result);
+        }
+    }
+
+    // run terraform push command
+    public async push(params: any): Promise<void> {
+        console.debug("[DEBUG]#### IntegratedShell push begin. params:[%v]", params);
+
+
+    }
 
     public async runTerraformCmdWithoutTerminal(tfCommand: string, args?: string[]) {
         const cmd = [tfCommand, ...(args || [])].join(' ');
@@ -134,8 +165,11 @@ export class IntegratedShell extends BaseShell {
         this.terminal.show();
 
         // const cmd= [tfCommand, args.values].join(' ');
-        let tmp: string[] = [tfCommand];
-        args.forEach((arg) => tmp.push(arg));
+
+        const tmp: string[] = [tfCommand];
+        if (args) {
+            args.forEach((arg) => tmp.push(arg));
+        }
         const cmd = tmp.join(' ');
         this.terminal.sendText(cmd);
     }

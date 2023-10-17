@@ -6,7 +6,7 @@
 "use strict";
 
 import * as cp from "child_process";
-import { terraformChannel } from "../terraformChannel";
+import { terraformChannel } from "../client/terminal/terraformChannel";
 
 export async function executeCommand(command: string, args: string[], options: cp.SpawnOptions): Promise<string> {
     return new Promise((resolve: (res: string) => void, reject: (e: Error) => void): void => {

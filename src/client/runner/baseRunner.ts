@@ -18,7 +18,7 @@ export abstract class BaseRunner {
      * @param cwd 
      * @returns 
      */
-    public abstract preImport(cwd: string, args?: any, path?: string): Promise<any>;
+    public abstract preImport(cwd: string, args?: any, file?: string): Promise<any>;
 
     /**
      * execute this command to import the existing resource from tencentcloud
@@ -26,15 +26,26 @@ export abstract class BaseRunner {
      * @param args 
      * @returns 
      */
-    public abstract executeImport(cwd: string, args?: string): Promise<any>;
+    public abstract executeImport(cwd: string, args?: any, cmd?: any, flags?: any): Promise<any>;
 
     /**
      * execute this command to handle post of the terraform import.
      * @param cwd 
      * @param executor Choose who will execute this command? terraform or terraformer 
+     * @param cmd 
+     * @param flags 
      * @returns 
      */
-    public abstract postImport(cwd: string, executor?:string, args?: string): Promise<any>;
+    public abstract postImport(cwd: string, executor?: string, args?: string): Promise<any>;
+
+    /**
+     * execute this command to plan the tf code
+     * @param cwd 
+     * @param args 
+     * @param cmd 
+     * @param flags 
+     */
+    public abstract executePlan(cwd: string, args?: any, cmd?: any, flags?: any): Promise<any>;
 
     /**
      * check binary whether ready or not
@@ -46,5 +57,5 @@ export abstract class BaseRunner {
     * @param cwd 
     * @returns 
     */
-    public abstract executeShow(cwd: string, args?: string): Promise<any>;
+    public abstract executeShow(cwd: string, args?: any): Promise<any>;
 }

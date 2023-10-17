@@ -3,15 +3,17 @@
 import * as vscode from 'vscode';
 import * as settingUtils from "./utils/settingUtils";
 import { init } from "vscode-nls-i18n";
-import { TerraformCommand } from "./commons/commands";
-import { terraformShellManager } from "./terraformShellManager";
+import { TerraformCommand, TerraformerCommand } from "./commons/customCmdRegister";
+import { terraformShellManager } from "./client/terminal/terraformShellManager";
 import { DialogOption } from "./utils/uiUtils";
 import { TerraformCompletionProvider } from './autocomplete/TerraformCompletionProvider';
 import { TerraformDefinitionProvider } from './autocomplete/TerraformDefinitionProvider';
 import { registerCommon } from './commons';
 import { registerView } from './views';
-import { TerraformRunner } from './utils/terraformRunner';
-import { TerraformerRunner } from './utils/terraformerRunner';
+import { TerraformRunner } from './client/runner/terraformRunner';
+import { TerraformerRunner } from './client/runner/terraformerRunner';
+import { GitUtils } from './utils/gitUtils';
+import _ from 'lodash';
 
 const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' };
 
@@ -40,14 +42,16 @@ export async function activate(context: vscode.ExtensionContext) {
     });
 
     context.subscriptions.push(disposableLogin);
-
+    // terraform cmd
     context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.init', () => {
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Init);
     }));
 
-    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.plan', () => {
-        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Plan);
-    }));
+    // move plan to customCmdRegister
+    // context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.plan', () => {
+    //     await terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).plan();
+
+    // }));
 
     context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.apply', () => {
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Apply);
@@ -80,7 +84,7 @@ export async function activate(context: vscode.ExtensionContext) {
                 return;
             }
         }
-        await terraformShellManager.getIntegratedShell().visualize();
+        await terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).visualize();
     });
 
     context.subscriptions.push(disposableGraph);
@@ -91,22 +95,26 @@ export async function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(disposableTest);
 
-    let disposablePush = vscode.commands.registerCommand('tcTerraform.push', async () => {
-        // to-do
-        // wait for cloudshell implement ready
+    // git operations
+    let disposablePush = vscode.commands.registerCommand('tcTerraform.git.push', async () => {
+        if (_.isEmpty(vscode.workspace.workspaceFolders)) {
+            vscode.window.showInformationMessage("Please open a workspace in VS Code first.");
+            return;
+        }
+        await GitUtils.getInstance().submitToGit();
     });
 
     context.subscriptions.push(disposablePush);
 
-    // terraformer
+    // terraformer cmd
     let disposableTferImport = vscode.commands.registerCommand('tcTerraformer.import', async () => {
-        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Destroy);
+        terraformShellManager.getShell().runTerraformCmd(TerraformerCommand.Import);
     });
 
     context.subscriptions.push(disposableTferImport);
 
     let disposableTferPlan = vscode.commands.registerCommand('tcTerraformer.plan', async () => {
-        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Destroy);
+        terraformShellManager.getShell().runTerraformCmd(TerraformerCommand.Plan);
     });
 
     context.subscriptions.push(disposableTferPlan);
@@ -116,7 +124,7 @@ export async function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, new TerraformCompletionProvider(), '.'));
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(TF_MODE, new TerraformDefinitionProvider()));
 
-    // import
+    // import-resource
     console.log('activate the import feature');
     init(context.extensionPath);
     registerCommon();
