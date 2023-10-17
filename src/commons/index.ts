@@ -1,11 +1,11 @@
-import * as command from "./commands";
+import * as customerCmd from "./customCmdRegister";
 export { tencent } from "./tencent";
 export * from "./container";
 export * from "./context";
-export {cmds} from "./commands";
+export { cmds } from "./customCmdRegister";
 
 export function registerCommon() {
     //   registerTencent();
-    command.registerHelpCommands();
-    command.registerResourceCommands();
+    customerCmd.regHelpCommands();
+    customerCmd.regResourceRelatedCommands();
 }

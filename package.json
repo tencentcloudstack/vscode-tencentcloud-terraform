@@ -2,7 +2,7 @@
     "name": "vscode-tencentcloud-terraform",
     "displayName": "Tencent Cloud Terraform",
     "description": "VS Code extension for developing with Terraform on Tencent Cloud",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "license": "MIT",
     "publisher": "Tencent-Cloud",
     "icon": "images/tc-tf-logo.png",
@@ -150,9 +150,10 @@
                 "category": "TencentCloud Terraform"
             },
             {
-                "command": "tcTerraform.push",
-                "title": "Push",
-                "category": "TencentCloud Terraform"
+                "command": "tcTerraform.git.push",
+                "title": "Push to git",
+                "category": "TencentCloud Terraform",
+                "shortTitle": "Push"
             },
             {
                 "command": "tcTerraformer.import",
