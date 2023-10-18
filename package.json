@@ -65,8 +65,8 @@
         "views": {
             "tc-terraform-resources": [
                 {
-                    "id": "tcTerraform.sessionExplorer",
-                    "name": "%TcTerraform.view.session.explorer%",
+                    "id": "tcTerraform.loginExplorer",
+                    "name": "%TcTerraform.view.login.explorer%",
                     "contextualTitle": "Session Explorer",
                     "visibility": "collapsed"
                 },
@@ -83,6 +83,12 @@
                 }
             ]
         },
+        "viewsWelcome": [
+            {
+                "view": "tcTerraform.loginExplorer",
+                "contents": "%TcTerraform.view.login.welcome%"
+            }
+        ],
         "languages": [
             {
                 "id": "terraform",
@@ -101,8 +107,7 @@
         "commands": [
             {
                 "command": "tcTerraform.login",
-                "title": "Login",
-                "category": "TencentCloud Terraform"
+                "title": "%TcTerraform.view.login.welcome%"
             },
             {
                 "command": "tcTerraform.init",

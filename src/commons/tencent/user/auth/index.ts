@@ -1,0 +1,1 @@
+export { getCredentailByInput } from "./credentail";

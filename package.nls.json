@@ -1,6 +1,9 @@
 {
-    "TcTerraform.title": "TencentCloud Terraofrm",
-    "TcTerraform.view.session.explorer": "Connect to TencentCloud",
+    "TcTerraform.title": "TencentCloud Terraform",
+    "TcTerraform.view.login.explorer": "Login TencentCloud",
+    "TcTerraform.view.login.welcome": "Please login the TencentCloud. If you don't have a account, please [Sign up](https://cloud.tencent.com/register) first.\n[Login TencentCloud](command:tcTerraform.login)",
+    "TcTerraform.view.welcome": "Welcome to use TencentCloud Terraform extension, please wait for the page loading...",
+    "TcTerraform.view.login": "登录腾讯云",
     "TcTerraform.view.template.explorer": "Tempaltes Management",
     "TcTerraform.view.resource.explorer": "Resources Explorer",
     "TcTerraform.view.resource.explorer.cvm": "Import Resouce: CVM",
@@ -9,5 +12,9 @@
     "TcTerraform.view.help.explorer.provider": "TencentCloud Terraform Provider",
     "TcTerraform.view.help.explorer.doc": "Documentation",
     "TcTerraform.view.help.explorer.repo": "GitHub Repository",
+    "TcTerraform.AKSK.title": "API AKSK Login",
+    "TcTerraform.QR.title": "Scan code Login",
+    "TcTerraform.AKSK.title.placeholder": "请输入腾讯云 API 密钥 {0}",
+    "TcTerraform.AKSK.title.verify.empty": "{0}不能为空",
     "TcTerraform.productName": "TcTerraform Toolkit"
 }

@@ -25,23 +25,17 @@ export async function activate(context: vscode.ExtensionContext) {
     await TerraformRunner.getInstance().checkInstalled();
     await TerraformerRunner.getInstance().checkInstalled();
 
-    let disposableLogin = vscode.commands.registerCommand('tcTerraform.login', async () => {
-        // to-do
-        // wait for cloudshell and tccli implement ready
-        let accessKey = settingUtils.getSecretIdFromUI();
-        let secretKey = settingUtils.getSecretKeyFromUI();
+    // let disposableLogin = vscode.commands.registerCommand('tcTerraform.login', async () => {
+    //     // to-do
+    //     // wait for cloudshell and tccli implement ready
+    //     let accessKey = settingUtils.getSecretIdFromUI();
+    //     let secretKey = settingUtils.getSecretKeyFromUI();
 
-        // process.env.TENCENTCLOUD_SECRET_ID=accessKey;
-        // process.env.TENCENTCLOUD_SECRET_KEY=secretKey;
+    //     terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_ID=" + accessKey);
+    //     terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_KEY=" + secretKey);
+    // });
 
-        // console.log("TENCENTCLOUD_SECRET_ID:", process.env.TENCENTCLOUD_SECRET_ID);
-        // console.log("TENCENTCLOUD_SECRET_KEY:", process.env.TENCENTCLOUD_SECRET_KEY);
-
-        terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_ID=" + accessKey);
-        terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_KEY=" + secretKey);
-    });
-
-    context.subscriptions.push(disposableLogin);
+    // context.subscriptions.push(disposableLogin);
     // terraform cmd
     context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.init', () => {
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Init);
