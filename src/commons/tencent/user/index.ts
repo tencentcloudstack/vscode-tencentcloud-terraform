@@ -1,5 +1,6 @@
 import { localize } from "vscode-nls-i18n";
-import { ExtensionContext, ProgressLocation, window } from "vscode";
+import { ExtensionContext, workspace, ConfigurationTarget, window } from "vscode";
+import { terraformShellManager } from "../../../client/terminal/terraformShellManager";
 import { AbstractClient } from "tencentcloud-sdk-nodejs/tencentcloud/common/abstract_client";
 import { Credential } from "tencentcloud-sdk-nodejs/tencentcloud/common/interface";
 
@@ -16,19 +17,43 @@ export namespace user {
         uin: string;
     }
 
-    export const AKSK_TITLE = "TcTerraform.AKSK.title";
-    export const AKSK_PLACEHOLD = "TcTerraform.AKSK.title.placeholder";
-    export const AKSK_EMPTY = "TcTerraform.AKSK.title.verify.empty";
+    export const AKSK_TITLE = "TcTerraform.pickup.aksk";
+    export const OAUTH_TITLE = "TcTerraform.pickup.oauth";
+    export const AKSK_PLACEHOLD = "TcTerraform.pickup.aksk.placeholder";
+    export const AKSK_EMPTY = "TcTerraform.pickup.aksk.verify.empty";
 
     const USER_INFO = "USER_INFO";
 
     export async function login() {
-        const api = localize(AKSK_TITLE);
-        const pick = await window.showQuickPick(["xxxxxxx", api]);
+        const aksk = localize(AKSK_TITLE);
+        const oauth = localize(OAUTH_TITLE);
+        const pick = await window.showQuickPick([aksk, oauth]);
 
-        if (pick) {
+        if (aksk === pick) {
             const credential = await getCredentailByInput();
-            // api === pick ? await getCredentailByInput() : await getCredentailByQr();
+            const accessKey = credential.secretId;
+            const secretKey = credential.secretKey;
+
+            // 获取当前的配置对象
+            const config = workspace.getConfiguration();
+
+            // 将 const 值设置到指定的环境变量中
+            config.update('tcTerraform.properties.secretId', accessKey, ConfigurationTarget.Global)
+                .then(() => {
+                    window.showInformationMessage('设置secretId成功');
+                }, (error) => {
+                    window.showErrorMessage('设置secretId失败: ' + error);
+                });
+            config.update('tcTerraform.properties.secretKey', secretKey, ConfigurationTarget.Global)
+                .then(() => {
+                    window.showInformationMessage('设置secretKey成功');
+                }, (error) => {
+                    window.showErrorMessage('设置secretKey失败: ' + error);
+                });
+
+            // terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_ID=" + accessKey);
+            // terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_KEY=" + secretKey);
+            // aksk === pick ? await getCredentailByInput() : await getCredentailByOAuth();
         }
     }
 

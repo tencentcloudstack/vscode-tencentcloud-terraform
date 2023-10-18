@@ -1,7 +1,7 @@
 import { commands } from "vscode";
 import user from "./user";
 
-export function registerCommands() {
+export function registerLoginCmds() {
     commands.registerCommand(command.TENCENT_LOGIN, user.login);
 
     //   commands.registerCommand(command.TENCENT_LOGINOUT, user.loginOut);

@@ -66,19 +66,19 @@
             "tc-terraform-resources": [
                 {
                     "id": "tcTerraform.loginExplorer",
-                    "name": "%TcTerraform.view.login.explorer%",
+                    "name": "%TcTerraform.view.login%",
                     "contextualTitle": "Session Explorer",
                     "visibility": "collapsed"
                 },
                 {
                     "id": "tcTerraform.resourcesExplorer.cvm",
-                    "name": "%TcTerraform.view.resource.explorer.cvm%",
+                    "name": "%TcTerraform.view.resource.cvm%",
                     "contextualTitle": "Resources Explorer",
                     "visibility": "collapsed"
                 },
                 {
                     "id": "tcTerraform.helpExplorer",
-                    "name": "%TcTerraform.view.help.explorer%",
+                    "name": "%TcTerraform.view.help%",
                     "visibility": "collapsed"
                 }
             ]
@@ -86,6 +86,10 @@
         "viewsWelcome": [
             {
                 "view": "tcTerraform.loginExplorer",
+                "contents": "%TcTerraform.view.login.welcome%"
+            },
+            {
+                "view": "tcTerraform.resourcesExplorer.cvm",
                 "contents": "%TcTerraform.view.login.welcome%"
             }
         ],
@@ -174,6 +178,16 @@
         "configuration": {
             "title": "TencentCloud Terraform",
             "properties": {
+                "tcTerraform.properties.secretId": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Tencent Cloud Secret ID"
+                },
+                "tcTerraform.properties.secretKey": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Tencent Cloud Secret Key"
+                },
                 "tcTerraform.terminal": {
                     "type": "string",
                     "default": "integrated",

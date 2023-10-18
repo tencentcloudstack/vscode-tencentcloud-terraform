@@ -12,7 +12,7 @@ export class HelpProvider extends TreeDataProvider {
     async getChildren(element?: tencent.tree.TreeItem | undefined): Promise<tencent.tree.TreeItem[]> {
         if (!element) {
             const elements = [
-                new TreeItem(localize("TcTerraform.view.help.explorer.provider"), {
+                new TreeItem(localize("TcTerraform.view.help.provider"), {
                     // iconPath: Icons.getIcon("tools"),
                     command: {
                         command: cmds.openURL,
@@ -20,7 +20,7 @@ export class HelpProvider extends TreeDataProvider {
                         arguments: ["https://registry.terraform.io/providers/tencentcloudstack/tencentcloud/latest"],
                     },
                 }),
-                new TreeItem(localize("TcTerraform.view.help.explorer.doc"), {
+                new TreeItem(localize("TcTerraform.view.help.doc"), {
                     // iconPath: Icons.getIcon("book"),
                     command: {
                         command: cmds.openURL,
@@ -28,7 +28,7 @@ export class HelpProvider extends TreeDataProvider {
                         arguments: ["https://cloud.tencent.com/product/tiat"],
                     },
                 }),
-                new TreeItem(localize("TcTerraform.view.help.explorer.repo"), {
+                new TreeItem(localize("TcTerraform.view.help.repo"), {
                     // iconPath: Icons.getIcon("github"),
                     command: {
                         command: cmds.openURL,

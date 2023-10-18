@@ -1,19 +1,18 @@
 import { commands } from "vscode";
-import { registerCommands, command as _command } from "./commands";
+import { registerLoginCmds, command as _command } from "./commands";
 
 import _user from "./user";
 import _tree from "./treeDataProvider";
 
-export async function registerTencent() {
-    registerCommands();
-
+export async function regTencentCommands() {
+    registerLoginCmds();
     await initialization();
 }
 
 async function initialization() {
     commands.executeCommand(
         "setContext",
-        "tencent.login",
+        "TcTerraform.login",
         !!(await _user.getInfo())
     );
 }

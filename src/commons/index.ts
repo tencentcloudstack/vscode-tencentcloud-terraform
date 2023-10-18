@@ -1,13 +1,12 @@
 import * as customerCmd from "./customCmdRegister";
-import { registerTencent } from "./tencent";
+import { regTencentCommands } from "./tencent";
 export { tencent } from "./tencent";
 export * from "./container";
 export * from "./context";
 export { cmds } from "./customCmdRegister";
 
-export function registerCommon() {
-    registerTencent();
+export function registerExternelCommands() {
+    regTencentCommands();
     customerCmd.regHelpCommands();
     customerCmd.regResourceRelatedCommands();
-
 }

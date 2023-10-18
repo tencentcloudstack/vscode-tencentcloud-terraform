@@ -35,8 +35,15 @@ export async function getTkeClient(): Promise<TkeClient> {
 }
 
 export async function getCvmClient(region?: string): Promise<CvmClient> {
-    const secretId = process.env.TENCENTCLOUD_SECRET_ID;
-    const secretKey = process.env.TENCENTCLOUD_SECRET_KEY;
+    const config = vscode.workspace.getConfiguration();
+    const secretId = String(config.get('tcTerraform.properties.secretId'));
+    const secretKey = String(config.get('tcTerraform.properties.secretKey'));
+
+    vscode.window.showInformationMessage('Get Secret ID: ' + secretId);
+    vscode.window.showInformationMessage('Get Secret KEY: ' + secretKey);
+
+    // const secretId = process.env.TENCENTCLOUD_SECRET_ID;
+    // const secretKey = process.env.TENCENTCLOUD_SECRET_KEY;
 
     if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null) {
         vscode.window.showErrorMessage("Cannot find TENCENTCLOUD_SECRET_ID and TENCENTCLOUD_SECRET_KEY, please set them first!");

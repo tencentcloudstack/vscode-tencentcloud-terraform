@@ -8,7 +8,7 @@ import { terraformShellManager } from "./client/terminal/terraformShellManager";
 import { DialogOption } from "./utils/uiUtils";
 import { TerraformCompletionProvider } from './autocomplete/TerraformCompletionProvider';
 import { TerraformDefinitionProvider } from './autocomplete/TerraformDefinitionProvider';
-import { registerCommon } from './commons';
+import { registerExternelCommands } from './commons';
 import { registerView } from './views';
 import { TerraformRunner } from './client/runner/terraformRunner';
 import { TerraformerRunner } from './client/runner/terraformerRunner';
@@ -121,7 +121,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // import-resource
     console.log('activate the import feature');
     init(context.extensionPath);
-    registerCommon();
+    registerExternelCommands();
     registerView();
 }
 
