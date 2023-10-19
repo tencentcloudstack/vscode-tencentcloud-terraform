@@ -1,8 +1,7 @@
 import { ThemeIcon } from "vscode";
 import { localize } from "vscode-nls-i18n";
 
-import { container, tencent, cmds} from "../../commons";
-import { Icons } from "../../utils/icons";
+import { container, tencent, cmds } from "../../commons";
 
 const { tree } = tencent;
 

@@ -195,6 +195,15 @@
         "configuration": {
             "title": "TencentCloud Terraform",
             "properties": {
+                "tcTerraform.terminal": {
+                    "type": "string",
+                    "default": "integrated",
+                    "enum": [
+                        "integrated",
+                        "cloudshell"
+                    ],
+                    "description": "Specifies terminal used to run Terraform commands. Valid settings are `cloudshell` or `integrated`."
+                },
                 "tcTerraform.properties.secretId": {
                     "type": "string",
                     "default": "your_secretid",
@@ -204,15 +213,6 @@
                     "type": "string",
                     "default": "your_secretkey",
                     "description": "Input your Tencent Cloud secret key."
-                },
-                "tcTerraform.terminal": {
-                    "type": "string",
-                    "default": "integrated",
-                    "enum": [
-                        "integrated",
-                        "cloudshell"
-                    ],
-                    "description": "Specifies terminal used to run Terraform commands. Valid settings are `cloudshell` or `integrated`."
                 },
                 "tcTerraform.checkTerraformCmd": {
                     "type": "boolean",

@@ -49,7 +49,7 @@ export function regResourceRelatedCommands() {
         terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).plan(param);
     });
 
-    commands.registerCommand(cmds.resourceRefresh, function (param: any) {
+    commands.registerCommand(resourceRefresh, function (param: any) {
         tree.refreshTreeData();
     });
 }

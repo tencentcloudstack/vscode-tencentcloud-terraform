@@ -1,13 +1,12 @@
 import { localize } from "vscode-nls-i18n";
 import { ExtensionContext, workspace, ConfigurationTarget, window } from "vscode";
-import { terraformShellManager } from "../../../client/terminal/terraformShellManager";
-import { AbstractClient } from "tencentcloud-sdk-nodejs/tencentcloud/common/abstract_client";
-import { Credential } from "tencentcloud-sdk-nodejs/tencentcloud/common/interface";
 
 import { container } from "../../container";
 import { Context } from "../../context";
 import { tree } from "../treeDataProvider";
 import { getCredentailByInput } from "./auth";
+import { LoginProvider } from "../../../views/login/loginExplorer";
+import { terraformShellManager } from "../../../client/terminal/terraformShellManager";
 
 export namespace user {
     interface UserInfo {
@@ -39,13 +38,11 @@ export namespace user {
             // set in vscode configuration(setting.json)
             config.update('tcTerraform.properties.secretId', accessKey, ConfigurationTarget.Global)
                 .then(() => {
-                    window.showInformationMessage('设置secretId成功');
                 }, (error) => {
                     window.showErrorMessage('设置secretId失败: ' + error);
                 });
             config.update('tcTerraform.properties.secretKey', secretKey, ConfigurationTarget.Global)
                 .then(() => {
-                    window.showInformationMessage('设置secretKey成功');
                 }, (error) => {
                     window.showErrorMessage('设置secretKey失败: ' + error);
                 });
@@ -53,6 +50,9 @@ export namespace user {
             // set in system environment
             process.env.TENCENTCLOUD_SECRET_ID = accessKey;
             process.env.TENCENTCLOUD_SECRET_KEY = secretKey;
+
+            terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_ID=" + accessKey);
+            terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_KEY=" + secretKey);
 
             tree.refreshTreeData();
             window.showInformationMessage(localize("TcTerraform.login.success"));

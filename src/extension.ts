@@ -13,6 +13,7 @@ import { registerView } from './views';
 import { TerraformRunner } from './client/runner/terraformRunner';
 import { TerraformerRunner } from './client/runner/terraformerRunner';
 import { GitUtils } from './utils/gitUtils';
+import { bindExtensionContext } from "./commons";
 import _ from 'lodash';
 
 const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' };
@@ -21,6 +22,7 @@ const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' }
 // Your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "TencentCloud Terraform" is now active!');
+    bindExtensionContext(context);
 
     await TerraformRunner.getInstance().checkInstalled();
     await TerraformerRunner.getInstance().checkInstalled();
@@ -36,6 +38,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // });
 
     // context.subscriptions.push(disposableLogin);
+
     // terraform cmd
     context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.init', () => {
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Init);

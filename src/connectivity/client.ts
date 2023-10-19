@@ -36,7 +36,6 @@ export async function getTkeClient(): Promise<TkeClient> {
 }
 
 export async function getCvmClient(region?: string): Promise<CvmClient> {
-    const config = vscode.workspace.getConfiguration();
     const secretIdConfig = utils.getSecretIdFromUI();
     const secretKeyConfig = utils.getSecretKeyFromUI();
     const secretIdEnv = utils.getSecretIdFromEnv();
