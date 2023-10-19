@@ -34,10 +34,9 @@ export namespace user {
             const accessKey = credential.secretId;
             const secretKey = credential.secretKey;
 
-            // 获取当前的配置对象
+            // get configuration
             const config = workspace.getConfiguration();
-
-            // 将 const 值设置到指定的环境变量中
+            // set in vscode configuration(setting.json)
             config.update('tcTerraform.properties.secretId', accessKey, ConfigurationTarget.Global)
                 .then(() => {
                     window.showInformationMessage('设置secretId成功');
@@ -51,9 +50,12 @@ export namespace user {
                     window.showErrorMessage('设置secretKey失败: ' + error);
                 });
 
-            // terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_ID=" + accessKey);
-            // terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_KEY=" + secretKey);
-            // aksk === pick ? await getCredentailByInput() : await getCredentailByOAuth();
+            // set in system environment
+            process.env.TENCENTCLOUD_SECRET_ID = accessKey;
+            process.env.TENCENTCLOUD_SECRET_KEY = secretKey;
+
+            tree.refreshTreeData();
+            window.showInformationMessage(localize("TcTerraform.login.success"));
         }
     }
 

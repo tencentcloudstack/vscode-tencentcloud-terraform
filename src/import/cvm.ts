@@ -1,10 +1,9 @@
 "use strict";
 
-import * as vscode from "vscode";
 import * as client from "../connectivity/client";
 import { Instance } from "tencentcloud-sdk-nodejs-cvm/tencentcloud/services/cvm/v20170312/cvm_models";
 import { ITencentCloudAPI } from "../commons/tencent/sdkApi";
-import { error } from "console";
+import { window } from "vscode";
 
 export class CvmService implements ITencentCloudAPI {
     async getConfig(params?: any): Promise<any> {
@@ -32,7 +31,8 @@ export class CvmService implements ITencentCloudAPI {
                 return result.InstanceSet;
             },
             (err) => {
-                console.error('[Error] DescribeInstances got a error from SDK.', err.message);
+                console.error('[TencentCloudSDKError] DescribeInstances got a error from SDK.', err.message);
+                window.showErrorMessage('[TencentCloudSDKError] ' + err.message);
                 return err;
             }
         );

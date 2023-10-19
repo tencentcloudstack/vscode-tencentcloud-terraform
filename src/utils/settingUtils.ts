@@ -28,11 +28,19 @@ export function getSecretKeyCmd(): string {
 }
 
 export function getSecretIdFromUI(): string {
-    return vscode.workspace.getConfiguration().get("tcTerraform.secretid");
+    return vscode.workspace.getConfiguration().get("tcTerraform.properties.secretId");
 }
 
 export function getSecretKeyFromUI(): string {
-    return vscode.workspace.getConfiguration().get("tcTerraform.secretkey");
+    return vscode.workspace.getConfiguration().get("tcTerraform.properties.secretKey");
+}
+
+export function getSecretIdFromEnv(): string {
+    return process.env.TENCENTCLOUD_SECRET_ID;
+}
+
+export function getSecretKeyFromEnv(): string {
+    return process.env.TENCENTCLOUD_SECRET_KEY;
 }
 
 export function getCheckTCCLI(): boolean {

@@ -1,9 +1,10 @@
 "use strict";
 
 import * as vscode from "vscode";
-// import * as tencentcloud from "tencentcloud-sdk-nodejs-cvm";
 import { Client as CvmClient } from "tencentcloud-sdk-nodejs-cvm/tencentcloud/services/cvm/v20170312/cvm_client";
 import { Client as TkeClient } from "tencentcloud-sdk-nodejs-tke/tencentcloud/services/tke/v20180525/tke_client";
+import { localize } from "vscode-nls-i18n";
+import * as utils from "../utils/settingUtils";
 
 const tkeClient = TkeClient;
 const cvmClient = CvmClient;
@@ -36,17 +37,17 @@ export async function getTkeClient(): Promise<TkeClient> {
 
 export async function getCvmClient(region?: string): Promise<CvmClient> {
     const config = vscode.workspace.getConfiguration();
-    const secretId = String(config.get('tcTerraform.properties.secretId'));
-    const secretKey = String(config.get('tcTerraform.properties.secretKey'));
+    const secretIdConfig = utils.getSecretIdFromUI();
+    const secretKeyConfig = utils.getSecretKeyFromUI();
+    const secretIdEnv = utils.getSecretIdFromEnv();
+    const secretKeyEnv = utils.getSecretKeyFromEnv();
 
-    vscode.window.showInformationMessage('Get Secret ID: ' + secretId);
-    vscode.window.showInformationMessage('Get Secret KEY: ' + secretKey);
-
-    // const secretId = process.env.TENCENTCLOUD_SECRET_ID;
-    // const secretKey = process.env.TENCENTCLOUD_SECRET_KEY;
+    const secretId = (secretIdEnv === undefined) ? secretIdConfig : secretIdEnv;
+    const secretKey = (secretKeyEnv === undefined) ? secretKeyConfig : secretKeyEnv;
 
     if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null) {
-        vscode.window.showErrorMessage("Cannot find TENCENTCLOUD_SECRET_ID and TENCENTCLOUD_SECRET_KEY, please set them first!");
+        let msg = localize("TcTerraform.msg.aksk.notfound");
+        vscode.window.showErrorMessage(msg);
         return null;
     }
 
