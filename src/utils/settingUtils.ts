@@ -35,6 +35,15 @@ export function getSecretKeyFromUI(): string {
     return vscode.workspace.getConfiguration().get("tcTerraform.properties.secretKey");
 }
 
+export function getAKSK(): [string, string] {
+    const secretIdConfig = getSecretIdFromUI();
+    const secretKeyConfig = getSecretKeyFromUI();
+    const secretIdEnv = getSecretIdFromEnv();
+    const secretKeyEnv = getSecretKeyFromEnv();
+
+    return [secretIdEnv ?? secretIdConfig, secretKeyEnv ?? secretKeyConfig];
+}
+
 export function getSecretIdFromEnv(): string {
     return process.env.TENCENTCLOUD_SECRET_ID;
 }

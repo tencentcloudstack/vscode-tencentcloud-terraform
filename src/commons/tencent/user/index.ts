@@ -51,9 +51,6 @@ export namespace user {
             process.env.TENCENTCLOUD_SECRET_ID = accessKey;
             process.env.TENCENTCLOUD_SECRET_KEY = secretKey;
 
-            terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_ID=" + accessKey);
-            terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_KEY=" + secretKey);
-
             tree.refreshTreeData();
             window.showInformationMessage(localize("TcTerraform.login.success"));
         }

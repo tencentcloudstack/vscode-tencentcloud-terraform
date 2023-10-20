@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import { Client as CvmClient } from "tencentcloud-sdk-nodejs-cvm/tencentcloud/services/cvm/v20170312/cvm_client";
 import { Client as TkeClient } from "tencentcloud-sdk-nodejs-tke/tencentcloud/services/tke/v20180525/tke_client";
 import { localize } from "vscode-nls-i18n";
-import * as utils from "../utils/settingUtils";
+import * as settingUtils from "../utils/settingUtils";
 
 const tkeClient = TkeClient;
 const cvmClient = CvmClient;
@@ -36,13 +36,43 @@ export async function getTkeClient(): Promise<TkeClient> {
 }
 
 export async function getCvmClient(region?: string): Promise<CvmClient> {
-    const secretIdConfig = utils.getSecretIdFromUI();
-    const secretKeyConfig = utils.getSecretKeyFromUI();
-    const secretIdEnv = utils.getSecretIdFromEnv();
-    const secretKeyEnv = utils.getSecretKeyFromEnv();
+    // const secretIdConfig = utils.getSecretIdFromUI();
+    // const secretKeyConfig = utils.getSecretKeyFromUI();
+    // const secretIdEnv = utils.getSecretIdFromEnv();
+    // const secretKeyEnv = utils.getSecretKeyFromEnv();
 
-    const secretId = (secretIdEnv === undefined) ? secretIdConfig : secretIdEnv;
-    const secretKey = (secretKeyEnv === undefined) ? secretKeyConfig : secretKeyEnv;
+    // const secretId = (secretIdEnv === undefined) ? secretIdConfig : secretIdEnv;
+    // const secretKey = (secretKeyEnv === undefined) ? secretKeyConfig : secretKeyEnv;
+    const [secretId, secretKey] = settingUtils.getAKSK();
+
+    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null) {
+        let msg = localize("TcTerraform.msg.aksk.notfound");
+        vscode.window.showErrorMessage(msg);
+        return null;
+    }
+
+    return new CvmClient({
+        credential: {
+            secretId: secretId,
+            secretKey: secretKey,
+        },
+        // 产品地域
+        region: (process.env.TENCENTCLOUD_REGION === undefined) ?
+            "ap-guangzhou" : process.env.TENCENTCLOUD_REGION,
+        // 可选配置实例
+        profile: {
+            // signMethod: "TC3-HMAC-SHA256", // 签名方法
+            httpProfile: {
+                reqMethod: "POST", // 请求方法
+                // reqTimeout: 60, // 请求超时时间，默认60s
+                endpoint: "cvm.tencentcloudapi.com",
+            },
+        },
+    })
+}
+
+export async function getStsClient(region?: string): Promise<CvmClient> {
+    const [secretId, secretKey] = settingUtils.getAKSK();
 
     if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null) {
         let msg = localize("TcTerraform.msg.aksk.notfound");

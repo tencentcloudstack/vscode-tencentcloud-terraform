@@ -39,15 +39,9 @@
         "onCommand:tcTerraform.init",
         "onCommand:tcTerraform.plan",
         "onCommand:tcTerraform.apply",
-        "onCommand:tcTerraform.import",
-        "onCommand:tcTerraform.validate",
         "onCommand:tcTerraform.refresh",
         "onCommand:tcTerraform.destroy",
-        "onCommand:tcTerraform.visualize",
-        "onCommand:tcTerraform.test",
-        "onCommand:tcTerraform.push",
         "onCommand:tcTerraformer.import",
-        "onCommand:tcTerraformer.plan",
         "workspaceContains:**/*.tf",
         "onLanguage:terraform"
     ],
@@ -120,7 +114,8 @@
         "commands": [
             {
                 "command": "tcTerraform.login",
-                "title": "%TcTerraform.view.login.welcome%"
+                "title": "Login: %TcTerraform.view.login.welcome%",
+                "category": "TencentCloud Terraform"
             },
             {
                 "command": "tcTerraform.resourcesExplorer.refresh",

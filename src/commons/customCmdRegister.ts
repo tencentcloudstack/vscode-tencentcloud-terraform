@@ -45,6 +45,10 @@ export function regResourceRelatedCommands() {
         terraformShellManager.getIntegratedShell(TerraformerRunner.getInstance()).import(param, param.fileName);
     });
 
+    commands.registerCommand("tcTerraform.init", function (param: any) {
+        terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).init();
+    });
+
     commands.registerCommand("tcTerraform.plan", function (param: any) {
         terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).plan(param);
     });
