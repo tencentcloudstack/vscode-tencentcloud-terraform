@@ -29,6 +29,9 @@
         "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
         // "noUnusedParameters": true,  /* Report errors on unused parameters. */
     },
+    "exclude": [
+        "tool"
+    ],
     "ts-node": {
         "require": [
             "tsconfig-paths/register"
