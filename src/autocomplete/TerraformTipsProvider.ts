@@ -1,5 +1,5 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionItemKind } from "vscode";
-import resources from '../../config/snippets/tiat-resources.json';
+import resources from '../../config/tips/tiat-resources.json';
 import * as _ from "lodash";
 
 var topLevelTypes = ["output", "provider", "resource", "variable", "data"];
@@ -10,7 +10,7 @@ var topLevelRegexes = topLevelTypes.map(o => {
     };
 });
 
-export class TerraformCompletionProvider implements CompletionItemProvider {
+export class TerraformTipsProvider implements CompletionItemProvider {
     document: TextDocument;
     position: Position;
     token: CancellationToken;
@@ -30,7 +30,7 @@ export class TerraformCompletionProvider implements CompletionItemProvider {
         }
 
         // Are we trying to type a variable?
-        if (this.isTypingVariable(lineTillCurrentPosition)) {
+        if (this.isTypingTfCode(lineTillCurrentPosition)) {
             // These variables should always just have 3 parts, resource type, resource name, exported field
             var varString = this.getVariableString(lineTillCurrentPosition);
             var parts = varString.split(".");
@@ -73,7 +73,6 @@ export class TerraformCompletionProvider implements CompletionItemProvider {
         }
 
         // Are we trying to type a parameter to a resource?
-
         let possibleResources = this.checkTopLevelResource(lineTillCurrentPosition);
         if (possibleResources.length > 0) {
             return this.getHintsForStrings(possibleResources);
@@ -86,8 +85,8 @@ export class TerraformCompletionProvider implements CompletionItemProvider {
             if (parentType && parentType.type === "resource") {
                 let resourceType = this.getResourceTypeFromLine(line);
                 let ret = this.getItemsForArgs(resources[resourceType].args, resourceType);
-                return ret;            
-            } 
+                return ret;
+            }
             else if (parentType && parentType.type !== "resource") {
                 // We don't want to accidentally include some other containers stuff
                 return [];
@@ -98,7 +97,7 @@ export class TerraformCompletionProvider implements CompletionItemProvider {
     }
 
     getNamesForResourceType(document: TextDocument, resourceType: string): string[] {
-        var r = new RegExp('resource "' + resourceType +'" "([a-zA-Z0-9\-_]+)"');
+        var r = new RegExp('resource "' + resourceType + '" "([a-zA-Z0-9\-_]+)"');
         var found = [];
         for (var i = 0; i < document.lineCount; i++) {
             var line = document.lineAt(i).text;
@@ -127,7 +126,7 @@ export class TerraformCompletionProvider implements CompletionItemProvider {
     }
 
     isTopLevelType(line: string): boolean {
-        for (var i=0; i<topLevelTypes.length; i++) {
+        for (var i = 0; i < topLevelTypes.length; i++) {
             var resourceType = topLevelTypes[i];
             if (resourceType.indexOf(line) === 0) {
                 return true;
@@ -137,7 +136,7 @@ export class TerraformCompletionProvider implements CompletionItemProvider {
     }
 
     getTopLevelType(line: string): CompletionItem[] {
-        for (var i=0; i<topLevelTypes.length; i++) {
+        for (var i = 0; i < topLevelTypes.length; i++) {
             var resourceType = topLevelTypes[i];
             if (resourceType.indexOf(line) === 0) {
                 return [new CompletionItem(resourceType, CompletionItemKind.Enum)];
@@ -146,7 +145,7 @@ export class TerraformCompletionProvider implements CompletionItemProvider {
         return [];
     }
 
-    isTypingVariable(line: string): boolean {
+    isTypingTfCode(line: string): boolean {
         var r = /\$\{[0-9a-zA-Z_\.\-]*$/;
         return r.test(line);
     }
@@ -182,7 +181,7 @@ export class TerraformCompletionProvider implements CompletionItemProvider {
         });
     }
 
-    getParentType(line: string): boolean|any {
+    getParentType(line: string): boolean | any {
         for (var i = 0; i < topLevelRegexes.length; i++) {
             let tl = topLevelRegexes[i];
             if (tl.regex.test(line)) {

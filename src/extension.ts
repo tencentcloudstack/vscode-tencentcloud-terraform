@@ -6,14 +6,13 @@ import { init } from "vscode-nls-i18n";
 import { TerraformCommand, TerraformerCommand } from "./commons/customCmdRegister";
 import { terraformShellManager } from "./client/terminal/terraformShellManager";
 import { DialogOption } from "./utils/uiUtils";
-import { TerraformCompletionProvider } from './autocomplete/TerraformCompletionProvider';
-import { TerraformDefinitionProvider } from './autocomplete/TerraformDefinitionProvider';
-import { registerExternelCommands } from './commons';
+import { TerraformTipsProvider } from './autocomplete/TerraformTipsProvider';
+import { TerraformResDocProvider } from './autocomplete/TerraformResDocProvider';
+import { registerExternelCommands, bindExtensionContext } from './commons';
 import { registerView } from './views';
 import { TerraformRunner } from './client/runner/terraformRunner';
 import { TerraformerRunner } from './client/runner/terraformerRunner';
 import { GitUtils } from './utils/gitUtils';
-import { bindExtensionContext } from "./commons";
 import _ from 'lodash';
 
 const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' };
@@ -96,8 +95,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
     // auto-complete
     console.log('activate the auto complete(snippets and lint) feature');
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, new TerraformCompletionProvider(), '.'));
-    context.subscriptions.push(vscode.languages.registerDefinitionProvider(TF_MODE, new TerraformDefinitionProvider()));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, new TerraformTipsProvider(), '.'));
+    context.subscriptions.push(vscode.languages.registerDefinitionProvider(TF_MODE, new TerraformResDocProvider()));
 
     // import-resource
     console.log('activate the import feature');
@@ -107,4 +106,6 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() { }
+export function deactivate() {
+    /* TODO document why this function 'deactivate' is empty */
+}

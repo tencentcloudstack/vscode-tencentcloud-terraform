@@ -1,8 +1,0 @@
-{
-    "tencentcloud_instance": "https://www.terraform.io/docs/providers/tencentcloud/r/instance.html",
-    "tencentcloud_kubernetes_node_pool": "https://www.terraform.io/docs/providers/tencentcloud/r/kubernetes_node_pool.html",
-    "tencentcloud_kubernetes_scale_worker": "https://www.terraform.io/docs/providers/tencentcloud/r/kubernetes_scale_worker.html",
-    "tencentcloud_redis_instance": "https://www.terraform.io/docs/providers/tencentcloud/r/redis_instance.html",
-    "tencentcloud_mysql_instance": "https://www.terraform.io/docs/providers/tencentcloud/r/mysql_instance.html",
-    "tencentcloud_kubernetes_cluster": "https://www.terraform.io/docs/providers/tencentcloud/r/kubernetes_cluster.html"
-}
