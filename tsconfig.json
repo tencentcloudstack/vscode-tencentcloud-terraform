@@ -3,7 +3,7 @@
         "experimentalDecorators": true,
         // "module": "commonjs",
         "module": "NodeNext",
-        "moduleResolution": "node",
+        "moduleResolution": "NodeNext",
         "target": "ES2020",
         "outDir": "./out",
         "resolveJsonModule": true,
@@ -29,6 +29,9 @@
         "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
         // "noUnusedParameters": true,  /* Report errors on unused parameters. */
     },
+    "exclude": [
+        "tool"
+    ],
     "ts-node": {
         "require": [
             "tsconfig-paths/register"
