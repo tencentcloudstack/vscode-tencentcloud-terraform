@@ -9,7 +9,7 @@ export abstract class BaseRunner {
     public tfExecutor: any;
 
     constructor() {
-        this.init();
+        // this.init();
     }
 
     public abstract init(): void;

@@ -8,5 +8,4 @@
 export class Constants {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     public static TerraformTerminalName = "TIAT-Terraform";
-
 }

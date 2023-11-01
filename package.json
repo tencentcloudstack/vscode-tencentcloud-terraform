@@ -39,19 +39,22 @@
         "onCommand:tcTerraform.init",
         "onCommand:tcTerraform.plan",
         "onCommand:tcTerraform.apply",
-        "onCommand:tcTerraform.import",
-        "onCommand:tcTerraform.validate",
         "onCommand:tcTerraform.refresh",
         "onCommand:tcTerraform.destroy",
-        "onCommand:tcTerraform.visualize",
-        "onCommand:tcTerraform.test",
-        "onCommand:tcTerraform.push",
         "onCommand:tcTerraformer.import",
-        "onCommand:tcTerraformer.plan",
         "workspaceContains:**/*.tf",
         "onLanguage:terraform"
     ],
     "contributes": {
+        "menus": {
+            "view/title": [
+                {
+                    "command": "tcTerraform.resourcesExplorer.refresh",
+                    "when": "view == tcTerraform.resourcesExplorer.cvm",
+                    "group": "navigation"
+                }
+            ]
+        },
         "viewsContainers": {
             "activitybar": [
                 {
@@ -65,24 +68,34 @@
         "views": {
             "tc-terraform-resources": [
                 {
-                    "id": "tcTerraform.sessionExplorer",
-                    "name": "%TcTerraform.view.session.explorer%",
+                    "id": "tcTerraform.loginExplorer",
+                    "name": "%TcTerraform.view.login%",
                     "contextualTitle": "Session Explorer",
                     "visibility": "collapsed"
                 },
                 {
                     "id": "tcTerraform.resourcesExplorer.cvm",
-                    "name": "%TcTerraform.view.resource.explorer.cvm%",
+                    "name": "%TcTerraform.view.resource.cvm%",
                     "contextualTitle": "Resources Explorer",
                     "visibility": "collapsed"
                 },
                 {
                     "id": "tcTerraform.helpExplorer",
-                    "name": "%TcTerraform.view.help.explorer%",
+                    "name": "%TcTerraform.view.help%",
                     "visibility": "collapsed"
                 }
             ]
         },
+        "viewsWelcome": [
+            {
+                "view": "tcTerraform.loginExplorer",
+                "contents": "%TcTerraform.view.login.welcome%"
+            },
+            {
+                "view": "tcTerraform.resourcesExplorer.cvm",
+                "contents": "%TcTerraform.view.login.welcome%"
+            }
+        ],
         "languages": [
             {
                 "id": "terraform",
@@ -101,8 +114,16 @@
         "commands": [
             {
                 "command": "tcTerraform.login",
-                "title": "Login",
+                "title": "Login: %TcTerraform.view.login.welcome%",
                 "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraform.resourcesExplorer.refresh",
+                "title": "%TcTerraform.refresh%",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
             },
             {
                 "command": "tcTerraform.init",
@@ -178,6 +199,16 @@
                     ],
                     "description": "Specifies terminal used to run Terraform commands. Valid settings are `cloudshell` or `integrated`."
                 },
+                "tcTerraform.properties.secretId": {
+                    "type": "string",
+                    "default": "your_secretid",
+                    "description": "Input your Tencent Cloud secret Id."
+                },
+                "tcTerraform.properties.secretKey": {
+                    "type": "string",
+                    "default": "your_secretkey",
+                    "description": "Input your Tencent Cloud secret key."
+                },
                 "tcTerraform.checkTerraformCmd": {
                     "type": "boolean",
                     "default": "true",
@@ -192,26 +223,6 @@
                     "type": "boolean",
                     "default": "true",
                     "description": "Specifies whether or not TCCLI installed in the PATH."
-                },
-                "tcTerraform.secretid.cmd": {
-                    "type": "string",
-                    "default": "tccli configure list | grep 'secretId'",
-                    "description": "Indicates how to get the secretid."
-                },
-                "tcTerraform.secretkey.cmd": {
-                    "type": "string",
-                    "default": "tccli configure list | grep 'secretKey'",
-                    "description": "Indicates how to get the secretkey."
-                },
-                "tcTerraform.secretid": {
-                    "type": "string",
-                    "default": "your_secretid",
-                    "description": "Input your tencentcloud secret key id."
-                },
-                "tcTerraform.secretkey": {
-                    "type": "string",
-                    "default": "your_secretkey",
-                    "description": "Input your tencentcloud secret key."
                 },
                 "tcTerraform.test.path": {
                     "type": "string",

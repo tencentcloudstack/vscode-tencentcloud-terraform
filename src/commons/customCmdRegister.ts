@@ -3,6 +3,7 @@ import { commands, env, Uri } from "vscode";
 import { terraformShellManager } from "../client/terminal/terraformShellManager";
 import { TerraformerRunner } from "../client/runner/terraformerRunner";
 import { TerraformRunner } from "../client/runner/terraformRunner";
+import { tree } from "./tencent/treeDataProvider";
 
 "use strict";
 
@@ -31,6 +32,7 @@ export enum TcCliCommand {
 const openURL = "tcTerraform.openurl";
 const executeTfImport = TerraformCommand.Import;
 const executeTferImport = TerraformerCommand.Import;
+const resourceRefresh = "tcTerraform.resourcesExplorer.refresh";
 
 export function regHelpCommands() {
     commands.registerCommand(cmds.openURL, function (url: string) {
@@ -40,18 +42,25 @@ export function regHelpCommands() {
 
 export function regResourceRelatedCommands() {
     commands.registerCommand(cmds.executeTferImport, function (param: any) {
-        // terraformShellManager.getShell().runTerraformCmd(importObject);
         terraformShellManager.getIntegratedShell(TerraformerRunner.getInstance()).import(param, param.fileName);
     });
 
+    commands.registerCommand("tcTerraform.init", function (param: any) {
+        terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).init();
+    });
+
     commands.registerCommand("tcTerraform.plan", function (param: any) {
-        // terraformShellManager.getShell().runTerraformCmd(importObject);
         terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).plan(param);
+    });
+
+    commands.registerCommand(resourceRefresh, function (param: any) {
+        tree.refreshTreeData();
     });
 }
 
 export const cmds = {
     openURL,
     executeTfImport,
-    executeTferImport
+    executeTferImport,
+    resourceRefresh
 };

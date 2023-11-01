@@ -28,9 +28,9 @@ class TerraformShellManager implements ITerraformShellManager {
 
         TelemetryWrapper.addContextProperty("isCloudShell", isCloudShell.toString());
         if (isCloudShell) {
-            return TerraformShellManager.cloudShell;
+            return this.getCloudShell();
         }
-        return TerraformShellManager.integratedShell;
+        return this.getIntegratedShell();
     }
 
     public getCloudShell(): TencentCloudShell {
@@ -39,14 +39,13 @@ class TerraformShellManager implements ITerraformShellManager {
 
     public getIntegratedShell(runner?: any): IntegratedShell {
         if (!TerraformShellManager.integratedShell) {
+            // default runner is Terraformer
+            TerraformShellManager.integratedShell = new IntegratedShell(TerraformerRunner.getInstance());
+            // specify runner
             if (runner) {
                 TerraformShellManager.integratedShell = new IntegratedShell(runner);
-            } else {
-                // default runner is Terraformer
-                TerraformShellManager.integratedShell = new IntegratedShell(TerraformerRunner.getInstance());
             }
         }
-
         return TerraformShellManager.integratedShell;
     }
 

@@ -129,6 +129,24 @@ export class IntegratedShell extends BaseShell {
         await commands.executeCommand("vscode.open", Uri.file(tfFile), ViewColumn.Active || ViewColumn.One);
     }
 
+    // run terraform init command
+    public async init(params?: any): Promise<void> {
+        console.debug("[DEBUG]#### IntegratedShell init begin. params:[%v]", params);
+
+        await this.runner.checkInstalled();
+        if (this.runner instanceof TerraformRunner) {
+
+            const cwd: string = await selectWorkspaceFolder();
+            if (!cwd) {
+                TelemetryWrapper.sendError(Error("noWorkspaceSelected"));
+                return;
+            }
+
+            const result = await this.runner.init();
+            console.debug("[DEBUG]#### Executed init. result:[%s]", result);
+        }
+    }
+
     // run terraform plan command
     public async plan(params: any): Promise<void> {
         console.debug("[DEBUG]#### IntegratedShell plan begin. params:[%v]", params);

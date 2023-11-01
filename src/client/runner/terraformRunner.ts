@@ -29,21 +29,24 @@ export class TerraformRunner extends BaseRunner {
         return TerraformRunner.ins;
     }
 
-    public init(): void {
-        // throw new Error("Method not implemented.");
+    public async init(): Promise<any> {
+        console.debug("[DEBUG]#### TerraformRunner init begin.");
+
+        this.setAKSK();
+
+        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Init);
+
+        return "init success";
     }
 
     public async executePlan(cwd: string, args: any): Promise<string> {
         console.debug("[DEBUG]#### TerraformRunner executePlan begin.");
 
-        const resAddress = `${args.resource.type}.${args.resource.name}`;
+        // this.setAKSK();
 
-        // reset state
-        await this.resetTFState(resAddress);
+        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Plan);
 
-        terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).runTerraformCmd(TerraformCommand.Plan);
-
-        return "";
+        return "plan success";
     }
 
     public async executeShow(cwd: string, args?: any): Promise<string> {
@@ -125,6 +128,12 @@ export class TerraformRunner extends BaseRunner {
         await terraformShellManager.getIntegratedShell(TerraformRunner.getInstance())
             .runTerraformCmd(TerraformCommand.State, ['rm', '-lock=false', resAddress]);
     }
+
+    private setAKSK(runner?: any) {
+        const [ak, sk] = settingUtils.getAKSK();
+        terraformShellManager.getIntegratedShell(runner).runNormalCmd("export TENCENTCLOUD_SECRET_ID=" + ak);
+        terraformShellManager.getIntegratedShell(runner).runNormalCmd("export TENCENTCLOUD_SECRET_KEY=" + sk);
+    }
 }
 
 export function getCheckTerraformCmd(): boolean {
@@ -134,5 +143,3 @@ export function getCheckTerraformCmd(): boolean {
 export function setCheckTerraformCmd(checked: boolean): void {
     vscode.workspace.getConfiguration().update("tcTerraform.checkTerraformCmd", checked);
 }
-
-

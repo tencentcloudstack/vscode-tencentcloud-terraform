@@ -8,11 +8,12 @@ import { terraformShellManager } from "./client/terminal/terraformShellManager";
 import { DialogOption } from "./utils/uiUtils";
 import { TerraformCompletionProvider } from './autocomplete/TerraformCompletionProvider';
 import { TerraformDefinitionProvider } from './autocomplete/TerraformDefinitionProvider';
-import { registerCommon } from './commons';
+import { registerExternelCommands } from './commons';
 import { registerView } from './views';
 import { TerraformRunner } from './client/runner/terraformRunner';
 import { TerraformerRunner } from './client/runner/terraformerRunner';
 import { GitUtils } from './utils/gitUtils';
+import { bindExtensionContext } from "./commons";
 import _ from 'lodash';
 
 const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' };
@@ -21,38 +22,12 @@ const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' }
 // Your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "TencentCloud Terraform" is now active!');
+    bindExtensionContext(context);
 
     await TerraformRunner.getInstance().checkInstalled();
     await TerraformerRunner.getInstance().checkInstalled();
 
-    let disposableLogin = vscode.commands.registerCommand('tcTerraform.login', async () => {
-        // to-do
-        // wait for cloudshell and tccli implement ready
-        let accessKey = settingUtils.getSecretIdFromUI();
-        let secretKey = settingUtils.getSecretKeyFromUI();
-
-        // process.env.TENCENTCLOUD_SECRET_ID=accessKey;
-        // process.env.TENCENTCLOUD_SECRET_KEY=secretKey;
-
-        // console.log("TENCENTCLOUD_SECRET_ID:", process.env.TENCENTCLOUD_SECRET_ID);
-        // console.log("TENCENTCLOUD_SECRET_KEY:", process.env.TENCENTCLOUD_SECRET_KEY);
-
-        terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_ID=" + accessKey);
-        terraformShellManager.getShell().runNormalCmd("export TENCENTCLOUD_SECRET_KEY=" + secretKey);
-    });
-
-    context.subscriptions.push(disposableLogin);
     // terraform cmd
-    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.init', () => {
-        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Init);
-    }));
-
-    // move plan to customCmdRegister
-    // context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.plan', () => {
-    //     await terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).plan();
-
-    // }));
-
     context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.apply', () => {
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Apply);
     }));
@@ -127,7 +102,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // import-resource
     console.log('activate the import feature');
     init(context.extensionPath);
-    registerCommon();
+    registerExternelCommands();
     registerView();
 }
 

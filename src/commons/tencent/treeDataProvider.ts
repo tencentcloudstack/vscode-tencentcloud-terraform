@@ -1,11 +1,13 @@
 import { injectable } from "inversify";
 import {
+    window,
     Event,
     EventEmitter,
     TreeDataProvider as BaseTreeDataProvider,
     TreeItem as BaseTreeItem,
 } from "vscode";
 import { container } from "../container";
+import { localize } from "vscode-nls-i18n";
 
 export namespace tree {
     export const TencentTreeProvider = Symbol("TencentTreeProvider");
@@ -15,6 +17,7 @@ export namespace tree {
             container.getAll<TreeDataProvider>(TencentTreeProvider);
 
         treeDataProvider.map((item) => item.refresh());
+        window.showInformationMessage(localize("TcTerraform.refresh.success"));
     }
 
     // @ts-ignore

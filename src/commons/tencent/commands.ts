@@ -1,13 +1,15 @@
 import { commands } from "vscode";
+import user from "./user";
 
-export function registerCommands() {
-//   commands.registerCommand(command.TENCENT_LOGIN, user.login);
+export function registerLoginCmds() {
+    commands.registerCommand(command.TENCENT_LOGIN, user.login);
 
-//   commands.registerCommand(command.TENCENT_LOGINOUT, user.loginOut);
+    //   commands.registerCommand(command.TENCENT_LOGINOUT, user.loginOut);
 }
 
 export namespace command {
-  export const TENCENT_LOGIN = "toolkit.tencent.login";
-  /** 退出登录 */
-  export const TENCENT_LOGINOUT = "toolkit.tencent.loginout";
+    // login command
+    export const TENCENT_LOGIN = "tcTerraform.login";
+    // logout command
+    export const TENCENT_LOGINOUT = "tcTerraform.logout";
 }
