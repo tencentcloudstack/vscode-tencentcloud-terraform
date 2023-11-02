@@ -2,7 +2,7 @@
     "name": "vscode-tencentcloud-terraform",
     "displayName": "Tencent Cloud Terraform",
     "description": "VS Code extension for developing with Terraform on Tencent Cloud",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "license": "MIT",
     "publisher": "Tencent-Cloud",
     "icon": "images/tc-tf-logo.png",
@@ -233,14 +233,19 @@
         }
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
         "pretest": "npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
-        "test": "npm run compile && node ./out/test/runTest.js"
+        "test": "npm run compile && node ./out/test/runTest.js",
+        "vscode:prepublish": "npm run esbuild-base -- --minify",
+        "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+        "esbuild": "npm run esbuild-base -- --sourcemap",
+        "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+        "test-compile": "tsc -p ./"
     },
     "devDependencies": {
+        "@types/cheerio": "^0.22.33",
         "@types/fs-extra": "^11.0.1",
         "@types/glob": "^8.0.1",
         "@types/lodash": "^4.14.191",
@@ -251,14 +256,14 @@
         "@typescript-eslint/eslint-plugin": "^5.49.0",
         "@typescript-eslint/parser": "^5.49.0",
         "@vscode/test-electron": "^2.2.2",
+        "cheerio": "^1.0.0-rc.12",
+        "esbuild": "^0.19.5",
         "eslint": "^8.33.0",
         "glob": "^8.1.0",
         "mocha": "^10.1.0",
         "tsconfig-paths": "^4.2.0",
         "typescript": "^4.9.4",
-        "vscode": "^1.1.34",
-        "@types/cheerio": "^0.22.33",
-        "cheerio": "^1.0.0-rc.12"
+        "vscode": "^1.1.34"
     },
     "dependencies": {
         "@types/jsdom": "^21.1.4",
