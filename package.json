@@ -235,7 +235,7 @@
     "scripts": {
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
-        "package": "vsce package --no-yarn",
+        "package.patch": "vsce package patch --no-yarn",
         "release": "vsce publish --no-yarn",
         "pretest": "npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
