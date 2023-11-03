@@ -6,7 +6,7 @@
     "license": "MIT",
     "publisher": "Tencent-Cloud",
     "icon": "images/tc-tf-logo.png",
-    "main": "./out/src/extension.js",
+    "main": "./out/main.js",
     "type": "commonjs",
     "repository": {
         "type": "git",
@@ -235,6 +235,8 @@
     "scripts": {
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
+        "package": "vsce package --no-yarn",
+        "release": "vsce publish --no-yarn",
         "pretest": "npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
         "test": "npm run compile && node ./out/test/runTest.js",
@@ -256,6 +258,7 @@
         "@typescript-eslint/eslint-plugin": "^5.49.0",
         "@typescript-eslint/parser": "^5.49.0",
         "@vscode/test-electron": "^2.2.2",
+        "@vscode/vsce": "^2.22.0",
         "cheerio": "^1.0.0-rc.12",
         "esbuild": "^0.19.5",
         "eslint": "^8.33.0",
