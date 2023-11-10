@@ -1,6 +1,7 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionItemKind } from "vscode";
 import resources from '../../config/tips/tiat-resources.json';
 import * as _ from "lodash";
+import * as vscode from 'vscode';
 
 var topLevelTypes = ["output", "provider", "resource", "variable", "data"];
 var topLevelRegexes = topLevelTypes.map(o => {
@@ -10,12 +11,18 @@ var topLevelRegexes = topLevelTypes.map(o => {
     };
 });
 
+interface TerraformCompletionContext extends vscode.CompletionContext {
+    resourceType?: string;
+}
+
 export class TerraformTipsProvider implements CompletionItemProvider {
     document: TextDocument;
     position: Position;
     token: CancellationToken;
 
-    public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken): CompletionItem[] {
+
+
+    public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: TerraformCompletionContext): CompletionItem[] {
         this.document = document;
         this.position = position;
         this.token = token;
@@ -48,7 +55,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
             }
             else if (parts.length === 2) {
                 // We're trying to type the resource name
-                var resourceType = parts[0];
+                const resourceType = parts[0];
 
                 // Get a list of all the names for this resource type
                 var names = this.getNamesForResourceType(document, resourceType);
@@ -56,7 +63,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
             }
             else if (parts.length === 3) {
                 // We're trying to type the exported field for the var
-                var resourceType = parts[0];
+                const resourceType = parts[0];
                 var resourceName = parts[1];
                 var attrs = resources[resourceType].attrs;
                 var result = _.map(attrs, o => {
@@ -78,12 +85,30 @@ export class TerraformTipsProvider implements CompletionItemProvider {
             return this.getHintsForStrings(possibleResources);
         }
 
+        // type '='
+        if (lineTillCurrentPosition.endsWith('=') && context.resourceType) {
+
+            // const completionItems: CompletionItem[] = [
+            //     new CompletionItem('Option1', CompletionItemKind.Value),
+            //     new CompletionItem('Option2', CompletionItemKind.Value)
+            // ];
+
+            const match = lineTillCurrentPosition.match(/(\w+)\s*=/);
+            if (match) {
+                // load options
+                const name = match[1];
+                const strs = this.findArgByName(resources[context.resourceType].args, name);
+                return this.packOptionsFormStrings(strs);
+            }
+            return [];
+        }
+
         // Check if we're in a resource definition
         for (var i = position.line - 1; i >= 0; i--) {
             let line = document.lineAt(i).text;
             let parentType = this.getParentType(line);
             if (parentType && parentType.type === "resource") {
-                let resourceType = this.getResourceTypeFromLine(line);
+                const resourceType = this.getResourceTypeFromLine(line);
                 let ret = this.getItemsForArgs(resources[resourceType].args, resourceType);
                 return ret;
             }
@@ -94,6 +119,31 @@ export class TerraformTipsProvider implements CompletionItemProvider {
         }
 
         return [];
+    }
+
+    findResourceType(document: vscode.TextDocument, position: vscode.Position): string | undefined {
+        const resourceRegex = /resource\s+"([^"]+)"\s+"[^"]+"\s+\{/;
+
+        for (let i = position.line - 1; i >= 0; i--) {
+            const line = document.lineAt(i).text;
+            const match = line.match(resourceRegex);
+
+            if (match) {
+                return match[1];
+            }
+        }
+
+        return undefined;
+    }
+
+    packOptionsFormStrings(strings: string[]): CompletionItem[] {
+        return _.map(strings, s => {
+            return new CompletionItem(s, CompletionItemKind.Enum);
+        });
+    }
+
+    findArgByName(args: any, name: string): any {
+        return args.find((arg) => arg.name === name);
     }
 
     getNamesForResourceType(document: TextDocument, resourceType: string): string[] {
@@ -127,7 +177,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
 
     isTopLevelType(line: string): boolean {
         for (var i = 0; i < topLevelTypes.length; i++) {
-            var resourceType = topLevelTypes[i];
+            let resourceType = topLevelTypes[i];
             if (resourceType.indexOf(line) === 0) {
                 return true;
             }
@@ -137,7 +187,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
 
     getTopLevelType(line: string): CompletionItem[] {
         for (var i = 0; i < topLevelTypes.length; i++) {
-            var resourceType = topLevelTypes[i];
+            let resourceType = topLevelTypes[i];
             if (resourceType.indexOf(line) === 0) {
                 return [new CompletionItem(resourceType, CompletionItemKind.Enum)];
             }
@@ -200,9 +250,50 @@ export class TerraformTipsProvider implements CompletionItemProvider {
     getItemsForArgs(args, type) {
         return _.map(args, o => {
             let c = new CompletionItem(`${o.name} (${type})`, CompletionItemKind.Property);
-            c.detail = o.description;
-            c.insertText = o.name;
+            let text = o.name;
+            if (o.default) {
+                text = text + ' = ' + o.default;
+            }
+            let desc = o.description;
+            if (o.options && o.options.length > 0) {
+                let options = "";
+                o.options.prototype.forEach(oo => {
+                    options = options + oo + ',';
+                });
+                desc = 'Optional Values: ' + options;
+            }
+            c.insertText = text;
+            c.detail = desc;
             return c;
         });
     }
+
+    public handleCharacterEvent(event: vscode.TextDocumentChangeEvent) {
+        const activeEditor = vscode.window.activeTextEditor;
+
+        if (!activeEditor || event.document !== activeEditor.document) {
+            return;
+        }
+
+        const changes = event.contentChanges[0];
+        if (changes.text === '=') {
+            const position = activeEditor.selection.active;
+            const resourceType = this.findResourceType(event.document, position);
+
+            if (resourceType) {
+                setTimeout(() => {
+                    const cancellationTokenSource = new vscode.CancellationTokenSource();
+                    const context: TerraformCompletionContext = {
+                        triggerKind: vscode.CompletionTriggerKind.Invoke,
+                        triggerCharacter: undefined,
+                        resourceType,
+                    };
+                    this.provideCompletionItems(event.document, position, cancellationTokenSource.token, context);
+                    vscode.commands.executeCommand('editor.action.triggerSuggest');
+                }, 10);
+            }
+        }
+    }
+
+
 }
