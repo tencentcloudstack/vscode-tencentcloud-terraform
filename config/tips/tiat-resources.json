@@ -16498,7 +16498,12 @@
             },
             {
                 "name": "disable_api_termination",
-                "description": "- (Optional, Bool) Whether the termination protection is enabled. Default is false. If set true, which means that this instance can not be deleted by an API action."
+                "description": "- (Optional, Bool) Whether the termination protection is enabled. Default is false. If set true, which means that this instance can not be deleted by an API action.",
+                "default": false,
+                "options": [
+                    true,
+                    false
+                ]
             },
             {
                 "name": "disable_monitor_service",
