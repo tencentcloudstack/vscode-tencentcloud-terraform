@@ -1,32 +1,29 @@
 name: pr-check
 on:
-  pull_request:
-    paths:
-      - '**.yml'
-      - 'src/**'
-      - 'config/**'
-permissions: write-all
+    pull_request:
+        paths:
+            - "**.yml"
+            - "src/**"
+            - "config/**"
+            - "resource/**"
+            - "package.json"
 
 jobs:
-  pr-check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - run: echo "ok"
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-      - name: Install the vsce npm package
-        run: |
-          npm install
-          npm install -g vsce
-      - name: Run headless test
-        uses: coactions/setup-xvfb@v1
-        if: runner.os == 'Linux'
-        with:
-          run: xvfb-run -a npm test
-      - name: Run test
-        run: npm test
-        if: runner.os != 'Linux'
+    pr-check:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Install Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16.x
+            - run: npm install
+            - name: Run headless test
+              uses: coactions/setup-xvfb@v1
+              if: runner.os == 'Linux'
+              with:
+                  run: xvfb-run -a npm test
+            - name: Run test
+              run: npm test
+              if: runner.os != 'Linux'

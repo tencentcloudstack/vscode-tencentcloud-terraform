@@ -1,0 +1,51 @@
+name: pre-release-tag
+on:
+    pull_request:
+        paths:
+            - "**.yml"
+            - "src/**"
+            - "config/**"
+            - "resource/**"
+            - "package.json"
+        types:
+            - labeled
+
+jobs:
+    pre-release-tag:
+        if: ${{ github.event.label.name == 'pre-release' }}
+        permissions:
+            contents: write
+        runs-on: ubuntu-latest
+        environment: RELEASE_ENV
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Install Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16.x
+            - run: npm ci
+
+            - name: Set Git identity
+              run: |
+                  git config user.email "nickyinluo@tencent.com"
+                  git config user.name "nickyinluo"
+
+            - name: Get Current Version
+              id: vscode-ext-pkg-ver
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+            - name: "Automated Version Bump"
+              id: version-bump
+              uses: "phips28/gh-action-bump-version@master"
+              with:
+                  tag-prefix: "v"
+                  version-type: "patch"
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: "Output NEW_TAG"
+              env:
+                  NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
+                  OLD_VER: ${{ steps.vscode-ext-pkg-ver.outputs.current-version }}
+              run: echo "new tag[$NEW_TAG], old version[$OLD_VER]"
