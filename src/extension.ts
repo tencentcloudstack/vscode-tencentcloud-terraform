@@ -96,12 +96,12 @@ export async function activate(context: vscode.ExtensionContext) {
     // auto-complete
     console.log('activate the auto complete(snippets and lint) feature');
     const tipsProvider = new TerraformTipsProvider();
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, tipsProvider, '.'));
     context.subscriptions.push(
         vscode.workspace.onDidChangeTextDocument((event) => {
             tipsProvider.handleCharacterEvent(event);
         })
     );
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, tipsProvider));
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(TF_MODE, new TerraformResDocProvider()));
 
     // import-resource
