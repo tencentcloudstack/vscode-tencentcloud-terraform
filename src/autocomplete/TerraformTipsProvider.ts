@@ -15,6 +15,9 @@ interface TerraformCompletionContext extends vscode.CompletionContext {
     resourceType?: string;
 }
 
+const TEXT_MIN_SORT = "a";
+const TEXT_FILTER = " ";
+
 export class TerraformTipsProvider implements CompletionItemProvider {
     document: TextDocument;
     position: Position;
@@ -30,7 +33,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
         const lineText = document.lineAt(position.line).text;
         const lineTillCurrentPosition = lineText.substring(0, position.character);
 
-        // Are we trying to type a resource type?
+        // Are we trying to type a top type?
         if (this.isTopLevelType(lineTillCurrentPosition)) {
             return this.getTopLevelType(lineTillCurrentPosition);
         }
@@ -49,7 +52,9 @@ export class TerraformTipsProvider implements CompletionItemProvider {
                 let definedResourceTypes = this.getDefinedResourceTypes(document);
                 let finalResourceTypes = _.filter(definedResourceTypes, o => (o.indexOf(resourceTypePrefix) === 0));
                 return _.map(finalResourceTypes, o => {
-                    return new CompletionItem(o, CompletionItemKind.Field);
+                    const c = new CompletionItem(o, CompletionItemKind.Field);
+                    c.sortText = TEXT_MIN_SORT;
+                    return c;
                 });
             }
             else if (parts.length === 2) {
@@ -58,7 +63,11 @@ export class TerraformTipsProvider implements CompletionItemProvider {
 
                 // Get a list of all the names for this resource type
                 let names = this.getNamesForResourceType(document, resourceType);
-                return _.map(names, o => new CompletionItem(o, CompletionItemKind.Field));
+                return _.map(names, o => {
+                    const c = new CompletionItem(o, CompletionItemKind.Field);
+                    c.sortText = TEXT_MIN_SORT;
+                    return c;
+                });
             }
             else if (parts.length === 3) {
                 // We're trying to type the exported field for the let
@@ -69,6 +78,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
                     let c = new CompletionItem(`${o.name} (${resourceType})`, CompletionItemKind.Property);
                     c.detail = o.description;
                     c.insertText = o.name;
+                    c.sortText = TEXT_MIN_SORT;
                     return c;
                 });
                 return result;
@@ -80,6 +90,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
 
         // Are we trying to type a parameter to a resource?
         let possibleResources = this.checkTopLevelResource(lineTillCurrentPosition);
+        // typing a resource type
         if (possibleResources.length > 0) {
             return this.getHintsForStrings(possibleResources);
         }
@@ -88,7 +99,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
         const includeEqual = lineTillCurrentPosition.indexOf('=');
         // handle options
         if (this.resourceType) {
-            // when we typing a '=' character
+            // typing a '=' character
             if (endwithEqual) {
                 const lineBeforeEqualSign = lineTillCurrentPosition.substring(0, includeEqual).trim();
                 // load options
@@ -99,6 +110,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
                 this.resourceType = "";
                 return (options).length ? options : [];
             }
+            this.resourceType = "";
             return [];
         }
 
@@ -109,6 +121,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
                 let line = document.lineAt(i).text;
                 let parentType = this.getParentType(line);
                 if (parentType && parentType.type === "resource") {
+                    // typing a arg in resource
                     const resourceType = this.getResourceTypeFromLine(line);
                     const ret = this.getItemsForArgs(resources[resourceType].args, resourceType);
                     return ret;
@@ -141,7 +154,10 @@ export class TerraformTipsProvider implements CompletionItemProvider {
     getOptionsFormArg(opts: string[]): CompletionItem[] {
         return _.map(opts, opt => {
             let c = new CompletionItem(opt, CompletionItemKind.Value);
-            c.insertText = "\"" + opt + "\"";
+            const text = "\ \"" + opt + "\"";
+            c.insertText = text;
+            c.sortText = TEXT_MIN_SORT;
+            c.filterText = TEXT_FILTER;
             return c;
         });
     }
@@ -192,9 +208,11 @@ export class TerraformTipsProvider implements CompletionItemProvider {
 
     getTopLevelType(line: string): CompletionItem[] {
         for (const element of topLevelTypes) {
-            let resourceType = element;
-            if (resourceType.startsWith(line)) {
-                return [new CompletionItem(resourceType, CompletionItemKind.Enum)];
+            let topType = element;
+            if (topType.startsWith(line)) {
+                const c = new CompletionItem(topType, CompletionItemKind.Enum);
+                c.sortText = TEXT_MIN_SORT;
+                return [c];
             }
         }
         return [];
@@ -233,7 +251,9 @@ export class TerraformTipsProvider implements CompletionItemProvider {
 
     getHintsForStrings(strings: string[]): CompletionItem[] {
         return _.map(strings, s => {
-            return new CompletionItem(s, CompletionItemKind.Enum);
+            const c = new CompletionItem(s, CompletionItemKind.Enum);
+            c.sortText = TEXT_MIN_SORT;
+            return c;
         });
     }
 
@@ -258,6 +278,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
             let c = new CompletionItem(`${o.name} (${type})`, CompletionItemKind.Property);
             c.detail = o.description;
             c.insertText = o.name;
+            c.sortText = TEXT_MIN_SORT;
             return c;
         });
     }
