@@ -16444,7 +16444,7 @@
             },
             {
                 "name": "data_disks",
-                "description": "- (Optional, Maplist) Settings for data disks.",
+                "description": "- (Optional, List, ForceNew) Settings for data disks."
                 "detail": [
                     {
                         "name": "data_disk_type",
