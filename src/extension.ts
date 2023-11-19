@@ -16,6 +16,7 @@ import { GitUtils } from './utils/gitUtils';
 import _ from 'lodash';
 
 const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' };
+const COMPATIBLE_MODE: vscode.DocumentFilter = { scheme: 'file' };
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -95,7 +96,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
     // auto-complete
     console.log('activate the auto complete(snippets and lint) feature');
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, new TerraformTipsProvider(), '.'));
+    const tipsProvider = new TerraformTipsProvider();
+    context.subscriptions.push(
+        vscode.workspace.onDidChangeTextDocument((event) => {
+            tipsProvider.handleCharacterEvent(event);
+        })
+    );
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, tipsProvider, ".", "\""));
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(TF_MODE, new TerraformResDocProvider()));
 
     // import-resource

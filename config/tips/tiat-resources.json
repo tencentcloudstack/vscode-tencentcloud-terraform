@@ -3724,7 +3724,7 @@
             },
             {
                 "name": "bandwidth_limit",
-                "description": "- (Optional, Int) Limitation of bandwidth."
+                "description": "- (Optional, Int) Limitation of bandwidth. Default is 0."
             },
             {
                 "name": "dst_region",
@@ -8696,6 +8696,103 @@
         ],
         "url": "/docs/providers/tencentcloud/r/css_authenticate_domain_owner_operation.html"
     },
+    "tencentcloud_css_backup_stream": {
+        "args": [
+            {
+                "name": "app_name",
+                "description": "- (Required, String, ForceNew) App name."
+            },
+            {
+                "name": "push_domain_name",
+                "description": "- (Required, String, ForceNew) Push domain."
+            },
+            {
+                "name": "stream_name",
+                "description": "- (Required, String, ForceNew) Stream id."
+            },
+            {
+                "name": "upstream_sequence",
+                "description": "- (Required, String) Sequence."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_backup_stream.html"
+    },
+    "tencentcloud_css_callback_rule_attachment": {
+        "args": [
+            {
+                "name": "app_name",
+                "description": "- (Required, String, ForceNew) The streaming path is consistent with the AppName in the streaming and playback addresses. The default is live."
+            },
+            {
+                "name": "domain_name",
+                "description": "- (Required, String, ForceNew) Streaming domain name."
+            },
+            {
+                "name": "template_id",
+                "description": "- (Required, Int, ForceNew) Template ID."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_callback_rule_attachment.html"
+    },
+    "tencentcloud_css_callback_template": {
+        "args": [
+            {
+                "name": "template_name",
+                "description": "- (Required, String) Template name.Maximum length: 255 bytes. Only Chinese, English, numbers, _, - are supported."
+            },
+            {
+                "name": "callback_key",
+                "description": "- (Optional, String) Callback Key, public callback URL."
+            },
+            {
+                "name": "description",
+                "description": "- (Optional, String) Description information.Maximum length: 1024 bytes.Only Chinese, English, numbers, _, - are supported."
+            },
+            {
+                "name": "porn_censorship_notify_url",
+                "description": "- (Optional, String) PornCensorship callback URL."
+            },
+            {
+                "name": "push_exception_notify_url",
+                "description": "- (Optional, String) Streaming Exception Callback URL."
+            },
+            {
+                "name": "record_notify_url",
+                "description": "- (Optional, String) Recording callback URL."
+            },
+            {
+                "name": "snapshot_notify_url",
+                "description": "- (Optional, String) Snapshot callback URL."
+            },
+            {
+                "name": "stream_begin_notify_url",
+                "description": "- (Optional, String) Launch callback URL."
+            },
+            {
+                "name": "stream_end_notify_url",
+                "description": "- (Optional, String) Cutoff callback URL."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_callback_template.html"
+    },
     "tencentcloud_css_domain": {
         "args": [
             {
@@ -8752,6 +8849,60 @@
                 "description": "- ID of the resource."
             }
         ]
+    },
+    "tencentcloud_css_domain_referer": {
+        "args": [
+            {
+                "name": "allow_empty",
+                "description": "- (Required, Int) Allow blank referers, 0: not allowed, 1: allowed."
+            },
+            {
+                "name": "domain_name",
+                "description": "- (Required, String) Domain Name."
+            },
+            {
+                "name": "enable",
+                "description": "- (Required, Int) Whether to enable the referer blacklist authentication of the current domain name,0: off, 1: on."
+            },
+            {
+                "name": "rules",
+                "description": "- (Required, String) The list of referers to; separate."
+            },
+            {
+                "name": "type",
+                "description": "- (Required, Int) List type: 0: blacklist, 1: whitelist."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_domain_referer.html"
+    },
+    "tencentcloud_css_enable_optimal_switching": {
+        "args": [
+            {
+                "name": "stream_name",
+                "description": "- (Required, String, ForceNew) Stream id."
+            },
+            {
+                "name": "enable_switch",
+                "description": "- (Optional, Int) 0:disabled, 1:enable."
+            },
+            {
+                "name": "host_group_name",
+                "description": "- (Optional, String, ForceNew) Group name."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_enable_optimal_switching.html"
     },
     "tencentcloud_css_live_transcode_rule_attachment": {
         "args": [
@@ -8887,6 +9038,68 @@
         ],
         "url": "/docs/providers/tencentcloud/r/css_live_transcode_template.html"
     },
+    "tencentcloud_css_pad_rule_attachment": {
+        "args": [
+            {
+                "name": "domain_name",
+                "description": "- (Required, String, ForceNew) Push domain."
+            },
+            {
+                "name": "template_id",
+                "description": "- (Required, Int, ForceNew) Template id."
+            },
+            {
+                "name": "app_name",
+                "description": "- (Optional, String, ForceNew) Push path, must same with play path, default is live."
+            },
+            {
+                "name": "stream_name",
+                "description": "- (Optional, String, ForceNew) Stream name."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_pad_rule_attachment.html"
+    },
+    "tencentcloud_css_pad_template": {
+        "args": [
+            {
+                "name": "template_name",
+                "description": "- (Required, String) Template namelimit 255 bytes."
+            },
+            {
+                "name": "url",
+                "description": "- (Required, String) Pad content."
+            },
+            {
+                "name": "description",
+                "description": "- (Optional, String) Description content.limit length 1024 bytes."
+            },
+            {
+                "name": "max_duration",
+                "description": "- (Optional, Int) Max pad duration.limit: 0 - 9999999 ms."
+            },
+            {
+                "name": "type",
+                "description": "- (Optional, Int) Pad content type.1: picture.2: video.default: 1."
+            },
+            {
+                "name": "wait_duration",
+                "description": "- (Optional, Int) Stop stream wait time.limit: 0 - 30000 ms."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_pad_template.html"
+    },
     "tencentcloud_css_play_auth_key_config": {
         "args": [
             {
@@ -8973,7 +9186,7 @@
             },
             {
                 "name": "source_type",
-                "description": "- (Required, String) &#39;PullLivePushLive&#39;: SourceUrls live type, &#39;PullVodPushLive&#39;: SourceUrls vod type."
+                "description": "- (Required, String) PullLivePushLive: SourceUrls live type, PullVodPushLive: SourceUrls vod type."
             },
             {
                 "name": "source_urls",
@@ -9041,7 +9254,7 @@
             },
             {
                 "name": "vod_refresh_type",
-                "description": "- (Optional, String) vod refresh method. &#39;ImmediateNewSource&#39;: switch to new source at once, &#39;ContinueBreakPoint&#39;: switch to new source while old source finish."
+                "description": "- (Optional, String) vod refresh method. ImmediateNewSource: switch to new source at once, ContinueBreakPoint: switch to new source while old source finish."
             },
             {
                 "name": "watermark_list",
@@ -9076,6 +9289,25 @@
         ],
         "url": "/docs/providers/tencentcloud/r/css_pull_stream_task.html"
     },
+    "tencentcloud_css_pull_stream_task_restart": {
+        "args": [
+            {
+                "name": "operator",
+                "description": "- (Required, String, ForceNew) Task operator."
+            },
+            {
+                "name": "task_id",
+                "description": "- (Required, String, ForceNew) Task Id."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_pull_stream_task_restart.html"
+    },
     "tencentcloud_css_push_auth_key_config": {
         "args": [
             {
@@ -9106,6 +9338,259 @@
             }
         ],
         "url": "/docs/providers/tencentcloud/r/css_push_auth_key_config.html"
+    },
+    "tencentcloud_css_record_rule_attachment": {
+        "args": [
+            {
+                "name": "domain_name",
+                "description": "- (Required, String, ForceNew) Streaming domain name."
+            },
+            {
+                "name": "template_id",
+                "description": "- (Required, Int, ForceNew) Template ID."
+            },
+            {
+                "name": "app_name",
+                "description": "- (Optional, String, ForceNew) The streaming path is consistent with the AppName in the streaming and playback addresses. The default is live."
+            },
+            {
+                "name": "stream_name",
+                "description": "- (Optional, String, ForceNew) Stream name. Note: If this parameter is set to a non empty string, the rule will only work on this streaming."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_record_rule_attachment.html"
+    },
+    "tencentcloud_css_snapshot_rule_attachment": {
+        "args": [
+            {
+                "name": "domain_name",
+                "description": "- (Required, String, ForceNew) Streaming domain name."
+            },
+            {
+                "name": "template_id",
+                "description": "- (Required, Int, ForceNew) Template ID."
+            },
+            {
+                "name": "app_name",
+                "description": "- (Optional, String, ForceNew) The streaming path is consistent with the AppName in the streaming and playback addresses. The default is live."
+            },
+            {
+                "name": "stream_name",
+                "description": "- (Optional, String, ForceNew) Stream name. Note: If this parameter is set to a non empty string, the rule will only work on this streaming."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_snapshot_rule_attachment.html"
+    },
+    "tencentcloud_css_snapshot_template": {
+        "args": [
+            {
+                "name": "cos_app_id",
+                "description": "- (Required, Int) Cos application ID."
+            },
+            {
+                "name": "cos_bucket",
+                "description": "- (Required, String) Cos bucket name. Note: The CosBucket parameter value cannot include the - [appid] part."
+            },
+            {
+                "name": "cos_region",
+                "description": "- (Required, String) Cos region."
+            },
+            {
+                "name": "template_name",
+                "description": "- (Required, String) Template name. Maximum length: 255 bytes. Only Chinese, English, numbers, _, - are supported."
+            },
+            {
+                "name": "cos_file_name",
+                "description": "- (Optional, String) Cos file name. If it is empty, set according to the default value {StreamID}-screenshot-{Hour}-{Minute}-{Second}-{Width}x{Height}{Ext}."
+            },
+            {
+                "name": "cos_prefix",
+                "description": "- (Optional, String) Cos Bucket folder prefix. If it is empty, set according to the default value /{Year}-{Month}-{Day}/."
+            },
+            {
+                "name": "description",
+                "description": "- (Optional, String) Description information. Maximum length: 1024 bytes. Only Chinese, English, numbers, _, - are supported."
+            },
+            {
+                "name": "height",
+                "description": "- (Optional, Int) Screenshot height. Default: 0 (original height). Range: 0-2000."
+            },
+            {
+                "name": "porn_flag",
+                "description": "- (Optional, Int) Whether porn is enabled, 0: not enabled, 1: enabled. Default: 0."
+            },
+            {
+                "name": "snapshot_interval",
+                "description": "- (Optional, Int) Screenshot interval, unit: s, default: 10s. Range: 2s~300s."
+            },
+            {
+                "name": "width",
+                "description": "- (Optional, Int) Screenshot width. Default: 0 (original width). Range: 0-3000."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_snapshot_template.html"
+    },
+    "tencentcloud_css_start_stream_monitor": {
+        "args": [
+            {
+                "name": "monitor_id",
+                "description": "- (Required, String, ForceNew) Monitor id."
+            },
+            {
+                "name": "audible_input_index_list",
+                "description": "- (Optional, Set: [Int], ForceNew) The input index for monitoring the screen audio, supports multiple input audio sources.The valid range for InputIndex is that it must already exist.If left blank, there will be no audio output by default."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_start_stream_monitor.html"
+    },
+    "tencentcloud_css_stream_monitor": {
+        "args": [
+            {
+                "name": "input_list",
+                "description": "- (Required, List) Wait monitor input info list."
+            },
+            {
+                "name": "output_info",
+                "description": "- (Required, List) Monitor task output info."
+            },
+            {
+                "name": "ai_asr_input_index_list",
+                "description": "- (Optional, Set: [Int]) AI asr input index list.(first input index is 1.)."
+            },
+            {
+                "name": "ai_format_diagnose",
+                "description": "- (Optional, Int) If enable format diagnose."
+            },
+            {
+                "name": "ai_ocr_input_index_list",
+                "description": "- (Optional, Set: [Int]) Ai ocr input index list(first input index is 1.)."
+            },
+            {
+                "name": "allow_monitor_report",
+                "description": "- (Optional, Int) If store monitor event."
+            },
+            {
+                "name": "asr_language",
+                "description": "- (Optional, Int) Asr language.0: close.1: Chinese2: English3: Japanese4: Korean."
+            },
+            {
+                "name": "check_stream_broken",
+                "description": "- (Optional, Int) If enable stream broken check."
+            },
+            {
+                "name": "check_stream_low_frame_rate",
+                "description": "- (Optional, Int) If enable low frame rate check."
+            },
+            {
+                "name": "monitor_name",
+                "description": "- (Optional, String) Monitor task name."
+            },
+            {
+                "name": "notify_policy",
+                "description": "- (Optional, List) Monitor event notify policy."
+            },
+            {
+                "name": "ocr_language",
+                "description": "- (Optional, Int) Intelligent text recognition language settings: ocr language.0: close.1. Chinese,English."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_stream_monitor.html"
+    },
+    "tencentcloud_css_timeshift_rule_attachment": {
+        "args": [
+            {
+                "name": "app_name",
+                "description": "- (Required, String, ForceNew) The push path, which should be the same as AppName in the push and playback URLs. The default value is live."
+            },
+            {
+                "name": "domain_name",
+                "description": "- (Required, String, ForceNew) The push domain."
+            },
+            {
+                "name": "stream_name",
+                "description": "- (Required, String, ForceNew) The stream name.Note: If you pass in a non-empty string, the rule will only be applied to the specified stream."
+            },
+            {
+                "name": "template_id",
+                "description": "- (Required, Int, ForceNew) The template ID."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_timeshift_rule_attachment.html"
+    },
+    "tencentcloud_css_timeshift_template": {
+        "args": [
+            {
+                "name": "duration",
+                "description": "- (Required, Int) The time shifting duration.Unit: Second."
+            },
+            {
+                "name": "template_name",
+                "description": "- (Required, String) The template name.Maximum length: 255 bytes.Only letters, numbers, underscores, and hyphens are supported."
+            },
+            {
+                "name": "area",
+                "description": "- (Optional, String) The region.Mainland: The Chinese mainland.Overseas: Outside the Chinese mainland.Default value: Mainland."
+            },
+            {
+                "name": "description",
+                "description": "- (Optional, String) The template description.Only letters, numbers, underscores, and hyphens are supported."
+            },
+            {
+                "name": "item_duration",
+                "description": "- (Optional, Int) The segment size.Value range: 3-10.Unit: Second.Default value: 5."
+            },
+            {
+                "name": "remove_watermark",
+                "description": "- (Optional, Bool) Whether to remove watermarks.If you pass in true, the original stream will be recorded.Default value: false."
+            },
+            {
+                "name": "transcode_template_ids",
+                "description": "- (Optional, Set: [Int]) The transcoding template IDs.This API works only if RemoveWatermark is false."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/css_timeshift_template.html"
     },
     "tencentcloud_css_watermark": {
         "args": [
@@ -10950,6 +11435,380 @@
         ],
         "url": "/docs/providers/tencentcloud/r/cynosdb_wan.html"
     },
+    "tencentcloud_dasb_acl": {
+        "args": [
+            {
+                "name": "allow_any_account",
+                "description": "- (Required, Bool) Allow any account."
+            },
+            {
+                "name": "allow_disk_redirect",
+                "description": "- (Required, Bool) Allow disk redirect."
+            },
+            {
+                "name": "name",
+                "description": "- (Required, String) Acl name."
+            },
+            {
+                "name": "ac_template_id_set",
+                "description": "- (Optional, Set: [String]) Associate high-risk DB template IDs."
+            },
+            {
+                "name": "account_set",
+                "description": "- (Optional, Set: [String]) Associated accounts."
+            },
+            {
+                "name": "allow_access_credential",
+                "description": "- (Optional, Bool) Allow access credential,default allow."
+            },
+            {
+                "name": "allow_clip_file_down",
+                "description": "- (Optional, Bool) Allow clip file down."
+            },
+            {
+                "name": "allow_clip_file_up",
+                "description": "- (Optional, Bool) Allow clip file up."
+            },
+            {
+                "name": "allow_clip_text_down",
+                "description": "- (Optional, Bool) Allow clip text down."
+            },
+            {
+                "name": "allow_clip_text_up",
+                "description": "- (Optional, Bool) Allow clip text up."
+            },
+            {
+                "name": "allow_disk_file_down",
+                "description": "- (Optional, Bool) Allow disk file download."
+            },
+            {
+                "name": "allow_disk_file_up",
+                "description": "- (Optional, Bool) Allow disk file upload."
+            },
+            {
+                "name": "allow_file_del",
+                "description": "- (Optional, Bool) Allow sftp file delete."
+            },
+            {
+                "name": "allow_file_down",
+                "description": "- (Optional, Bool) Allow sftp file download."
+            },
+            {
+                "name": "allow_file_up",
+                "description": "- (Optional, Bool) Allow sftp up file."
+            },
+            {
+                "name": "allow_shell_file_down",
+                "description": "- (Optional, Bool) Allow shell file download."
+            },
+            {
+                "name": "allow_shell_file_up",
+                "description": "- (Optional, Bool) Allow shell file upload."
+            },
+            {
+                "name": "cmd_template_id_set",
+                "description": "- (Optional, Set: [Int]) Associated high-risk command template ID."
+            },
+            {
+                "name": "department_id",
+                "description": "- (Optional, String) Department id."
+            },
+            {
+                "name": "device_group_id_set",
+                "description": "- (Optional, Set: [Int]) Associated device group ID."
+            },
+            {
+                "name": "device_id_set",
+                "description": "- (Optional, Set: [Int]) Associated collection of device IDs."
+            },
+            {
+                "name": "max_file_down_size",
+                "description": "- (Optional, Int) File transfer download size limit (reserved parameter, currently unused)."
+            },
+            {
+                "name": "max_file_up_size",
+                "description": "- (Optional, Int) File upload transfer size limit (artifact parameter, currently unused)."
+            },
+            {
+                "name": "user_group_id_set",
+                "description": "- (Optional, Set: [Int]) Associated user group ID."
+            },
+            {
+                "name": "user_id_set",
+                "description": "- (Optional, Set: [Int]) Associated set of user IDs."
+            },
+            {
+                "name": "validate_from",
+                "description": "- (Optional, String) Access permission effective time, such as: 2021-09-22T00:00:00+08:00If the effective and expiry time are not filled in, the access rights will be valid for a long time."
+            },
+            {
+                "name": "validate_to",
+                "description": "- (Optional, String) Access permission expiration time, such as: 2021-09-23T00:00:00+08:00If the effective and expiry time are not filled in, the access rights will be valid for a long time."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dasb_acl.html"
+    },
+    "tencentcloud_dasb_bind_device_resource": {
+        "args": [
+            {
+                "name": "device_id_set",
+                "description": "- (Required, Set: [Int], ForceNew) Asset ID collection."
+            },
+            {
+                "name": "resource_id",
+                "description": "- (Required, String, ForceNew) Bastion host service ID."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dasb_bind_device_resource.html"
+    },
+    "tencentcloud_dasb_cmd_template": {
+        "args": [
+            {
+                "name": "cmd_list",
+                "description": "- (Required, String) Command list, n separated, maximum length 32768 bytes."
+            },
+            {
+                "name": "name",
+                "description": "- (Required, String) Template name, maximum length 32 characters, cannot contain blank characters."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dasb_cmd_template.html"
+    },
+    "tencentcloud_dasb_device": {
+        "args": [
+            {
+                "name": "ip",
+                "description": "- (Required, String) IP address."
+            },
+            {
+                "name": "os_name",
+                "description": "- (Required, String) Operating system name, only Linux, Windows or MySQL."
+            },
+            {
+                "name": "port",
+                "description": "- (Required, Int) Management port."
+            },
+            {
+                "name": "department_id",
+                "description": "- (Optional, String) The department ID to which the device belongs."
+            },
+            {
+                "name": "ip_port_set",
+                "description": "- (Optional, Set: [String]) Asset multi-node: fields ip and port."
+            },
+            {
+                "name": "name",
+                "description": "- (Optional, String) Hostname, can be empty."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dasb_device.html"
+    },
+    "tencentcloud_dasb_device_account": {
+        "args": [
+            {
+                "name": "account",
+                "description": "- (Required, String, ForceNew) Device account."
+            },
+            {
+                "name": "device_id",
+                "description": "- (Required, Int, ForceNew) Device ID."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dasb_device_account.html"
+    },
+    "tencentcloud_dasb_device_group": {
+        "args": [
+            {
+                "name": "name",
+                "description": "- (Required, String) Device group name, the maximum length is 32 characters."
+            },
+            {
+                "name": "department_id",
+                "description": "- (Optional, String) The ID of the department to which the asset group belongs, such as: 1.2.3 name, with a maximum length of 32 characters."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dasb_device_group.html"
+    },
+    "tencentcloud_dasb_device_group_members": {
+        "args": [
+            {
+                "name": "device_group_id",
+                "description": "- (Required, Int, ForceNew) Device Group ID."
+            },
+            {
+                "name": "member_id_set",
+                "description": "- (Required, Set: [Int], ForceNew) A collection of device IDs that need to be added to the device group."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dasb_device_group_members.html"
+    },
+    "tencentcloud_dasb_resource": {
+        "args": [
+            {
+                "name": "auto_renew_flag",
+                "description": "- (Required, Int) Automatic renewal. 1 is auto renew flag, 0 is not."
+            },
+            {
+                "name": "deploy_region",
+                "description": "- (Required, String) Deploy region."
+            },
+            {
+                "name": "resource_edition",
+                "description": "- (Required, String) Resource type.Value:standard/pro."
+            },
+            {
+                "name": "resource_node",
+                "description": "- (Required, Int) Number of resource nodes."
+            },
+            {
+                "name": "subnet_id",
+                "description": "- (Required, String) Deploy resource subnetId."
+            },
+            {
+                "name": "time_span",
+                "description": "- (Required, Int) Billing time."
+            },
+            {
+                "name": "time_unit",
+                "description": "- (Required, String) Billing cycle, only support m: month."
+            },
+            {
+                "name": "vpc_id",
+                "description": "- (Required, String) Deploy resource vpcId."
+            },
+            {
+                "name": "deploy_zone",
+                "description": "- (Optional, String) Deploy zone."
+            },
+            {
+                "name": "package_bandwidth",
+                "description": "- (Optional, Int) Number of bandwidth expansion packets (4M)."
+            },
+            {
+                "name": "package_node",
+                "description": "- (Optional, Int) Number of authorized point extension packages (50 points)."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dasb_resource.html"
+    },
+    "tencentcloud_dasb_user": {
+        "args": [
+            {
+                "name": "real_name",
+                "description": "- (Required, String) Real name, maximum length 20 characters, cannot contain blank characters."
+            },
+            {
+                "name": "user_name",
+                "description": "- (Required, String) Username, 3-20 characters, must start with an English letter and cannot contain characters other than letters, numbers, '.', '_', '-'."
+            },
+            {
+                "name": "auth_type",
+                "description": "- (Optional, Int) Authentication method, 0 - local, 1 - LDAP, 2 - OAuth. If not passed, the default is 0."
+            },
+            {
+                "name": "department_id",
+                "description": "- (Optional, String) Department ID, such as: 1.2.3."
+            },
+            {
+                "name": "email",
+                "description": "- (Optional, String) Email."
+            },
+            {
+                "name": "group_id_set",
+                "description": "- (Optional, Set: [Int]) The set of user group IDs to which it belongs."
+            },
+            {
+                "name": "phone",
+                "description": "- (Optional, String) Fill in the mainland mobile phone number directly. If it is a number from other countries or regions, enter it in the format of country area code|mobile phone number. For example: +852|xxxxxxxx."
+            },
+            {
+                "name": "validate_from",
+                "description": "- (Optional, String) User effective time, such as: 2021-09-22T00:00:00+00:00If the effective and expiry time are not filled in, the user will be valid for a long time."
+            },
+            {
+                "name": "validate_time",
+                "description": "- (Optional, String) Access time period limit, a string composed of 0 and 1, length 168 (7 * 24), representing the time period the user is allowed to access in a week. The Nth character in the string represents the Nth hour of the week, 0 - means access is not allowed, 1 - means access is allowed."
+            },
+            {
+                "name": "validate_to",
+                "description": "- (Optional, String) User expiration time, such as: 2021-09-23T00:00:00+00:00If the effective and expiry time are not filled in, the user will be valid for a long time."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dasb_user.html"
+    },
+    "tencentcloud_dasb_user_group_members": {
+        "args": [
+            {
+                "name": "member_id_set",
+                "description": "- (Required, Set: [Int], ForceNew) Collection of member user IDs."
+            },
+            {
+                "name": "user_group_id",
+                "description": "- (Required, Int, ForceNew) User Group ID."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dasb_user_group_members.html"
+    },
     "tencentcloud_dayu_cc_http_policy": {
         "args": [
             {
@@ -12632,6 +13491,21 @@
         ],
         "url": "/docs/providers/tencentcloud/r/dlc_add_users_to_work_group_attachment.html"
     },
+    "tencentcloud_dlc_bind_work_groups_to_user_attachment": {
+        "args": [
+            {
+                "name": "add_info",
+                "description": "- (Required, List, ForceNew) Bind user and workgroup information."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dlc_bind_work_groups_to_user_attachment.html"
+    },
     "tencentcloud_dlc_data_engine": {
         "args": [
             {
@@ -12759,6 +13633,94 @@
         ],
         "url": "/docs/providers/tencentcloud/r/dlc_data_engine.html"
     },
+    "tencentcloud_dlc_modify_data_engine_description_operation": {
+        "args": [
+            {
+                "name": "data_engine_name",
+                "description": "- (Required, String, ForceNew) The name of the engine to modify."
+            },
+            {
+                "name": "message",
+                "description": "- (Required, String, ForceNew) Engine description information, the maximum length is 250."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dlc_modify_data_engine_description_operation.html"
+    },
+    "tencentcloud_dlc_modify_user_typ_operation": {
+        "args": [
+            {
+                "name": "user_id",
+                "description": "- (Required, String, ForceNew) User id (uin), if left blank, it defaults to the caller's sub-uin."
+            },
+            {
+                "name": "user_type",
+                "description": "- (Required, String, ForceNew) User type, only support: ADMIN: ddministrator/COMMON: ordinary user."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dlc_modify_user_typ_operation.html"
+    },
+    "tencentcloud_dlc_renew_data_engine_operation": {
+        "args": [
+            {
+                "name": "data_engine_name",
+                "description": "- (Required, String, ForceNew) Data engine name."
+            },
+            {
+                "name": "time_span",
+                "description": "- (Required, Int, ForceNew) Engine TimeSpan, prePay: minimum of 1, representing one month of purchasing resources, with a maximum of 120, default 3600, postPay: fixed fee of 3600."
+            },
+            {
+                "name": "pay_mode",
+                "description": "- (Optional, Int, ForceNew) Engine pay mode type, only support 0: postPay, 1: prePay(default)."
+            },
+            {
+                "name": "renew_flag",
+                "description": "- (Optional, Int, ForceNew) Automatic renewal flag, 0, initial state, automatic renewal is not performed by default. if the user has prepaid non-stop service privileges, automatic renewal will occur. 1: Automatic renewal. 2: make it clear that there will be no automatic renewal. if this parameter is not passed, the default value is 0."
+            },
+            {
+                "name": "time_unit",
+                "description": "- (Optional, String, ForceNew) Engine TimeUnit, prePay: use m(default), postPay: use h."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dlc_renew_data_engine_operation.html"
+    },
+    "tencentcloud_dlc_restart_data_engine_operation": {
+        "args": [
+            {
+                "name": "data_engine_id",
+                "description": "- (Required, String, ForceNew) Engine unique id."
+            },
+            {
+                "name": "forced_operation",
+                "description": "- (Optional, Bool, ForceNew) Whether to force restart and ignore tasks."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dlc_restart_data_engine_operation.html"
+    },
     "tencentcloud_dlc_rollback_data_engine_image_operation": {
         "args": [
             {
@@ -12785,8 +13747,12 @@
     "tencentcloud_dlc_store_location_config": {
         "args": [
             {
+                "name": "enable",
+                "description": "- (Required, Int) Whether to enable advanced settings: 0-no, 1-yes."
+            },
+            {
                 "name": "store_location",
-                "description": "- (Required, String) Calculate the results of the COS path, such as: cosn: // bucketName/."
+                "description": "- (Required, String) The calculation results are stored in the cos path, such as: cosn://bucketname/."
             }
         ],
         "attrs": [
@@ -12815,6 +13781,59 @@
             }
         ],
         "url": "/docs/providers/tencentcloud/r/dlc_suspend_resume_data_engine.html"
+    },
+    "tencentcloud_dlc_switch_data_engine_image_operation": {
+        "args": [
+            {
+                "name": "data_engine_id",
+                "description": "- (Required, String, ForceNew) Engine unique id."
+            },
+            {
+                "name": "new_image_version_id",
+                "description": "- (Required, String, ForceNew) New image version id."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dlc_switch_data_engine_image_operation.html"
+    },
+    "tencentcloud_dlc_update_row_filter_operation": {
+        "args": [
+            {
+                "name": "policy_id",
+                "description": "- (Required, Int, ForceNew) The id of the row filtering policy."
+            },
+            {
+                "name": "policy",
+                "description": "- (Required, List, ForceNew) New filtering strategy."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dlc_update_row_filter_operation.html"
+    },
+    "tencentcloud_dlc_upgrade_data_engine_image_operation": {
+        "args": [
+            {
+                "name": "data_engine_id",
+                "description": "- (Required, String, ForceNew) Engine unique id."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dlc_upgrade_data_engine_image_operation.html"
     },
     "tencentcloud_dlc_user": {
         "args": [
@@ -12846,6 +13865,29 @@
             }
         ],
         "url": "/docs/providers/tencentcloud/r/dlc_user.html"
+    },
+    "tencentcloud_dlc_user_data_engine_config": {
+        "args": [
+            {
+                "name": "data_engine_id",
+                "description": "- (Required, String) Engine unique id."
+            },
+            {
+                "name": "data_engine_config_pairs",
+                "description": "- (Optional, List) Engine configuration items."
+            },
+            {
+                "name": "session_resource_template",
+                "description": "- (Optional, List) Job engine resource configuration template."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dlc_user_data_engine_config.html"
     },
     "tencentcloud_dlc_work_group": {
         "args": [
@@ -12913,6 +13955,52 @@
         ],
         "url": "/docs/providers/tencentcloud/r/dnat.html"
     },
+    "tencentcloud_dnspod_custom_line": {
+        "args": [
+            {
+                "name": "area",
+                "description": "- (Required, String) The IP segment of custom line, split with -."
+            },
+            {
+                "name": "domain",
+                "description": "- (Required, String, ForceNew) Domain."
+            },
+            {
+                "name": "name",
+                "description": "- (Required, String) The Name of custom line."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dnspod_custom_line.html"
+    },
+    "tencentcloud_dnspod_domain_alias": {
+        "args": [
+            {
+                "name": "domain_alias",
+                "description": "- (Required, String, ForceNew) Domain alias."
+            },
+            {
+                "name": "domain",
+                "description": "- (Required, String, ForceNew) Domain."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "domain_alias_id",
+                "description": "- Domain alias ID."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dnspod_domain_alias.html"
+    },
     "tencentcloud_dnspod_domain_instance": {
         "args": [
             {
@@ -12948,6 +14036,79 @@
         ],
         "url": "/docs/providers/tencentcloud/r/dnspod_domain_instance.html"
     },
+    "tencentcloud_dnspod_download_snapshot_operation": {
+        "args": [
+            {
+                "name": "domain",
+                "description": "- (Required, String, ForceNew) Domain."
+            },
+            {
+                "name": "snapshot_id",
+                "description": "- (Required, String, ForceNew) Snapshot ID."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "cos_url",
+                "description": "- Snapshot download url."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dnspod_download_snapshot_operation.html"
+    },
+    "tencentcloud_dnspod_modify_domain_owner_operation": {
+        "args": [
+            {
+                "name": "account",
+                "description": "- (Required, String, ForceNew) The account to which the domain needs to be transferred, supporting Uin or email format."
+            },
+            {
+                "name": "domain",
+                "description": "- (Required, String, ForceNew) Domain."
+            },
+            {
+                "name": "domain_id",
+                "description": "- (Optional, Int, ForceNew) Domain ID. The parameter DomainId has a higher priority than the parameter Domain. If the parameter DomainId is passed, the parameter Domain will be ignored. You can find all Domains and DomainIds through the DescribeDomainList interface."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dnspod_modify_domain_owner_operation.html"
+    },
+    "tencentcloud_dnspod_modify_record_group_operation": {
+        "args": [
+            {
+                "name": "domain",
+                "description": "- (Required, String, ForceNew) Domain."
+            },
+            {
+                "name": "group_id",
+                "description": "- (Required, Int, ForceNew) Record Group ID."
+            },
+            {
+                "name": "record_id",
+                "description": "- (Required, String, ForceNew) Record ID, multiple IDs are separated by a vertical line |."
+            },
+            {
+                "name": "domain_id",
+                "description": "- (Optional, Int, ForceNew) Domain ID. The parameter DomainId has a higher priority than the parameter Domain. If the parameter DomainId is passed, the parameter Domain will be ignored. You can find all Domains and DomainIds through the DescribeDomainList interface."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dnspod_modify_record_group_operation.html"
+    },
     "tencentcloud_dnspod_record": {
         "args": [
             {
@@ -12969,6 +14130,10 @@
             {
                 "name": "mx",
                 "description": "- (Optional, Int) MX priority, valid when the record type is MX, range 1-20. Note: must set when record type equal MX."
+            },
+            {
+                "name": "remark",
+                "description": "- (Optional, String) The Remark of record."
             },
             {
                 "name": "status",
@@ -12994,10 +14159,33 @@
             },
             {
                 "name": "monitor_status",
-                "description": "- The D monitoring status of the record."
+                "description": "- The monitoring status of the record."
             }
         ],
         "url": "/docs/providers/tencentcloud/r/dnspod_record.html"
+    },
+    "tencentcloud_dnspod_record_group": {
+        "args": [
+            {
+                "name": "domain",
+                "description": "- (Required, String) Domain."
+            },
+            {
+                "name": "group_name",
+                "description": "- (Required, String) Record Group Name."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "group_id",
+                "description": "- Group ID."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/dnspod_record_group.html"
     },
     "tencentcloud_dts_compare_task": {
         "args": [
@@ -13766,6 +14954,95 @@
         ],
         "url": "/docs/providers/tencentcloud/r/eip_public_address_adjust.html"
     },
+    "tencentcloud_elasticsearch_diagnose": {
+        "args": [
+            {
+                "name": "instance_id",
+                "description": "- (Required, String) Instance id."
+            },
+            {
+                "name": "cron_time",
+                "description": "- (Optional, String) Intelligent operation and maintenance staff regularly patrol the inspection time every day, the time format is HH:00:00, such as 15:00:00."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "diagnose_job_metas",
+                "description": "- Diagnostic items and meta-information of intelligent operation and maintenance."
+            },
+            {
+                "name": "job_description",
+                "description": "- Intelligent operation and maintenance diagnostic item description."
+            },
+            {
+                "name": "job_name",
+                "description": "- English name of diagnosis item for intelligent operation and maintenance."
+            },
+            {
+                "name": "job_zh_name",
+                "description": "- Chinese name of intelligent operation and maintenance diagnosis item."
+            },
+            {
+                "name": "max_count",
+                "description": "- The maximum number of manual triggers per day for intelligent operation and maintenance staff."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/elasticsearch_diagnose.html"
+    },
+    "tencentcloud_elasticsearch_diagnose_instance": {
+        "args": [
+            {
+                "name": "instance_id",
+                "description": "- (Required, String, ForceNew) Instance id."
+            },
+            {
+                "name": "diagnose_indices",
+                "description": "- (Optional, String, ForceNew) Indexes that need to be diagnosed. Wildcards are supported."
+            },
+            {
+                "name": "diagnose_jobs",
+                "description": "- (Optional, Set: [String], ForceNew) Diagnostic items that need to be triggered."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/elasticsearch_diagnose_instance.html"
+    },
+    "tencentcloud_elasticsearch_index": {
+        "args": [
+            {
+                "name": "index_name",
+                "description": "- (Required, String) index name to create."
+            },
+            {
+                "name": "index_type",
+                "description": "- (Required, String) type of the index to be created. auto: autonomous index. normal: indicates a common index."
+            },
+            {
+                "name": "instance_id",
+                "description": "- (Required, String) es instance id."
+            },
+            {
+                "name": "index_meta_json",
+                "description": "- (Optional, String) Create index metadata JSON, such as mappings, settings."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/elasticsearch_index.html"
+    },
     "tencentcloud_elasticsearch_instance": {
         "args": [
             {
@@ -13999,6 +15276,52 @@
         ],
         "url": "/docs/providers/tencentcloud/r/elasticsearch_logstash_pipeline.html"
     },
+    "tencentcloud_elasticsearch_restart_instance_operation": {
+        "args": [
+            {
+                "name": "instance_id",
+                "description": "- (Required, String, ForceNew) Instance id."
+            },
+            {
+                "name": "force_restart",
+                "description": "- (Optional, Bool, ForceNew) Force restart. Valid values:"
+            },
+            {
+                "name": "Forced",
+                "description": "restart;"
+            },
+            {
+                "name": "No",
+                "description": "forced restart;"
+            },
+            {
+                "name": "restart_mode",
+                "description": "- (Optional, Int, ForceNew) Restart mode: 0 roll restart; 1 full restart."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/elasticsearch_restart_instance_operation.html"
+    },
+    "tencentcloud_elasticsearch_restart_kibana_operation": {
+        "args": [
+            {
+                "name": "instance_id",
+                "description": "- (Required, String, ForceNew) Instance id."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/elasticsearch_restart_kibana_operation.html"
+    },
     "tencentcloud_elasticsearch_restart_logstash_instance_operation": {
         "args": [
             {
@@ -14017,6 +15340,37 @@
             }
         ],
         "url": "/docs/providers/tencentcloud/r/elasticsearch_restart_logstash_instance_operation.html"
+    },
+    "tencentcloud_elasticsearch_restart_nodes_operation": {
+        "args": [
+            {
+                "name": "instance_id",
+                "description": "- (Required, String, ForceNew) Instance id."
+            },
+            {
+                "name": "node_names",
+                "description": "- (Required, Set: [String], ForceNew) List of node names."
+            },
+            {
+                "name": "force_restart",
+                "description": "- (Optional, Bool, ForceNew) Whether to force a restart."
+            },
+            {
+                "name": "is_offline",
+                "description": "- (Optional, Bool, ForceNew) Node status, used in blue-green mode; off-line node blue-green is risky."
+            },
+            {
+                "name": "restart_mode",
+                "description": "- (Optional, String, ForceNew) Optional restart mode in-place,blue-green, which means restart and blue-green restart, respectively. The default is in-place."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/elasticsearch_restart_nodes_operation.html"
     },
     "tencentcloud_elasticsearch_security_group": {
         "args": [
@@ -14074,6 +15428,41 @@
             }
         ],
         "url": "/docs/providers/tencentcloud/r/elasticsearch_stop_logstash_pipeline_operation.html"
+    },
+    "tencentcloud_elasticsearch_update_plugins_operation": {
+        "args": [
+            {
+                "name": "instance_id",
+                "description": "- (Required, String, ForceNew) Instance id."
+            },
+            {
+                "name": "force_restart",
+                "description": "- (Optional, Bool, ForceNew) Whether to force a restart. Default is false."
+            },
+            {
+                "name": "force_update",
+                "description": "- (Optional, Bool, ForceNew) Whether to reinstall, default value false."
+            },
+            {
+                "name": "install_plugin_list",
+                "description": "- (Optional, Set: [String], ForceNew) List of plugins that need to be installed."
+            },
+            {
+                "name": "plugin_type",
+                "description": "- (Optional, Int, ForceNew) Plugin type. 0: system plugin."
+            },
+            {
+                "name": "remove_plugin_list",
+                "description": "- (Optional, Set: [String], ForceNew) List of plugins that need to be uninstalled."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/elasticsearch_update_plugins_operation.html"
     },
     "tencentcloud_emr_cluster": {
         "args": [
@@ -14443,6 +15832,56 @@
             }
         ],
         "url": "/docs/providers/tencentcloud/r/gaap_domain_error_page.html"
+    },
+    "tencentcloud_gaap_global_domain": {
+        "args": [
+            {
+                "name": "default_value",
+                "description": "- (Required, String) Domain name default entry."
+            },
+            {
+                "name": "project_id",
+                "description": "- (Required, Int) Domain Name Project ID."
+            },
+            {
+                "name": "alias",
+                "description": "- (Optional, String) alias."
+            },
+            {
+                "name": "tags",
+                "description": "- (Optional, Map) Instance tags."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/gaap_global_domain.html"
+    },
+    "tencentcloud_gaap_global_domain_dns": {
+        "args": [
+            {
+                "name": "domain_id",
+                "description": "- (Required, String) Domain Id."
+            },
+            {
+                "name": "nation_country_inner_codes",
+                "description": "- (Required, Set: [String]) Nation Country Inner Codes."
+            },
+            {
+                "name": "proxy_id_list",
+                "description": "- (Required, Set: [String]) Proxy Id List."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/gaap_global_domain_dns.html"
     },
     "tencentcloud_gaap_http_domain": {
         "args": [
@@ -17715,7 +19154,7 @@
             },
             {
                 "name": "security_groups",
-                "description": "- (Optional, Set: [String], ForceNew) ID of the security group. NOTE: for instance which engine_version is MONGO_40_WT, security_groups is not supported."
+                "description": "- (Optional, Set: [String], ForceNew) ID of the security group."
             },
             {
                 "name": "subnet_id",
@@ -17900,7 +19339,7 @@
             },
             {
                 "name": "security_groups",
-                "description": "- (Optional, Set: [String], ForceNew) ID of the security group. NOTE: for instance which engine_version is MONGO_40_WT, security_groups is not supported."
+                "description": "- (Optional, Set: [String], ForceNew) ID of the security group."
             },
             {
                 "name": "subnet_id",
@@ -17983,7 +19422,7 @@
             },
             {
                 "name": "security_groups",
-                "description": "- (Optional, Set: [String], ForceNew) ID of the security group. NOTE: for instance which engine_version is MONGO_40_WT, security_groups is not supported."
+                "description": "- (Optional, Set: [String], ForceNew) ID of the security group."
             },
             {
                 "name": "subnet_id",
@@ -19631,6 +21070,73 @@
         ],
         "url": "/docs/providers/tencentcloud/r/mps_process_live_stream_operation.html"
     },
+    "tencentcloud_mps_process_media_operation": {
+        "args": [
+            {
+                "name": "input_info",
+                "description": "- (Required, List, ForceNew) The information of the file to process."
+            },
+            {
+                "name": "ai_analysis_task",
+                "description": "- (Optional, List, ForceNew) Video content analysis task parameter."
+            },
+            {
+                "name": "ai_content_review_task",
+                "description": "- (Optional, List, ForceNew) Type parameter of a video content audit task."
+            },
+            {
+                "name": "ai_quality_control_task",
+                "description": "- (Optional, List, ForceNew) The parameters of a quality control task."
+            },
+            {
+                "name": "ai_recognition_task",
+                "description": "- (Optional, List, ForceNew) Type parameter of a video content recognition task."
+            },
+            {
+                "name": "media_process_task",
+                "description": "- (Optional, List, ForceNew) The media processing parameters to use."
+            },
+            {
+                "name": "output_dir",
+                "description": "- (Optional, String, ForceNew) The directory to save the media processing output file, which must start and end with /, such as /movie/201907/.If you do not specify this parameter, the file will be saved to the directory specified in InputInfo."
+            },
+            {
+                "name": "output_storage",
+                "description": "- (Optional, List, ForceNew) The storage location of the media processing output file. If this parameter is left empty, the storage location in InputInfo will be inherited."
+            },
+            {
+                "name": "schedule_id",
+                "description": "- (Optional, Int, ForceNew) The scheme ID.Note 1: About OutputStorage and OutputDirIf an output storage and directory are specified for a subtask of the scheme, those output settings will be applied.If an output storage and directory are not specified for the subtasks of a scheme, the output parameters passed in the ProcessMedia API will be applied.Note 2: If TaskNotifyConfig is specified, the specified settings will be used instead of the default callback settings of the scheme.Note 3: The trigger configured for a scheme is for automatically starting a scheme. It stops working when you manually call this API to start a scheme."
+            },
+            {
+                "name": "session_context",
+                "description": "- (Optional, String, ForceNew) The source context which is used to pass through the user request information. The task flow status change callback will return the value of this field. It can contain up to 1,000 characters."
+            },
+            {
+                "name": "session_id",
+                "description": "- (Optional, String, ForceNew) The ID used for deduplication. If there was a request with the same ID in the last three days, the current request will return an error. The ID can contain up to 50 characters. If this parameter is left empty or an empty string is entered, no deduplication will be performed."
+            },
+            {
+                "name": "task_notify_config",
+                "description": "- (Optional, List, ForceNew) Event notification information of a task. If this parameter is left empty, no event notifications will be obtained."
+            },
+            {
+                "name": "task_type",
+                "description": "- (Optional, String, ForceNew) The task type. Online (default): A task that is executed immediately. Offline: A task that is executed when the system is idle (within three days by default)."
+            },
+            {
+                "name": "tasks_priority",
+                "description": "- (Optional, Int, ForceNew) Task flow priority. The higher the value, the higher the priority. Value range: [-10, 10]. If this parameter is left empty, 0 will be used."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/mps_process_media_operation.html"
+    },
     "tencentcloud_mps_sample_snapshot_template": {
         "args": [
             {
@@ -20136,18 +21642,26 @@
                 "description": "- (Optional, String) Instance backup time, in the format of 'HH:mm-HH:mm'. Time setting interval is four hours. Default to 02:00-06:00. The following value can be supported: 02:00-06:00, 06:00-10:00, 10:00-14:00, 14:00-18:00, 18:00-22:00, and 22:00-02:00."
             },
             {
+                "name": "binlog_period",
+                "description": "- (Optional, Int) Binlog retention time, in days. The minimum value is 7 days and the maximum value is 1830 days. This value cannot be set greater than the backup file retention time."
+            },
+            {
+                "name": "binlog_standby_days",
+                "description": "- (Optional, Int) The standard starting number of days for log backup storage. The log backup will be converted when it reaches the standard starting number of days for storage. The minimum is 30 days and must not be greater than the number of days for log backup retention."
+            },
+            {
+                "name": "enable_binlog_standby",
+                "description": "- (Optional, String) Whether to enable the log backup standard storage policy, off - close, on - open, the default is off."
+            },
+            {
                 "name": "retention_period",
-                "description": "- (Optional, Int) Instance backup retention days. Valid value ranges: [7~730]. And default value is 7."
+                "description": "- (Optional, Int) The retention time of backup files, in days. The minimum value is 7 days and the maximum value is 1830 days. And default value is 7."
             }
         ],
         "attrs": [
             {
                 "name": "id",
                 "description": "- ID of the resource."
-            },
-            {
-                "name": "binlog_period",
-                "description": "- Retention period for binlog in days."
             }
         ],
         "url": "/docs/providers/tencentcloud/r/mysql_backup_policy.html"
@@ -21091,6 +22605,14 @@
                 "description": "- (Optional, Int) The upper limit of concurrent connection of NAT gateway. Valid values: 1000000, 3000000, 10000000. Default is 1000000."
             },
             {
+                "name": "nat_product_version",
+                "description": "- (Optional, Int, ForceNew) 1: traditional NAT, 2: standard NAT, default value is 1."
+            },
+            {
+                "name": "subnet_id",
+                "description": "- (Optional, String, ForceNew) Subnet of NAT."
+            },
+            {
                 "name": "tags",
                 "description": "- (Optional, Map) The available tags within this NAT gateway."
             },
@@ -21184,6 +22706,389 @@
             }
         ],
         "url": "/docs/providers/tencentcloud/r/nat_refresh_nat_dc_route.html"
+    },
+    "tencentcloud_oceanus_job": {
+        "args": [
+            {
+                "name": "cluster_type",
+                "description": "- (Required, Int) The type of the cluster. 1 indicates shared cluster, and 2 indicates exclusive cluster."
+            },
+            {
+                "name": "job_type",
+                "description": "- (Required, Int) The type of the job. 1 indicates SQL job, and 2 indicates JAR job."
+            },
+            {
+                "name": "name",
+                "description": "- (Required, String) The name of the job. It can be composed of Chinese, English, numbers, hyphens (-), underscores (_), and periods (.), and the length cannot exceed 50 characters. Note that the job name cannot be the same as an existing job."
+            },
+            {
+                "name": "cluster_id",
+                "description": "- (Optional, String) When ClusterType=2, it is required to specify the ID of the exclusive cluster to which the job is submitted."
+            },
+            {
+                "name": "cu_mem",
+                "description": "- (Optional, Int) Set the memory specification of each CU, in GB. It supports 2, 4, 8, and 16 (which needs to apply for the whitelist before use). The default is 4, that is, 1 CU corresponds to 4 GB of running memory."
+            },
+            {
+                "name": "flink_version",
+                "description": "- (Optional, String) The Flink version that the job runs."
+            },
+            {
+                "name": "folder_id",
+                "description": "- (Optional, String) The folder ID to which the job name belongs. The root directory is root."
+            },
+            {
+                "name": "remark",
+                "description": "- (Optional, String) The remark information of the job. It can be set arbitrarily."
+            },
+            {
+                "name": "work_space_id",
+                "description": "- (Optional, String) The workspace SerialId."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/oceanus_job.html"
+    },
+    "tencentcloud_oceanus_job_config": {
+        "args": [
+            {
+                "name": "job_id",
+                "description": "- (Required, String) Job ID."
+            },
+            {
+                "name": "auto_recover",
+                "description": "- (Optional, Int) Oceanus platform job recovery switch 1: on -1: off."
+            },
+            {
+                "name": "clazz_levels",
+                "description": "- (Optional, List) Class log level."
+            },
+            {
+                "name": "cls_logset_id",
+                "description": "- (Optional, String) CLS logset ID."
+            },
+            {
+                "name": "cls_topic_id",
+                "description": "- (Optional, String) CLS log topic ID."
+            },
+            {
+                "name": "cos_bucket",
+                "description": "- (Optional, String) COS storage bucket name used by the job."
+            },
+            {
+                "name": "default_parallelism",
+                "description": "- (Optional, Int) Job default parallelism."
+            },
+            {
+                "name": "entrypoint_class",
+                "description": "- (Optional, String) Main class."
+            },
+            {
+                "name": "expert_mode_configuration",
+                "description": "- (Optional, List) Expert mode configuration."
+            },
+            {
+                "name": "expert_mode_on",
+                "description": "- (Optional, Bool) Whether to enable expert mode."
+            },
+            {
+                "name": "job_manager_spec",
+                "description": "- (Optional, Float64) JobManager specification."
+            },
+            {
+                "name": "log_collect_type",
+                "description": "- (Optional, Int) Log collection type 2:CLS; 3:COS."
+            },
+            {
+                "name": "log_collect",
+                "description": "- (Optional, Bool) Whether to collect job logs."
+            },
+            {
+                "name": "log_level",
+                "description": "- (Optional, String) Log level."
+            },
+            {
+                "name": "program_args",
+                "description": "- (Optional, String) Main class parameters."
+            },
+            {
+                "name": "properties",
+                "description": "- (Optional, List) System parameters."
+            },
+            {
+                "name": "python_version",
+                "description": "- (Optional, String) Python version used by the pyflink job at runtime."
+            },
+            {
+                "name": "remark",
+                "description": "- (Optional, String) Remarks."
+            },
+            {
+                "name": "resource_refs",
+                "description": "- (Optional, List) Resource reference array."
+            },
+            {
+                "name": "task_manager_spec",
+                "description": "- (Optional, Float64) TaskManager specification."
+            },
+            {
+                "name": "work_space_id",
+                "description": "- (Optional, String) Workspace SerialId."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/oceanus_job_config.html"
+    },
+    "tencentcloud_oceanus_job_copy": {
+        "args": [
+            {
+                "name": "source_id",
+                "description": "- (Required, String, ForceNew) The serial ID of the job to be copied."
+            },
+            {
+                "name": "target_cluster_id",
+                "description": "- (Required, String, ForceNew) The cluster serial ID of the target cluster."
+            },
+            {
+                "name": "job_type",
+                "description": "- (Optional, Int, ForceNew) The type of the source job."
+            },
+            {
+                "name": "source_name",
+                "description": "- (Optional, String, ForceNew) The name of the job to be copied."
+            },
+            {
+                "name": "target_folder_id",
+                "description": "- (Optional, String, ForceNew) The directory ID of the new job."
+            },
+            {
+                "name": "target_name",
+                "description": "- (Optional, String, ForceNew) The name of the new job."
+            },
+            {
+                "name": "work_space_id",
+                "description": "- (Optional, String, ForceNew) Workspace SerialId."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "job_id",
+                "description": "- Copy Job ID."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/oceanus_job_copy.html"
+    },
+    "tencentcloud_oceanus_resource": {
+        "args": [
+            {
+                "name": "resource_loc",
+                "description": "- (Required, List) Resource location."
+            },
+            {
+                "name": "resource_type",
+                "description": "- (Required, Int) Resource type, only support JAR now, value is 1."
+            },
+            {
+                "name": "folder_id",
+                "description": "- (Optional, String) Folder id."
+            },
+            {
+                "name": "name",
+                "description": "- (Optional, String) Resource name."
+            },
+            {
+                "name": "remark",
+                "description": "- (Optional, String) Resource description."
+            },
+            {
+                "name": "resource_config_remark",
+                "description": "- (Optional, String) Resource version description."
+            },
+            {
+                "name": "work_space_id",
+                "description": "- (Optional, String) Workspace serialId."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "resource_id",
+                "description": "- Resource ID."
+            },
+            {
+                "name": "version",
+                "description": "- Resource Version."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/oceanus_resource.html"
+    },
+    "tencentcloud_oceanus_resource_config": {
+        "args": [
+            {
+                "name": "resource_id",
+                "description": "- (Required, String) Resource ID."
+            },
+            {
+                "name": "resource_loc",
+                "description": "- (Required, List) Resource location."
+            },
+            {
+                "name": "remark",
+                "description": "- (Optional, String) Resource description."
+            },
+            {
+                "name": "work_space_id",
+                "description": "- (Optional, String) Workspace SerialId."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "version",
+                "description": "- Resource Config Version."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/oceanus_resource_config.html"
+    },
+    "tencentcloud_oceanus_run_job": {
+        "args": [
+            {
+                "name": "run_job_descriptions",
+                "description": "- (Required, List, ForceNew) The description information for batch job startup."
+            },
+            {
+                "name": "work_space_id",
+                "description": "- (Optional, String, ForceNew) Workspace SerialId."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/oceanus_run_job.html"
+    },
+    "tencentcloud_oceanus_stop_job": {
+        "args": [
+            {
+                "name": "stop_job_descriptions",
+                "description": "- (Required, List, ForceNew) The description information for batch job stop."
+            },
+            {
+                "name": "work_space_id",
+                "description": "- (Optional, String, ForceNew) Workspace SerialId."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/oceanus_stop_job.html"
+    },
+    "tencentcloud_oceanus_trigger_job_savepoint": {
+        "args": [
+            {
+                "name": "job_id",
+                "description": "- (Required, String, ForceNew) Job SerialId."
+            },
+            {
+                "name": "description",
+                "description": "- (Optional, String, ForceNew) Savepoint description."
+            },
+            {
+                "name": "work_space_id",
+                "description": "- (Optional, String, ForceNew) Workspace SerialId."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/oceanus_trigger_job_savepoint.html"
+    },
+    "tencentcloud_oceanus_work_space": {
+        "args": [
+            {
+                "name": "work_space_name",
+                "description": "- (Required, String) Workspace name."
+            },
+            {
+                "name": "description",
+                "description": "- (Optional, String) Workspace description."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "app_id",
+                "description": "- User APPID."
+            },
+            {
+                "name": "create_time",
+                "description": "- Create time."
+            },
+            {
+                "name": "creator_uin",
+                "description": "- Creator UIN."
+            },
+            {
+                "name": "jobs_count",
+                "description": "- Number of Jobs."
+            },
+            {
+                "name": "owner_uin",
+                "description": "- Owner UIN."
+            },
+            {
+                "name": "role_auth_count",
+                "description": "- Number of workspace members."
+            },
+            {
+                "name": "serial_id",
+                "description": "- Serial ID."
+            },
+            {
+                "name": "status",
+                "description": "- Workspace status."
+            },
+            {
+                "name": "update_time",
+                "description": "- Update time."
+            },
+            {
+                "name": "work_space_id",
+                "description": "- Workspace ID."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/oceanus_work_space.html"
     },
     "tencentcloud_organization_instance": {
         "args": [],
@@ -24186,6 +26091,10 @@
             {
                 "name": "name",
                 "description": "- (Required, String, ForceNew) Name of the SCF function. Name supports 26 English letters, numbers, connectors, and underscores, it should start with a letter. The last character cannot be - or _. Available length is 2-60."
+            },
+            {
+                "name": "async_run_enable",
+                "description": "- (Optional, String, ForceNew) Whether SCF function asynchronous attribute is enabled. TRUE is open, FALSE is close."
             },
             {
                 "name": "cfs_config",
@@ -27281,7 +29190,7 @@
             },
             {
                 "name": "secret_type",
-                "description": "- (Optional, Int) Type of secret. 0: user-defined secret. 4: redis secret."
+                "description": "- (Optional, Int) Type of secret. 0: user-defined secret. 4: redis secret. Default is 0."
             },
             {
                 "name": "tags",
@@ -30499,6 +32408,14 @@
             {
                 "name": "https_port",
                 "description": "- Https port range."
+            },
+            {
+                "name": "tcp_port",
+                "description": "- Tcp port range."
+            },
+            {
+                "name": "udp_port",
+                "description": "- Udp port range."
             },
             {
                 "name": "public_ip_addresses",
@@ -34109,15 +36026,15 @@
         "args": [
             {
                 "name": "local_address",
-                "description": "- (Required, List: [String], ForceNew) List of local CIDR."
+                "description": "- (Required, List: [String]) List of local CIDR."
             },
             {
                 "name": "remote_address",
-                "description": "- (Required, String, ForceNew) Remote CIDR for client."
+                "description": "- (Required, String) Remote CIDR for client."
             },
             {
                 "name": "ssl_vpn_server_name",
-                "description": "- (Required, String, ForceNew) The name of ssl vpn server to be created."
+                "description": "- (Required, String) The name of ssl vpn server to be created."
             },
             {
                 "name": "vpn_gateway_id",
@@ -34125,23 +36042,23 @@
             },
             {
                 "name": "compress",
-                "description": "- (Optional, Bool, ForceNew) need compressed. Default value: False."
+                "description": "- (Optional, Bool) need compressed. Default value: False."
             },
             {
                 "name": "encrypt_algorithm",
-                "description": "- (Optional, String, ForceNew) The encrypt algorithm. Valid values: AES-128-CBC, AES-192-CBC, AES-256-CBC, NONE.Default value: NONE."
+                "description": "- (Optional, String) The encrypt algorithm. Valid values: AES-128-CBC, AES-192-CBC, AES-256-CBC, NONE.Default value: NONE."
             },
             {
                 "name": "integrity_algorithm",
-                "description": "- (Optional, String, ForceNew) The integrity algorithm. Valid values: SHA1, MD5 and NONE. Default value: NONE."
+                "description": "- (Optional, String) The integrity algorithm. Valid values: SHA1, MD5 and NONE. Default value: NONE."
             },
             {
                 "name": "ssl_vpn_port",
-                "description": "- (Optional, Int, ForceNew) The port of ssl vpn. Default value: 1194."
+                "description": "- (Optional, Int) The port of ssl vpn. Default value: 1194."
             },
             {
                 "name": "ssl_vpn_protocol",
-                "description": "- (Optional, String, ForceNew) The protocol of ssl vpn. Default value: UDP."
+                "description": "- (Optional, String) The protocol of ssl vpn. Default value: UDP."
             }
         ],
         "attrs": [
@@ -34221,6 +36138,33 @@
             }
         ],
         "url": "/docs/providers/tencentcloud/r/waf_anti_info_leak.html"
+    },
+    "tencentcloud_waf_auto_deny_rules": {
+        "args": [
+            {
+                "name": "attack_threshold",
+                "description": "- (Required, Int, ForceNew) The threshold number of attacks that triggers IP autodeny, ranging from 2 to 100 times."
+            },
+            {
+                "name": "deny_time_threshold",
+                "description": "- (Required, Int, ForceNew) The IP autodeny time after triggering the IP autodeny, ranging from 5 to 360 minutes."
+            },
+            {
+                "name": "domain",
+                "description": "- (Required, String, ForceNew) Domain."
+            },
+            {
+                "name": "time_threshold",
+                "description": "- (Required, Int, ForceNew) IP autodeny statistical time, ranging from 1-60 minutes."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/waf_auto_deny_rules.html"
     },
     "tencentcloud_waf_clb_domain": {
         "args": [
@@ -34438,6 +36382,72 @@
         ],
         "url": "/docs/providers/tencentcloud/r/waf_custom_white_rule.html"
     },
+    "tencentcloud_waf_module_status": {
+        "args": [
+            {
+                "name": "access_control",
+                "description": "- (Required, Int) ACL module status, 0:closed, 1:opened."
+            },
+            {
+                "name": "api_protection",
+                "description": "- (Required, Int) API security module status, 0:closed, 1:opened."
+            },
+            {
+                "name": "cc_protection",
+                "description": "- (Required, Int) CC module status, 0:closed, 1:opened."
+            },
+            {
+                "name": "domain",
+                "description": "- (Required, String) Domain."
+            },
+            {
+                "name": "web_security",
+                "description": "- (Required, Int) WEB security module status, 0:closed, 1:opened."
+            },
+            {
+                "name": "anti_leakage",
+                "description": "- (Optional, Int) Anti leakage module status, 0:closed, 1:opened."
+            },
+            {
+                "name": "anti_tamper",
+                "description": "- (Optional, Int) Anti tamper module status, 0:closed, 1:opened."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/waf_module_status.html"
+    },
+    "tencentcloud_waf_protection_mode": {
+        "args": [
+            {
+                "name": "domain",
+                "description": "- (Required, String) Domain."
+            },
+            {
+                "name": "mode",
+                "description": "- (Required, Int) Protection status:10: Rule observation; AI off mode, 11: Rule observation; AI observation mode, 12: Rule observation; AI interception mode20: Rule interception; AI off mode, 21: Rule interception; AI observation mode, 22: Rule interception; AI interception mode."
+            },
+            {
+                "name": "edition",
+                "description": "- (Optional, String) WAF edition. clb-waf means clb-waf, sparta-waf means saas-waf, default is sparta-waf."
+            },
+            {
+                "name": "type",
+                "description": "- (Optional, Int) 0 is to modify the rule engine status, 1 is to modify the AI status."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/waf_protection_mode.html"
+    },
     "tencentcloud_waf_saas_domain": {
         "args": [
             {
@@ -34539,6 +36549,10 @@
             {
                 "name": "ssl_id",
                 "description": "- (Optional, String) Certificate ID, When CertType=2, this parameter needs to be filled."
+            },
+            {
+                "name": "status",
+                "description": "- (Optional, Int) Binding status between waf and LB, 0:not bind, 1:binding."
             },
             {
                 "name": "tls_version",
@@ -34644,6 +36658,579 @@
         ],
         "url": "/docs/providers/tencentcloud/r/waf_saas_instance.html"
     },
+    "tencentcloud_waf_web_shell": {
+        "args": [
+            {
+                "name": "domain",
+                "description": "- (Required, String) Domain."
+            },
+            {
+                "name": "status",
+                "description": "- (Required, Int) Webshell status, 1: open; 0: closed; 2: log."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/waf_web_shell.html"
+    },
+    "tencentcloud_wedata_baseline": {
+        "args": [
+            {
+                "name": "baseline_name",
+                "description": "- (Required, String) Baseline Name."
+            },
+            {
+                "name": "baseline_type",
+                "description": "- (Required, String) D or H; representing daily baseline and hourly baseline respectively."
+            },
+            {
+                "name": "create_name",
+                "description": "- (Required, String) Creator Name."
+            },
+            {
+                "name": "create_uin",
+                "description": "- (Required, String) Creator ID."
+            },
+            {
+                "name": "in_charge_name",
+                "description": "- (Required, String) Baseline Owner Name."
+            },
+            {
+                "name": "in_charge_uin",
+                "description": "- (Required, String) Baseline Owner ID."
+            },
+            {
+                "name": "is_new_alarm",
+                "description": "- (Required, Bool) Is it a newly created alarm rule."
+            },
+            {
+                "name": "project_id",
+                "description": "- (Required, String) Project ID."
+            },
+            {
+                "name": "promise_tasks",
+                "description": "- (Required, List) Promise Tasks."
+            },
+            {
+                "name": "promise_time",
+                "description": "- (Required, String) Service Assurance Time."
+            },
+            {
+                "name": "warning_margin",
+                "description": "- (Required, Int) Warning Margin in minutes."
+            },
+            {
+                "name": "alarm_rule_dto",
+                "description": "- (Optional, List) Existing Alarm Rule Information."
+            },
+            {
+                "name": "baseline_create_alarm_rule_request",
+                "description": "- (Optional, List) Description of the New Alarm Rule."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "baseline_id",
+                "description": "- Baseline ID."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/wedata_baseline.html"
+    },
+    "tencentcloud_wedata_datasource": {
+        "args": [
+            {
+                "name": "category",
+                "description": "- (Required, String) DataSource Category."
+            },
+            {
+                "name": "name",
+                "description": "- (Required, String) DataSource Name."
+            },
+            {
+                "name": "owner_project_id",
+                "description": "- (Required, String) Owner projectId."
+            },
+            {
+                "name": "owner_project_ident",
+                "description": "- (Required, String) Owner Project Ident."
+            },
+            {
+                "name": "owner_project_name",
+                "description": "- (Required, String) Owner project name."
+            },
+            {
+                "name": "type",
+                "description": "- (Required, String) DataSource Type."
+            },
+            {
+                "name": "biz_params",
+                "description": "- (Optional, String) BizParams."
+            },
+            {
+                "name": "cluster_id",
+                "description": "- (Optional, String) ClusterId."
+            },
+            {
+                "name": "collect",
+                "description": "- (Optional, String) Collect."
+            },
+            {
+                "name": "cos_bucket",
+                "description": "- (Optional, String) COSBucket."
+            },
+            {
+                "name": "cos_region",
+                "description": "- (Optional, String) Cos region."
+            },
+            {
+                "name": "database_name",
+                "description": "- (Optional, String) Dbname."
+            },
+            {
+                "name": "description",
+                "description": "- (Optional, String) Description."
+            },
+            {
+                "name": "display",
+                "description": "- (Optional, String) Display."
+            },
+            {
+                "name": "instance",
+                "description": "- (Optional, String) Instance."
+            },
+            {
+                "name": "params",
+                "description": "- (Optional, String) Params."
+            },
+            {
+                "name": "status",
+                "description": "- (Optional, Int) Status."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            }
+        ]
+    },
+    "tencentcloud_wedata_dq_rule": {
+        "args": [
+            {
+                "name": "alarm_level",
+                "description": "- (Required, Int) Alarm trigger levels 1. Low, 2. Medium, 3. High."
+            },
+            {
+                "name": "compare_rule",
+                "description": "- (Required, List) Alarm trigger condition."
+            },
+            {
+                "name": "condition_type",
+                "description": "- (Required, Int) Detection scope 1. Full Table 2. Conditional scan."
+            },
+            {
+                "name": "name",
+                "description": "- (Required, String) Rule name."
+            },
+            {
+                "name": "project_id",
+                "description": "- (Required, String) Project id."
+            },
+            {
+                "name": "rule_template_id",
+                "description": "- (Required, Int) Rule template id."
+            },
+            {
+                "name": "source_object_data_type_name",
+                "description": "- (Required, String) Source field type. int, string."
+            },
+            {
+                "name": "source_object_value",
+                "description": "- (Required, String) Source field name."
+            },
+            {
+                "name": "type",
+                "description": "- (Required, Int) Rule Type 1. System Template, 2. Custom Template, 3. Custom SQL."
+            },
+            {
+                "name": "condition_expression",
+                "description": "- (Optional, String) Condition scans WHERE condition expressions."
+            },
+            {
+                "name": "custom_sql",
+                "description": "- (Optional, String) Custom sql."
+            },
+            {
+                "name": "description",
+                "description": "- (Optional, String) Rule description."
+            },
+            {
+                "name": "field_config",
+                "description": "- (Optional, List) Custom template sql expression field replacement parameters."
+            },
+            {
+                "name": "quality_dim",
+                "description": "- (Optional, Int) Rules belong to quality dimensions (1. accuracy, 2. uniqueness, 3. completeness, 4. consistency, 5. timeliness, 6. effectiveness)."
+            },
+            {
+                "name": "rel_condition_expr",
+                "description": "- (Optional, String) The source field and the target field are associated with a conditional on expression."
+            },
+            {
+                "name": "rule_group_id",
+                "description": "- (Optional, Int) Rule group id."
+            },
+            {
+                "name": "source_engine_types",
+                "description": "- (Optional, Set: [Int]) List of execution engines supported by this rule."
+            },
+            {
+                "name": "table_id",
+                "description": "- (Optional, String) Table id."
+            },
+            {
+                "name": "target_condition_expr",
+                "description": "- (Optional, String) Target filter condition expression."
+            },
+            {
+                "name": "target_database_id",
+                "description": "- (Optional, String) Target database id."
+            },
+            {
+                "name": "target_object_value",
+                "description": "- (Optional, String) Target field name  CITY."
+            },
+            {
+                "name": "target_table_id",
+                "description": "- (Optional, String) Target table id."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "rule_id",
+                "description": "- Rule ID."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/wedata_dq_rule.html"
+    },
+    "tencentcloud_wedata_dq_rule_template": {
+        "args": [
+            {
+                "name": "multi_source_flag",
+                "description": "- (Required, Bool) Whether to associate other tables."
+            },
+            {
+                "name": "name",
+                "description": "- (Required, String) Template name."
+            },
+            {
+                "name": "project_id",
+                "description": "- (Required, String) Project id."
+            },
+            {
+                "name": "quality_dim",
+                "description": "- (Required, Int) Quality detection dimension 1. Accuracy 2. Uniqueness 3. Completeness 4. Consistency 5. Timeliness 6. effectiveness."
+            },
+            {
+                "name": "source_engine_types",
+                "description": "- (Required, Set: [Int]) Type of the engine on the source end."
+            },
+            {
+                "name": "source_object_type",
+                "description": "- (Required, Int) Source end data object type 1. Constant 2. Offline table level 2. Offline field level."
+            },
+            {
+                "name": "sql_expression",
+                "description": "- (Required, String) SQL expression."
+            },
+            {
+                "name": "type",
+                "description": "- (Required, Int) Template Type 1. System Template 2. User-defined template."
+            },
+            {
+                "name": "where_flag",
+                "description": "- (Required, Bool) Add where parameter or not."
+            },
+            {
+                "name": "description",
+                "description": "- (Optional, String) Template description."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "template_id",
+                "description": "- Template ID."
+            }
+        ]
+    },
+    "tencentcloud_wedata_function": {
+        "args": [
+            {
+                "name": "class_name",
+                "description": "- (Required, String) Class name of function entry."
+            },
+            {
+                "name": "cluster_identifier",
+                "description": "- (Required, String) Cluster ID."
+            },
+            {
+                "name": "comment",
+                "description": "- (Required, String) Comment."
+            },
+            {
+                "name": "db_name",
+                "description": "- (Required, String) Database name."
+            },
+            {
+                "name": "description",
+                "description": "- (Required, String) Description of the function."
+            },
+            {
+                "name": "example",
+                "description": "- (Required, String) Example of the function."
+            },
+            {
+                "name": "kind",
+                "description": "- (Required, String) Function Kind, Enum: ANALYSIS, ENCRYPTION, AGGREGATE, LOGIC, DATE_AND_TIME, MATH, CONVERSION, STRING, IP_AND_DOMAIN, WINDOW, OTHER."
+            },
+            {
+                "name": "name",
+                "description": "- (Required, String) Function Name."
+            },
+            {
+                "name": "param_desc",
+                "description": "- (Required, String) Description of the Parameter."
+            },
+            {
+                "name": "project_id",
+                "description": "- (Required, String) Project ID."
+            },
+            {
+                "name": "resource_list",
+                "description": "- (Required, List) Resource of the function, stored in WeData COS(.jar,...)."
+            },
+            {
+                "name": "return_desc",
+                "description": "- (Required, String) Description of the Return value."
+            },
+            {
+                "name": "type",
+                "description": "- (Required, String) Function Type, Enum: HIVE, SPARK, DLC."
+            },
+            {
+                "name": "usage",
+                "description": "- (Required, String) Usage of the function."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "function_id",
+                "description": "- Function ID."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/wedata_function.html"
+    },
+    "tencentcloud_wedata_integration_offline_task": {
+        "args": [
+            {
+                "name": "cycle_step",
+                "description": "- (Required, Int) Interval time of scheduling, the minimum value: 1."
+            },
+            {
+                "name": "delay_time",
+                "description": "- (Required, Int) Execution time, unit is minutes, only available for day/week/month/year scheduling. For example, daily scheduling is executed once every day at 02:00, and the delayTime is 120 minutes."
+            },
+            {
+                "name": "end_time",
+                "description": "- (Required, String) Effective end time, the format is yyyy-MM-dd HH:mm:ss."
+            },
+            {
+                "name": "notes",
+                "description": "- (Required, String) Description information."
+            },
+            {
+                "name": "project_id",
+                "description": "- (Required, String) Project ID."
+            },
+            {
+                "name": "start_time",
+                "description": "- (Required, String) Effective start time, the format is yyyy-MM-dd HH:mm:ss."
+            },
+            {
+                "name": "task_action",
+                "description": "- (Required, String) Scheduling configuration: flexible period configuration, only available for hourly/weekly/monthly/yearly scheduling. If the hourly task is specified to run at 0:00, 3:00 and 4:00 every day, it is 0,3,4."
+            },
+            {
+                "name": "task_info",
+                "description": "- (Required, List) Task Information."
+            },
+            {
+                "name": "task_mode",
+                "description": "- (Required, String) Task display mode, 0: canvas mode, 1: form mode."
+            },
+            {
+                "name": "task_name",
+                "description": "- (Required, String) Task name."
+            },
+            {
+                "name": "type_id",
+                "description": "- (Required, Int) Task type ID, for intgration task the value is 27."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "task_id",
+                "description": "- Task ID."
+            }
+        ]
+    },
+    "tencentcloud_wedata_integration_realtime_task": {
+        "args": [
+            {
+                "name": "project_id",
+                "description": "- (Required, String) Project ID."
+            },
+            {
+                "name": "sync_type",
+                "description": "- (Required, Int) Synchronization type: 1. Whole database synchronization, 2. Single table synchronization."
+            },
+            {
+                "name": "task_info",
+                "description": "- (Required, List) Task Information."
+            },
+            {
+                "name": "task_name",
+                "description": "- (Required, String) Task name."
+            },
+            {
+                "name": "description",
+                "description": "- (Optional, String) Description information."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "task_id",
+                "description": "- Task ID."
+            }
+        ]
+    },
+    "tencentcloud_wedata_integration_task_node": {
+        "args": [
+            {
+                "name": "config",
+                "description": "- (Required, List) Node configuration information."
+            },
+            {
+                "name": "data_source_type",
+                "description": "- (Required, String) Data source type: MYSQL, POSTGRE, ORACLE, SQLSERVER, FTP, HIVE, HDFS, ICEBERG, KAFKA, HBASE, SPARK, TBASE, DB2, DM, GAUSSDB, GBASE, IMPALA, ES, S3_DATAINSIGHT, GREENPLUM, PHOENIX, SAP_HANA, SFTP, OCEANBASE, CLICKHOUSE, KUDU, VERTICA, REDIS, COS, DLC, DORIS, CKAFKA, DTS_KAFKA, S3, CDW, TDSQLC, TDSQL, MONGODB, SYBASE, REST_API, StarRocks, TCHOUSE_X."
+            },
+            {
+                "name": "name",
+                "description": "- (Required, String) Node Name."
+            },
+            {
+                "name": "node_info",
+                "description": "- (Required, List) Node information."
+            },
+            {
+                "name": "node_type",
+                "description": "- (Required, String) Node type: INPUT, OUTPUT, JOIN, FILTER, TRANSFORM."
+            },
+            {
+                "name": "project_id",
+                "description": "- (Required, String) Project ID."
+            },
+            {
+                "name": "task_id",
+                "description": "- (Required, String) The task id to which the node belongs."
+            },
+            {
+                "name": "task_mode",
+                "description": "- (Required, Int) Task display mode, 0: canvas mode, 1: form mode."
+            },
+            {
+                "name": "task_type",
+                "description": "- (Required, Int) Task type, 201: real-time task, 202: offline task."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "node_id",
+                "description": "- Node ID."
+            }
+        ]
+    },
+    "tencentcloud_wedata_resource": {
+        "args": [
+            {
+                "name": "cos_bucket_name",
+                "description": "- (Required, String) Cos bucket name."
+            },
+            {
+                "name": "cos_region",
+                "description": "- (Required, String) Cos bucket region."
+            },
+            {
+                "name": "file_name",
+                "description": "- (Required, String) File name."
+            },
+            {
+                "name": "file_path",
+                "description": "- (Required, String) For file path:/datastudio/resource/projectId/folderName; for folder path:/datastudio/resource/folderName."
+            },
+            {
+                "name": "files_size",
+                "description": "- (Required, String) File size."
+            },
+            {
+                "name": "project_id",
+                "description": "- (Required, String) Project ID."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "resource_id",
+                "description": "- Resource ID."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/wedata_resource.html"
+    },
     "tencentcloud_wedata_rule_template": {
         "args": [
             {
@@ -34694,5 +37281,40 @@
             }
         ],
         "url": "/docs/providers/tencentcloud/r/wedata_rule_template.html"
+    },
+    "tencentcloud_wedata_script": {
+        "args": [
+            {
+                "name": "bucket_name",
+                "description": "- (Optional, String) Cos bucket name."
+            },
+            {
+                "name": "file_extension_type",
+                "description": "- (Optional, String) File Extension Type:jar, sql, zip, py, sh, txt, di, dg, pyspark, kjb, ktr, csv."
+            },
+            {
+                "name": "file_path",
+                "description": "- (Optional, String) Cos file path:/datastudio/project/projectId/."
+            },
+            {
+                "name": "project_id",
+                "description": "- (Optional, String) Project id."
+            },
+            {
+                "name": "region",
+                "description": "- (Optional, String) Cos region."
+            }
+        ],
+        "attrs": [
+            {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
+                "name": "resource_id",
+                "description": "- Resource ID."
+            }
+        ],
+        "url": "/docs/providers/tencentcloud/r/wedata_script.html"
     }
 }

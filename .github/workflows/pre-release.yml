@@ -1,15 +1,20 @@
 name: pre-release
 on:
+    pull_request:
+        types:
+            - closed
     push:
-        branches:
-            - master
         tags:
-            - v*
-            - v*.*.*
+            - "v*"
 
 jobs:
-    build:
+    pre-release:
+        if: github.event.pull_request.merged == true || startsWith(github.ref, 'refs/tags/')
+        permissions:
+            contents: write
+            pull-requests: write
         runs-on: ubuntu-latest
+        environment: RELEASE_ENV
         steps:
             - name: Checkout
               uses: actions/checkout@v3
@@ -17,16 +22,45 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 16.x
-            - run: npm install
-            - name: Run headless test
-              uses: coactions/setup-xvfb@v1
-              if: runner.os == 'Linux'
-              with:
-                  run: xvfb-run -a npm test
-            - run: npm test
-              if: runner.os != 'Linux'
-            - name: Pre release
-              if: success() && startsWith(github.ref, 'refs/tags/')
-              run: vsce package --no-yarn
+            - run: npm ci
+
+            - name: Set tags from commit tag
+              if: startsWith(github.ref, 'refs/tags/')
+              run: |
+                  NEW_TAG=${GITHUB_REF#refs/tags/}
+                  echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
+                  echo "new tag[${{ env.NEW_TAG }}] from commit tag will be set"
+
+            - name: Get Current Version
+              id: vscode-ext-pkg-ver
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+            - name: Set tags from label
+              if: startsWith(github.ref, 'refs/heads/')
+              run: |
+                  echo "NEW_TAG=${{ steps.vscode-ext-pkg-ver.outputs.current-version}}" >> $GITHUB_ENV
+                  echo "new tag [${{ env.NEW_TAG }}] from label will be set"
+
+            - run:  echo "NEW_TAG:[${{ env.NEW_TAG }}]"
+
+            - name: Set Git identity
+              run: |
+                  git config user.email "nickyinluo@tencent.com"
+                  git config user.name "nickyinluo"
+
+            - name: Package extension
+              if: success()
+              run: |
+                  npm run package.current
               env:
                   VSCE_PAT: ${{ secrets.VS_MARKETPLACE_TOKEN }}
+
+            - name: Pre-release to Github
+              uses: "marvinpinto/action-automatic-releases@latest"
+              with:
+                  repo_token: "${{ secrets.GITHUB_TOKEN }}"
+                  automatic_release_tag: ${{ env.NEW_TAG }}
+                  prerelease: true
+                  title: "v${{ env.NEW_TAG }}-beta"
+                  files: |
+                      vscode-tencentcloud-terraform-*.vsix
