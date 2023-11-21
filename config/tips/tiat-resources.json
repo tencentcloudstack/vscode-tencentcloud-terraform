@@ -16444,7 +16444,7 @@
             },
             {
                 "name": "data_disks",
-                "description": "- (Optional, List, ForceNew) Settings for data disks."
+                "description": "- (Optional, Maplist) Settings for data disks.",
                 "detail": [
                     {
                         "name": "data_disk_type",
@@ -16498,12 +16498,7 @@
             },
             {
                 "name": "disable_api_termination",
-                "description": "- (Optional, Bool) Whether the termination protection is enabled. Default is false. If set true, which means that this instance can not be deleted by an API action.",
-                "default": false,
-                "options": [
-                    true,
-                    false
-                ]
+                "description": "- (Optional, Bool) Whether the termination protection is enabled. Default is false. If set true, which means that this instance can not be deleted by an API action."
             },
             {
                 "name": "disable_monitor_service",
