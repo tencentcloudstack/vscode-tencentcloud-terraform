@@ -25,35 +25,31 @@ export class TerraformExampleProvider implements CompletionItemProvider {
         const includeBrace = lineTillCurrentPosition.indexOf(EXAMPLE_TRIGGER_CHARACTER);
 
         if (endwithBrace) {
-            const resourceType = this.getDefinedResourceTypes(document);
+            const resourceType = this.getDefinedResourceTypes(lineTillCurrentPosition);
             const res = examples[resourceType];
             const text = res.example;
             let c = new CompletionItem(`Auto complete example: {${resourceType}}`, vscode.CompletionItemKind.Snippet);
-            c.detail = "Press `ENTER` to insert example.";
+            c.detail = `Press \`ENTER\` to insert example code.\nPress \`ESC\` to continue.`;
             c.command = {
                 title: 'Insert Example',
                 command: EXAMPLE_CMD,
                 arguments: [text],
             };
-            exampleItems.push(c);
+            exampleItems.push(c)
         }
 
         return exampleItems;
     }
 
-
-
-    getDefinedResourceTypes(document: TextDocument): string {
+    getDefinedResourceTypes(lineText: string): string {
         let r = /resource "([a-zA-Z0-9\-_]+)"/;
         let found = "";
-        for (let i = 0; i < document.lineCount; i++) {
-            let line = document.lineAt(i).text;
-            let result = RegExp(r).exec(line);
-            if (result && result.length > 1) {
-                found = result[1];
-                return found;
-            }
+        let result = RegExp(r).exec(lineText);
+        if (result && result.length > 1) {
+            found = result[1];
+            return found;
         }
+
         return found;
     }
 }
