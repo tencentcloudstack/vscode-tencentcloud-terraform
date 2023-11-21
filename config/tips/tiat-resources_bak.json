@@ -16412,7 +16412,7 @@
         "args": [
             {
                 "name": "availability_zone",
-                "description": "- (Required, String) The available zone for the CVM instance."
+                "description": "- (Required, String, ForceNew) The available zone for the CVM instance."
             },
             {
                 "name": "image_id",
@@ -16420,7 +16420,8 @@
             },
             {
                 "name": "allocate_public_ip",
-                "description": "- (Optional, Bool) Associate a public IP address with an instance in a VPC or Classic. Boolean value, Default is false.",
+                "description": "- (Optional, Bool, ForceNew) Associate a public IP address with an instance in a VPC or Classic. Boolean value, Default is false.",
+                "default": false,
                 "options": [
                     true,
                     false
@@ -16432,11 +16433,11 @@
             },
             {
                 "name": "cam_role_name",
-                "description": "- (Optional, String) CAM role name authorized to access."
+                "description": "- (Optional, String, ForceNew) CAM role name authorized to access."
             },
             {
                 "name": "cdh_host_id",
-                "description": "- (Optional, String) Id of cdh instance. Note: it only works when instance_charge_type is set to CDHPAID."
+                "description": "- (Optional, String, ForceNew) Id of cdh instance. Note: it only works when instance_charge_type is set to CDHPAID."
             },
             {
                 "name": "cdh_instance_type",
@@ -16444,61 +16445,16 @@
             },
             {
                 "name": "data_disks",
-                "description": "- (Optional, Maplist) Settings for data disks.",
-                "detail": [
-                    {
-                        "name": "data_disk_type",
-                        "description": "- (Required, String) Data disk type. For more information about limits on different data disk types, see [Storage Overview](https://intl.cloud.tencent.com/document/product/213/4952). Valid values: LOCAL_BASIC: local disk, LOCAL_SSD: local SSD disk, LOCAL_NVME: local NVME disk, specified in the InstanceType, LOCAL_PRO: local HDD disk, specified in the InstanceType, CLOUD_BASIC: HDD cloud disk, CLOUD_PREMIUM: Premium Cloud Storage, CLOUD_SSD: SSD, CLOUD_HSSD: Enhanced SSD, CLOUD_TSSD: Tremendous SSD, CLOUD_BSSD: Balanced SSD.",
-                        "options": [
-                            "LOCAL_BASIC",
-                            "LOCAL_SSD",
-                            "LOCAL_NVME",
-                            "LOCAL_PRO",
-                            "CLOUD_BASIC",
-                            "CLOUD_PREMIUM",
-                            "CLOUD_SSD",
-                            "CLOUD_HSSD",
-                            "CLOUD_TSSD",
-                            "CLOUD_BSSD"
-                        ]
-                    },
-                    {
-                        "name": "data_disk_size",
-                        "description": "- (Required, Int) Size of the data disk, and unit is GB."
-                    },
-                    {
-                        "name": "data_disk_snapshot_id",
-                        "description": "- (Optional, String) Snapshot ID of the data disk. The selected data disk snapshot size must be smaller than the data disk size."
-                    },
-                    {
-                        "name": "data_disk_id",
-                        "description": "- (Optional, String) Data disk ID used to initialize the data disk. When data disk type is `LOCAL_BASIC` and `LOCAL_SSD`, disk id is not supported."
-                    },
-                    {
-                        "name": "delete_with_instance",
-                        "description": "- (Optional, Bool) Decides whether the disk is deleted with instance(only applied to `CLOUD_BASIC`, `CLOUD_SSD` and `CLOUD_PREMIUM` disk with `POSTPAID_BY_HOUR` instance), default is true.",
-                        "options": [
-                            true,
-                            false
-                        ]
-                    },
-                    {
-                        "name": "encrypt",
-                        "description": "- (Optional, Bool) Decides whether the disk is encrypted. Default is `false`.",
-                        "options": [
-                            true,
-                            false
-                        ]
-                    },
-                    {
-                        "name": "throughput_performance",
-                        "description": "- (Optional, Int) Add extra performance to the data disk. Only works when disk type is `CLOUD_TSSD` or `CLOUD_HSSD`."
-                    }
-                ]
+                "description": "- (Optional, List, ForceNew) Settings for data disks."
             },
             {
                 "name": "disable_api_termination",
-                "description": "- (Optional, Bool) Whether the termination protection is enabled. Default is false. If set true, which means that this instance can not be deleted by an API action."
+                "description": "- (Optional, Bool) Whether the termination protection is enabled. Default is false. If set true, which means that this instance can not be deleted by an API action.",
+                "default": false,
+                "options": [
+                    true,
+                    false
+                ]
             },
             {
                 "name": "disable_monitor_service",
@@ -16510,39 +16466,20 @@
             },
             {
                 "name": "force_delete",
-                "description": "- (Optional, Bool) Indicate whether to force delete the instance. Default is false. If set true, the instance will be permanently deleted instead of being moved into the recycle bin. Note: only works for PREPAID instance.",
-                "options": [
-                    true,
-                    false
-                ]
+                "description": "- (Optional, Bool) Indicate whether to force delete the instance. Default is false. If set true, the instance will be permanently deleted instead of being moved into the recycle bin. Note: only works for PREPAID instance."
             },
             {
                 "name": "hostname",
-                "description": "- (Optional, String) of instances: The name should be a combination of 2 to 60 characters, supporting multiple periods (.). The piece between two periods is composed of letters (case insensitive), numbers, and hyphens (-). Modifying will cause the instance reset."
+                "description": "- (Optional, String) The hostname of the instance. Windows instance: The name should be a combination of 2 to 15 characters comprised of letters (case insensitive), numbers, and hyphens (-). Period (.) is not supported, and the name cannot be a string of pure numbers. Other types (such as Linux) of instances: The name should be a combination of 2 to 60 characters, supporting multiple periods (.). The piece between two periods is composed of letters (case insensitive), numbers, and hyphens (-). Modifying will cause the instance reset."
             },
             {
                 "name": "instance_charge_type_prepaid_period",
-                "description": "- (Optional, Int) of the prepaid instance, NOTE: it only works when instance_charge_type is set to PREPAID. Valid values are 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36.",
-                "options": [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6,
-                    7,
-                    8,
-                    9,
-                    10,
-                    11,
-                    12,
-                    24,
-                    36
-                ]
+                "description": "- (Optional, Int) The tenancy (time unit is month) of the prepaid instance, NOTE: it only works when instance_charge_type is set to PREPAID. Valid values are 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36."
             },
             {
                 "name": "instance_charge_type_prepaid_renew_flag",
                 "description": "- (Optional, String) Auto renewal flag. Valid values: NOTIFY_AND_AUTO_RENEW: notify upon expiration and renew automatically, NOTIFY_AND_MANUAL_RENEW: notify upon expiration but do not renew automatically, DISABLE_NOTIFY_AND_MANUAL_RENEW: neither notify upon expiration nor renew automatically. Default value: NOTIFY_AND_MANUAL_RENEW. If this parameter is specified as NOTIFY_AND_AUTO_RENEW, the instance will be automatically renewed on a monthly basis if the account balance is sufficient. NOTE: it only works when instance_charge_type is set to PREPAID.",
+                "default": "NOTIFY_AND_MANUAL_RENEW",
                 "options": [
                     "NOTIFY_AND_AUTO_RENEW",
                     "NOTIFY_AND_MANUAL_RENEW",
@@ -16552,6 +16489,7 @@
             {
                 "name": "instance_charge_type",
                 "description": "- (Optional, String) The charge type of instance. Valid values are PREPAID, POSTPAID_BY_HOUR, SPOTPAID and CDHPAID. The default is POSTPAID_BY_HOUR. Note: TencentCloud International only supports POSTPAID_BY_HOUR and CDHPAID. PREPAID instance may not allow to delete before expired. SPOTPAID instance must set spot_instance_type and spot_max_price at the same time. CDHPAID instance must set cdh_instance_type and cdh_host_id.",
+                "default": "POSTPAID_BY_HOUR",
                 "options": [
                     "PREPAID",
                     "POSTPAID_BY_HOUR",
@@ -16561,7 +16499,7 @@
             },
             {
                 "name": "instance_count",
-                "description": "- (Optional, Int) It has been deprecated from version 1.59.18. Use built-in count instead. The number of instances to be purchased. Value range:[1,100]; default value: 1."
+                "description": "- (Optional, Int, Deprecated) It has been deprecated from version 1.59.18. Use built-in count instead. The number of instances to be purchased. Value range:[1,100]; default value: 1."
             },
             {
                 "name": "instance_name",
@@ -16574,11 +16512,12 @@
             {
                 "name": "internet_charge_type",
                 "description": "- (Optional, String) Internet charge type of the instance, Valid values are BANDWIDTH_PREPAID, TRAFFIC_POSTPAID_BY_HOUR, BANDWIDTH_POSTPAID_BY_HOUR and BANDWIDTH_PACKAGE. If not set, internet charge type are consistent with the cvm charge type by default. This value takes NO Effect when changing and does not need to be set when allocate_public_ip is false.",
+                "default": "",
                 "options": [
                     "BANDWIDTH_PREPAID",
+                    "TRAFFIC_POSTPAID_BY_HOUR",
                     "BANDWIDTH_POSTPAID_BY_HOUR",
-                    "BANDWIDTH_PACKAGE",
-                    "TRAFFIC_POSTPAID_BY_HOUR"
+                    "BANDWIDTH_PACKAGE"
                 ]
             },
             {
@@ -16591,15 +16530,15 @@
             },
             {
                 "name": "key_ids",
-                "description": "- (Optional, String) The key pair to use for the instance, it looks like skey-16jig7tx. Modifying will cause the instance reset."
+                "description": "- (Optional, Set: [String]) The key pair to use for the instance, it looks like skey-16jig7tx. Modifying will cause the instance reset."
             },
             {
                 "name": "key_name",
-                "description": "- (Optional, String) Please use key_ids instead. The key pair to use for the instance, it looks like skey-16jig7tx. Modifying will cause the instance reset."
+                "description": "- (Optional, String, Deprecated) Please use key_ids instead. The key pair to use for the instance, it looks like skey-16jig7tx. Modifying will cause the instance reset."
             },
             {
                 "name": "orderly_security_groups",
-                "description": "- (Optional, String) A list of orderly security group IDs to associate with."
+                "description": "- (Optional, List: [String]) A list of orderly security group IDs to associate with."
             },
             {
                 "name": "password",
@@ -16607,7 +16546,7 @@
             },
             {
                 "name": "placement_group_id",
-                "description": "- (Optional, String) The ID of a placement group."
+                "description": "- (Optional, String, ForceNew) The ID of a placement group."
             },
             {
                 "name": "private_ip",
@@ -16619,26 +16558,24 @@
             },
             {
                 "name": "running_flag",
-                "description": "- (Optional, Bool) Set instance to running or stop. Default value is true, the instance will shutdown when this flag is false.",
-                "options": [
-                    true,
-                    false
-                ]
+                "description": "- (Optional, Bool) Set instance to running or stop. Default value is true, the instance will shutdown when this flag is false."
+            },
+            {
+                "name": "security_groups",
+                "description": "- (Optional, Set: [String], Deprecated) It will be deprecated. Use orderly_security_groups instead. A list of security group IDs to associate with."
             },
             {
                 "name": "spot_instance_type",
-                "description": "- (Optional, String) Type of spot instance, only support ONE-TIME now. Note: it only works when instance_charge_type is set to SPOTPAID.",
-                "options": [
-                    "ONE-TIME"
-                ]
+                "description": "- (Optional, String) Type of spot instance, only support ONE-TIME now. Note: it only works when instance_charge_type is set to SPOTPAID."
             },
             {
                 "name": "spot_max_price",
-                "description": "- (Optional, String) Max price of a spot instance, is the format of decimal string, for example \"0.50\". Note: it only works when instance_charge_type is set to SPOTPAID."
+                "description": "- (Optional, String, ForceNew) Max price of a spot instance, is the format of decimal string, for example \"0.50\". Note: it only works when instance_charge_type is set to SPOTPAID."
             },
             {
                 "name": "stopped_mode",
                 "description": "- (Optional, String) Billing method of a pay-as-you-go instance after shutdown. Available values: KEEP_CHARGING,STOP_CHARGING. Default KEEP_CHARGING.",
+                "default": "KEEP_CHARGING",
                 "options": [
                     "KEEP_CHARGING",
                     "STOP_CHARGING"
@@ -16659,6 +16596,7 @@
             {
                 "name": "system_disk_type",
                 "description": "- (Optional, String) System disk type. For more information on limits of system disk types, see Storage Overview. Valid values: LOCAL_BASIC: local disk, LOCAL_SSD: local SSD disk, CLOUD_BASIC: cloud disk, CLOUD_SSD: cloud SSD disk, CLOUD_PREMIUM: Premium Cloud Storage, CLOUD_BSSD: Basic SSD, CLOUD_HSSD: Enhanced SSD, CLOUD_TSSD: Tremendous SSD. NOTE: If modified, the instance may force stop.",
+                "default": "",
                 "options": [
                     "LOCAL_BASIC",
                     "LOCAL_SSD",
@@ -16676,11 +16614,11 @@
             },
             {
                 "name": "user_data_raw",
-                "description": "- (Optional, String) The user data to be injected into this instance, in plain text. Conflicts with user_data. Up to 16 KB after base64 encoded."
+                "description": "- (Optional, String, ForceNew) The user data to be injected into this instance, in plain text. Conflicts with user_data. Up to 16 KB after base64 encoded."
             },
             {
                 "name": "user_data",
-                "description": "- (Optional, String) The user data to be injected into this instance. Must be base64 encoded and up to 16 KB."
+                "description": "- (Optional, String, ForceNew) The user data to be injected into this instance. Must be base64 encoded and up to 16 KB."
             },
             {
                 "name": "vpc_id",
@@ -16689,23 +16627,27 @@
         ],
         "attrs": [
             {
+                "name": "id",
+                "description": "- ID of the resource."
+            },
+            {
                 "name": "create_time",
-                "description": "- (Readonly, String) Create time of the instance."
+                "description": "- Create time of the instance."
             },
             {
                 "name": "expired_time",
-                "description": "- (Readonly, String) Expired time of the instance."
+                "description": "- Expired time of the instance."
             },
             {
                 "name": "instance_status",
-                "description": "- (Readonly, String) Current status of the instance."
+                "description": "- Current status of the instance."
             },
             {
                 "name": "public_ip",
-                "description": "- (Readonly, String) Public ip of the instance."
+                "description": "- Public IP of the instance."
             }
         ],
-        "url": "/docs/providers/tencentcloud/r/tencentcloud_cvm_instance.html"
+        "url": "/docs/providers/tencentcloud/r/instance.html"
     },
     "tencentcloud_instance_set": {
         "args": [
