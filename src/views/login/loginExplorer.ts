@@ -1,8 +1,9 @@
-import * as vscode from "vscode";
 import { localize } from "vscode-nls-i18n";
-
+import { window } from "vscode";
 import { container, tencent, cmds } from "../../commons";
 import { getSecretIdFromEnv, getSecretKeyFromEnv } from "../../utils/settingUtils";
+import { user } from "../../commons/tencent/user/index";
+import * as loginMgt from "./loginMgt";
 
 export class LoginProvider extends tencent.tree.TreeDataProvider {
     private loggedIn = false;
@@ -24,28 +25,25 @@ export class LoginProvider extends tencent.tree.TreeDataProvider {
     }
 
     async getChildren(element?: tencent.tree.TreeItem | undefined): Promise<tencent.tree.TreeItem[]> {
+        let welcome: tencent.tree.TreeItem[] = [];
         if (!element) {
-            if (this.isLoggedIn()) {
-                return [new tencent.tree.TreeItem(localize("TcTerraform.login.success"))];
+            if (!this.isLoggedIn()) {
+                window.showInformationMessage(localize("TcTerraform.login.failed"));
+                return welcome;
             }
 
-            const welcome = [
-                // new tencent.tree.TreeItem(localize("TcTerraform.view.login.welcome"))
-            ];
-
-            // const info = await user.getInfo();
-            // if (info) {
-            //     elements.push(
-            //         new TreeItem(localize("tencent.loginout", info.uin), {
-            //             iconPath: Icons.getIcon("account"),
-            //             command: { command: tencent.command.TENCENT_LOGINOUT, title: "" },
-            //         })
-            //     );
-            // }
-
-            return welcome;
+            const info = await user.getInfo();
+            if (info) {
+                welcome.push(new tencent.tree.TreeItem(
+                    `Welcome to use ` + localize("TcTerraform.title"),
+                    new tencent.tree.TreeItem(
+                        `Current Account: [${info.uin}](${info.type})`
+                    )
+                ));
+                loginMgt.updateStatusBar();
+            }
         }
-        return [];
+        return welcome;
     }
 
 }

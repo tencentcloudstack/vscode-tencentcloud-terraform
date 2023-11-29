@@ -113,6 +113,11 @@
         ],
         "commands": [
             {
+                "command": "tcTerraform.login.status",
+                "title": "login.status",
+                "category": "tiat internel category"
+            },
+            {
                 "command": "tcTerraform.login",
                 "title": "Login: %TcTerraform.view.login.welcome%",
                 "category": "TencentCloud Terraform"
@@ -288,7 +293,9 @@
         "shared": "^0.2.0",
         "strip-ansi": "=6.0.0",
         "tencentcloud-sdk-nodejs": "^4.0.580",
+        "tencentcloud-sdk-nodejs-cam": "^4.0.746",
         "tencentcloud-sdk-nodejs-cvm": "^4.0.580",
+        "tencentcloud-sdk-nodejs-sts": "^4.0.746",
         "tencentcloud-sdk-nodejs-tke": "^4.0.576",
         "vscode-extension-telemetry-wrapper": "^0.13.3",
         "vscode-nls-i18n": "^0.2.4"

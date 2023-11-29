@@ -32,7 +32,7 @@ export class CvmService implements ITencentCloudAPI {
             },
             (err) => {
                 console.error('[TencentCloudSDKError] DescribeInstances got a error from SDK.', err.message);
-                window.showErrorMessage('[TencentCloudSDKError] ' + err.message);
+                window.showErrorMessage('DescribeInstances failed, reason: ' + err.message);
                 return err;
             }
         );

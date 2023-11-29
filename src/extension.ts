@@ -15,6 +15,7 @@ import { TerraformerRunner } from './client/runner/terraformerRunner';
 import { GitUtils } from './utils/gitUtils';
 import _ from 'lodash';
 import * as autocomplete from './autocomplete/TerraformExampleProvider';
+import * as loginMgt from './views/login/loginMgt';
 
 const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' };
 const COMPATIBLE_MODE: vscode.DocumentFilter = { scheme: 'file' };
@@ -118,6 +119,11 @@ export async function activate(context: vscode.ExtensionContext) {
     init(context.extensionPath);
     registerExternelCommands();
     registerView();
+
+    // reg login status
+    let disposableLoginStatusBar = loginMgt.createStatusBar();
+    context.subscriptions.push(disposableLoginStatusBar);
+
 }
 
 
