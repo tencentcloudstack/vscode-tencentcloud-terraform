@@ -1,5 +1,5 @@
 import { localize } from "vscode-nls-i18n";
-import { ExtensionContext, workspace, ConfigurationTarget, window, ProgressLocation } from "vscode";
+import { ExtensionContext, workspace, ConfigurationTarget, window, ProgressLocation, MessageItem } from "vscode";
 
 import { container } from "../../container";
 import { Context } from "../../context";
@@ -7,10 +7,8 @@ import { tree } from "../treeDataProvider";
 import { getCredentailByInput } from "./auth";
 import { AbstractClient } from "tencentcloud-sdk-nodejs/tencentcloud/common/abstract_client";
 import { Credential } from "tencentcloud-sdk-nodejs/tencentcloud/common/interface";
-import { LoginProvider } from "../../../views/login/loginExplorer";
-import { terraformShellManager } from "../../../client/terminal/terraformShellManager";
 import { getCamClient, getStsClient } from "@/connectivity/client";
-import { StreamingStatistics } from "tencentcloud-sdk-nodejs/tencentcloud/services/dlc/v20210125/dlc_models";
+import * as loginMgt from "../../../views/login/loginMgt";
 
 export namespace user {
     interface UserInfo {
@@ -114,19 +112,21 @@ export namespace user {
     }
 
     export async function loginOut() {
-        const yes = localize("TcTerraform.common.yes");
+        const yesBtn: MessageItem = { title: localize("TcTerraform.common.yes") };
         const action = await window.showWarningMessage(
             localize("TcTerraform.view.logout"),
             {
                 modal: true,
-                detail: localize("TcTerraform.view.logout.confirm"),
+                detail: localize("TcTerraform.view.logout.confirm")
             },
+            yesBtn
         );
-        if (action !== yes) {
+        if (action !== yesBtn) {
             return;
         }
 
         await clearInfo();
+        loginMgt.clearStatusBar();
 
         tree.refreshTreeData();
     }
