@@ -21,6 +21,7 @@ Arn: [${info.arn}]`;
 }
 
 export function clearStatusBar() {
+    myStatusBarItem.text = "";
     myStatusBarItem.hide();
 }
 
