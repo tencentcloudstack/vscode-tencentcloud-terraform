@@ -9,7 +9,7 @@ import { AbstractClient } from "tencentcloud-sdk-nodejs/tencentcloud/common/abst
 import { Credential } from "tencentcloud-sdk-nodejs/tencentcloud/common/interface";
 import { LoginProvider } from "../../../views/login/loginExplorer";
 import { terraformShellManager } from "../../../client/terminal/terraformShellManager";
-import { getStsClient } from "@/connectivity/client";
+import { getCamClient, getStsClient } from "@/connectivity/client";
 import { StreamingStatistics } from "tencentcloud-sdk-nodejs/tencentcloud/services/dlc/v20210125/dlc_models";
 
 export namespace user {
@@ -22,6 +22,7 @@ export namespace user {
         type?: string;
         appid?: string;
         region?: string;
+        arn?: string;
     }
 
     export const AKSK_TITLE = "TcTerraform.pickup.aksk";
@@ -61,7 +62,7 @@ export namespace user {
             process.env.TENCENTCLOUD_SECRET_KEY = secretKey;
 
             // query user info
-            const resp = await (await getStsClient()).GetCallerIdentity({}).
+            const stsResp = await (await getStsClient()).GetCallerIdentity().
                 then(
                     (result) => {
                         console.debug('[DEBUG]--------------------------------result:', result);
@@ -77,12 +78,31 @@ export namespace user {
                     }
             );
 
+            const camResp = await (await getCamClient()).GetUserAppId().
+                then(
+                    (result) => {
+                        console.debug('[DEBUG]--------------------------------result:', result);
+                        if (!result) {
+                            throw new Error('[Warn] GetUserAppId result.TotalCount is 0.');
+                        }
+                        return result;
+                    },
+                    (err) => {
+                        console.error('[TencentCloudSDKError] GetUserAppId got a error from SDK.', err.message);
+                        window.showErrorMessage('Login Failed. Reason:' + err.message);
+                        return err;
+                    }
+                );
+
             // set user info
             let userinfo: UserInfo = {
                 secretId: accessKey,
                 secretKey: secretKey,
-                uin: resp.PrincipalId ?? resp.UserId ?? "-",
-                type: resp.Type ?? "unknow"
+                uin: stsResp.PrincipalId ?? stsResp.UserId ?? "-",
+                type: stsResp.Type ?? "unknow",
+                appid: camResp.AppId ?? "-",
+                arn: stsResp.Arn,
+                region: process.env.TENCENTCLOUD_REGION ?? "unknow",
             };
             setInfo(userinfo);
 
@@ -94,21 +114,19 @@ export namespace user {
     }
 
     export async function loginOut() {
-        const yes = localize("common.yes");
+        const yes = localize("TcTerraform.common.yes");
         const action = await window.showWarningMessage(
-            localize("tencent.loginout.title"),
+            localize("TcTerraform.view.logout"),
             {
                 modal: true,
-                detail: localize("tencent.loginout.detail"),
+                detail: localize("TcTerraform.view.logout.confirm"),
             },
-            yes
         );
         if (action !== yes) {
             return;
         }
 
-        const { secrets } = container.get<ExtensionContext>(Context);
-        await secrets.delete(USER_INFO);
+        await clearInfo();
 
         tree.refreshTreeData();
     }
@@ -183,6 +201,13 @@ export namespace user {
         const { secrets } = container.get<ExtensionContext>(Context);
 
         await secrets.store(USER_INFO, JSON.stringify(info));
+        tree.refreshTreeData();
+    }
+
+    export async function clearInfo() {
+        const { secrets } = container.get<ExtensionContext>(Context);
+
+        await secrets.delete(USER_INFO);
         tree.refreshTreeData();
     }
 

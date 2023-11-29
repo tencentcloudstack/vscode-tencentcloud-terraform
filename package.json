@@ -123,6 +123,11 @@
                 "category": "TencentCloud Terraform"
             },
             {
+                "command": "tcTerraform.logout",
+                "title": "Logout",
+                "category": "TencentCloud Terraform"
+            },
+            {
                 "command": "tcTerraform.resourcesExplorer.refresh",
                 "title": "%TcTerraform.refresh%",
                 "icon": {

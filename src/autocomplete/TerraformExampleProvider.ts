@@ -35,7 +35,7 @@ export class TerraformExampleProvider implements CompletionItemProvider {
                 command: EXAMPLE_CMD,
                 arguments: [text],
             };
-            exampleItems.push(c)
+            exampleItems.push(c);
         }
 
         return exampleItems;
