@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 "use strict";
 
 import * as vscode from "vscode";
 import { Client as CvmClient } from "tencentcloud-sdk-nodejs-cvm/tencentcloud/services/cvm/v20170312/cvm_client";
 import { Client as TkeClient } from "tencentcloud-sdk-nodejs-tke/tencentcloud/services/tke/v20180525/tke_client";
+import { AbstractClient } from "tencentcloud-sdk-nodejs/tencentcloud/common/abstract_client";
+import * as tencentcloud from "tencentcloud-sdk-nodejs";
 import { localize } from "vscode-nls-i18n";
 import * as settingUtils from "../utils/settingUtils";
 
-const tkeClient = TkeClient;
-const cvmClient = CvmClient;
 
 export async function getTkeClient(): Promise<TkeClient> {
     const secretId = process.env.TENCENTCLOUD_SECRET_ID;
@@ -18,13 +19,12 @@ export async function getTkeClient(): Promise<TkeClient> {
         return null;
     }
 
-    return new tkeClient({
+    return new TkeClient({
         credential: {
             secretId: process.env.TENCENTCLOUD_SECRET_ID,
             secretKey: process.env.TENCENTCLOUD_SECRET_KEY,
         },
-        region: (process.env.TENCENTCLOUD_REGION === undefined) ?
-            "ap-guangzhou" : process.env.TENCENTCLOUD_REGION,
+        region: process.env.TENCENTCLOUD_REGION ?? "ap-guangzhou",
         profile: {
             signMethod: "TC3-HMAC-SHA256", // 签名方法
             httpProfile: {
@@ -57,8 +57,7 @@ export async function getCvmClient(region?: string): Promise<CvmClient> {
             secretKey: secretKey,
         },
         // 产品地域
-        region: (process.env.TENCENTCLOUD_REGION === undefined) ?
-            "ap-guangzhou" : process.env.TENCENTCLOUD_REGION,
+        region: process.env.TENCENTCLOUD_REGION ?? "ap-guangzhou",
         // 可选配置实例
         profile: {
             // signMethod: "TC3-HMAC-SHA256", // 签名方法
@@ -68,10 +67,10 @@ export async function getCvmClient(region?: string): Promise<CvmClient> {
                 endpoint: "cvm.tencentcloudapi.com",
             },
         },
-    })
+    });
 }
 
-export async function getStsClient(region?: string): Promise<CvmClient> {
+export async function getCommonClient(region?: string): Promise<AbstractClient> {
     const [secretId, secretKey] = settingUtils.getAKSK();
 
     if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null) {
@@ -80,22 +79,39 @@ export async function getStsClient(region?: string): Promise<CvmClient> {
         return null;
     }
 
-    return new CvmClient({
+    const client = new AbstractClient(
+        "open.test.tencentcloudapi.com",
+        "2018-12-25",
+        {
+            credential: {
+                secretId: secretId,
+                secretKey: secretKey,
+            },
+            profile: {
+                httpProfile: {
+                    proxy: "http://9.135.97.58:8899",
+                },
+            },
+        }
+    );
+
+    return client;
+}
+
+export async function getStsClient(region?: string): Promise<any> {
+    const [secretId, secretKey] = settingUtils.getAKSK();
+
+    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null) {
+        let msg = localize("TcTerraform.msg.aksk.notfound");
+        vscode.window.showErrorMessage(msg);
+        return null;
+    }
+    const StsClient = tencentcloud.sts.v20180813.Client;
+    return new StsClient({
         credential: {
             secretId: secretId,
             secretKey: secretKey,
         },
-        // 产品地域
-        region: (process.env.TENCENTCLOUD_REGION === undefined) ?
-            "ap-guangzhou" : process.env.TENCENTCLOUD_REGION,
-        // 可选配置实例
-        profile: {
-            // signMethod: "TC3-HMAC-SHA256", // 签名方法
-            httpProfile: {
-                reqMethod: "POST", // 请求方法
-                // reqTimeout: 60, // 请求超时时间，默认60s
-                endpoint: "cvm.tencentcloudapi.com",
-            },
-        },
-    })
+        region: process.env.TENCENTCLOUD_REGION ?? "ap-guangzhou",
+    });
 }

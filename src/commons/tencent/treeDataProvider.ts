@@ -16,7 +16,7 @@ export namespace tree {
         const treeDataProvider =
             container.getAll<TreeDataProvider>(TencentTreeProvider);
 
-        treeDataProvider.map((item) => item.refresh());
+        treeDataProvider.forEach((item) => item.refresh());
         window.showInformationMessage(localize("TcTerraform.refresh.success"));
     }
 

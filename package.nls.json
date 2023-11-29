@@ -20,5 +20,6 @@
     "TcTerraform.msg.aksk.notfound": "Cannot find TENCENTCLOUD_SECRET_ID and TENCENTCLOUD_SECRET_KEY, please sign in first!",
     "TcTerraform.logout": "Logout Tencent Cloud ({0})",
     "TcTerraform.login": "Login Tencent Cloud...",
-    "TcTerraform.login.success": "Logged into Tencent Cloud successfully."
+    "TcTerraform.login.success": "Logged into Tencent Cloud successfully.",
+    "TcTerraform.login.failed": "Logged failed, please try angin."
 }
