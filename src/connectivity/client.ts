@@ -13,20 +13,20 @@ import * as settingUtils from "../utils/settingUtils";
 
 
 export async function getTkeClient(): Promise<TkeClient> {
-    const secretId = process.env.TENCENTCLOUD_SECRET_ID;
-    const secretKey = process.env.TENCENTCLOUD_SECRET_KEY;
+    const [secretId, secretKey, region] = settingUtils.getAKSKandRegion();
 
-    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null) {
-        vscode.window.showErrorMessage("Cannot find TENCENTCLOUD_SECRET_ID and TENCENTCLOUD_SECRET_KEY, please set them first!");
+    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null || secretId === '' || secretKey === '') {
+        let msg = localize("TcTerraform.msg.aksk.notfound");
+        console.error(msg); 
         return null;
     }
 
     return new TkeClient({
         credential: {
-            secretId: process.env.TENCENTCLOUD_SECRET_ID,
-            secretKey: process.env.TENCENTCLOUD_SECRET_KEY,
+            secretId: secretId,
+            secretKey: secretKey,
         },
-        region: process.env.TENCENTCLOUD_REGION ?? "ap-guangzhou",
+        region: region ?? "ap-guangzhou",
         profile: {
             signMethod: "TC3-HMAC-SHA256", // 签名方法
             httpProfile: {
@@ -37,19 +37,12 @@ export async function getTkeClient(): Promise<TkeClient> {
     });
 }
 
-export async function getCvmClient(region?: string): Promise<CvmClient> {
-    // const secretIdConfig = utils.getSecretIdFromUI();
-    // const secretKeyConfig = utils.getSecretKeyFromUI();
-    // const secretIdEnv = utils.getSecretIdFromEnv();
-    // const secretKeyEnv = utils.getSecretKeyFromEnv();
+export async function getCvmClient(): Promise<CvmClient> {
+    const [secretId, secretKey, region] = settingUtils.getAKSKandRegion();
 
-    // const secretId = (secretIdEnv === undefined) ? secretIdConfig : secretIdEnv;
-    // const secretKey = (secretKeyEnv === undefined) ? secretKeyConfig : secretKeyEnv;
-    const [secretId, secretKey] = settingUtils.getAKSK();
-
-    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null) {
+    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null || secretId === '' || secretKey === '') {
         let msg = localize("TcTerraform.msg.aksk.notfound");
-        vscode.window.showErrorMessage(msg);
+        console.error(msg); 
         return null;
     }
 
@@ -59,7 +52,7 @@ export async function getCvmClient(region?: string): Promise<CvmClient> {
             secretKey: secretKey,
         },
         // 产品地域
-        region: process.env.TENCENTCLOUD_REGION ?? "ap-guangzhou",
+        region: region ?? "ap-guangzhou",
         // 可选配置实例
         profile: {
             // signMethod: "TC3-HMAC-SHA256", // 签名方法
@@ -72,12 +65,12 @@ export async function getCvmClient(region?: string): Promise<CvmClient> {
     });
 }
 
-export async function getCommonClient(region?: string): Promise<AbstractClient> {
-    const [secretId, secretKey] = settingUtils.getAKSK();
+export async function getCommonClient(): Promise<AbstractClient> {
+    const [secretId, secretKey, region] = settingUtils.getAKSKandRegion();
 
-    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null) {
+    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null || secretId === '' || secretKey === '') {
         let msg = localize("TcTerraform.msg.aksk.notfound");
-        vscode.window.showErrorMessage(msg);
+        console.error(msg);
         return null;
     }
 
@@ -100,12 +93,12 @@ export async function getCommonClient(region?: string): Promise<AbstractClient> 
     return client;
 }
 
-export async function getStsClient(region?: string): Promise<StsClient> {
-    const [secretId, secretKey] = settingUtils.getAKSK();
+export async function getStsClient(): Promise<StsClient> {
+    const [secretId, secretKey, region] = settingUtils.getAKSKandRegion();
 
-    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null) {
+    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null || secretId === '' || secretKey === '') {
         let msg = localize("TcTerraform.msg.aksk.notfound");
-        vscode.window.showErrorMessage(msg);
+        console.error(msg);
         return null;
     }
 
@@ -114,16 +107,16 @@ export async function getStsClient(region?: string): Promise<StsClient> {
             secretId: secretId,
             secretKey: secretKey,
         },
-        region: process.env.TENCENTCLOUD_REGION ?? "ap-guangzhou",
+        region: region ?? "ap-guangzhou",
     });
 }
 
-export async function getCamClient(region?: string): Promise<CamClient> {
-    const [secretId, secretKey] = settingUtils.getAKSK();
+export async function getCamClient(): Promise<CamClient> {
+    const [secretId, secretKey, region] = settingUtils.getAKSKandRegion();
 
-    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null) {
+    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null || secretId === '' || secretKey === '') {
         let msg = localize("TcTerraform.msg.aksk.notfound");
-        vscode.window.showErrorMessage(msg);
+        console.error(msg);
         return null;
     }
 
@@ -132,6 +125,6 @@ export async function getCamClient(region?: string): Promise<CamClient> {
             secretId: secretId,
             secretKey: secretKey,
         },
-        region: process.env.TENCENTCLOUD_REGION ?? "ap-guangzhou",
+        region: region ?? "ap-guangzhou",
     });
 }

@@ -6,6 +6,7 @@
 import * as vscode from "vscode";
 import * as cpUtils from "./cpUtils";
 import * as uiUtils from "./uiUtils";
+import exp from "constants";
 
 export function isTerminalSetToCloudShell(): boolean {
     return vscode.workspace.getConfiguration().get("tcTerraform.terminal") === "cloudshell";
@@ -35,13 +36,43 @@ export function getSecretKeyFromUI(): string {
     return vscode.workspace.getConfiguration().get("tcTerraform.properties.secretKey");
 }
 
-export function getAKSK(): [string, string] {
+export function getRegionFromUI(): string {
+    return vscode.workspace.getConfiguration().get("tcTerraform.properties.region");
+}
+
+export async function clearSecretId() {
+    process.env.TENCENTCLOUD_SECRET_ID = undefined;
+    delete process.env.TENCENTCLOUD_SECRET_ID;
+    await vscode.workspace.getConfiguration().update("tcTerraform.properties.secretId", undefined, vscode.ConfigurationTarget.Global);
+}
+
+export async function clearSecretKey() {
+    process.env.TENCENTCLOUD_SECRET_KEY = undefined;
+    delete process.env.TENCENTCLOUD_SECRET_KEY;
+    await vscode.workspace.getConfiguration().update("tcTerraform.properties.secretKey", undefined, vscode.ConfigurationTarget.Global);
+}
+
+export async function clearRegion() {
+    process.env.TENCENTCLOUD_REGION = undefined;
+    delete process.env.TENCENTCLOUD_REGION;
+    await vscode.workspace.getConfiguration().update("tcTerraform.properties.region", undefined, vscode.ConfigurationTarget.Global);
+}
+
+export function getAKSKandRegion(): [string, string, string] {
     const secretIdConfig = getSecretIdFromUI();
     const secretKeyConfig = getSecretKeyFromUI();
     const secretIdEnv = getSecretIdFromEnv();
     const secretKeyEnv = getSecretKeyFromEnv();
+    const regionConfig = getRegionFromUI();
+    const regionEnv = getRegionFromEnv();
 
-    return [secretIdEnv ?? secretIdConfig, secretKeyEnv ?? secretKeyConfig];
+    return [secretIdConfig ?? secretIdEnv, secretKeyConfig ?? secretKeyEnv, regionConfig ?? regionEnv];
+}
+
+export function clearAKSKandRegion() {
+    clearRegion();
+    clearSecretId();
+    clearSecretKey();
 }
 
 export function getSecretIdFromEnv(): string {
@@ -50,6 +81,10 @@ export function getSecretIdFromEnv(): string {
 
 export function getSecretKeyFromEnv(): string {
     return process.env.TENCENTCLOUD_SECRET_KEY;
+}
+
+export function getRegionFromEnv(): string {
+    return process.env.TENCENTCLOUD_REGION;
 }
 
 export function getCheckTCCLI(): boolean {

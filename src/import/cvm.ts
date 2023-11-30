@@ -20,7 +20,8 @@ export class CvmService implements ITencentCloudAPI {
     }
 
     async describeInstances(params?: any): Promise<Instance[]> {
-        const res = await (await client.getCvmClient()).DescribeInstances({
+        const cvmClient = await client.getCvmClient();
+        const res = await cvmClient?.DescribeInstances({
             // find all instances   
         }).then(
             (result) => {
@@ -32,7 +33,6 @@ export class CvmService implements ITencentCloudAPI {
             },
             (err) => {
                 console.error('[TencentCloudSDKError] DescribeInstances got a error from SDK.', err.message);
-                window.showErrorMessage('DescribeInstances failed, reason: ' + err.message);
                 return err;
             }
         );

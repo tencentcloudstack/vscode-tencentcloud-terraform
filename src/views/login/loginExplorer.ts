@@ -1,7 +1,7 @@
 import { localize } from "vscode-nls-i18n";
 import { window, ThemeIcon } from "vscode";
 import { container, tencent } from "../../commons";
-import { getSecretIdFromEnv, getSecretKeyFromEnv } from "../../utils/settingUtils";
+import { getSecretIdFromEnv, getSecretKeyFromEnv, clearAKSKandRegion } from "../../utils/settingUtils";
 import { user } from "../../commons/tencent/user/index";
 import * as loginMgt from "./loginMgt";
 
@@ -17,8 +17,12 @@ export class LoginProvider extends tencent.tree.TreeDataProvider {
         this.loggedIn = value;
     }
 
-    isLoggedIn(): boolean {
-        if (getSecretIdFromEnv() && getSecretKeyFromEnv() && user.getInfo()) {
+    async isLoggedIn(): Promise<boolean> {
+        if (getSecretIdFromEnv() && getSecretKeyFromEnv()) {
+            const userInfo = await user.getInfo() as user.UserInfo;
+            if (!userInfo || !userInfo.secretId || userInfo.secretId === '') {
+                return false;
+            }
             return true;
         }
         return false;
@@ -28,8 +32,8 @@ export class LoginProvider extends tencent.tree.TreeDataProvider {
         let items: tencent.tree.TreeItem[] = [];
         if (!element) {
             if (!this.isLoggedIn()) {
-                window.showInformationMessage(localize("TcTerraform.login.msg.failed"));
-                loginMgt.clearStatusBar();
+                window.showInformationMessage(localize("TcTerraform.login.msg.need.login"));
+                clearAKSKandRegion();
                 return items;
             }
 
