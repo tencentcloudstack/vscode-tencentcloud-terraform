@@ -130,7 +130,7 @@ export class TerraformRunner extends BaseRunner {
     }
 
     private setAKSK(runner?: any) {
-        const [ak, sk] = settingUtils.getAKSK();
+        const [ak, sk, region] = settingUtils.getAKSKandRegion();
         terraformShellManager.getIntegratedShell(runner).runNormalCmd("export TENCENTCLOUD_SECRET_ID=" + ak);
         terraformShellManager.getIntegratedShell(runner).runNormalCmd("export TENCENTCLOUD_SECRET_KEY=" + sk);
     }

@@ -113,13 +113,8 @@
         ],
         "commands": [
             {
-                "command": "tcTerraform.login.status",
-                "title": "login.status",
-                "category": "tiat internel category"
-            },
-            {
                 "command": "tcTerraform.login",
-                "title": "Login: %TcTerraform.view.login.welcome%",
+                "title": "Login",
                 "category": "TencentCloud Terraform"
             },
             {
@@ -211,13 +206,16 @@
                 },
                 "tcTerraform.properties.secretId": {
                     "type": "string",
-                    "default": "your_secretid",
                     "description": "Input your Tencent Cloud secret Id."
                 },
                 "tcTerraform.properties.secretKey": {
                     "type": "string",
-                    "default": "your_secretkey",
                     "description": "Input your Tencent Cloud secret key."
+                },
+                "tcTerraform.properties.region": {
+                    "type": "string",
+                    "default": "ap-guangzhou",
+                    "description": "Input your region."
                 },
                 "tcTerraform.checkTerraformCmd": {
                     "type": "boolean",

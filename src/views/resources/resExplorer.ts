@@ -18,7 +18,7 @@ export class CvmResProvider extends tencent.tree.TreeDataProvider {
         if (!element) {
             try {
                 // TODO: replace with specified resource type
-                const service = await new CvmService();
+                const service = new CvmService();
                 const instances = await service.describeInstances();
                 const config = await service.getConfig();
 
@@ -42,7 +42,7 @@ export class CvmResProvider extends tencent.tree.TreeDataProvider {
                             }],
                         },
                     }))
-                    : [];
+                    : [];// return [] if instances nil
 
                 return items;
             } catch (error) {

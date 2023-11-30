@@ -9,9 +9,10 @@ import { AbstractClient } from "tencentcloud-sdk-nodejs/tencentcloud/common/abst
 import { Credential } from "tencentcloud-sdk-nodejs/tencentcloud/common/interface";
 import { getCamClient, getStsClient } from "@/connectivity/client";
 import * as loginMgt from "../../../views/login/loginMgt";
+import * as settingUtils from "../../../utils/settingUtils";
 
 export namespace user {
-    interface UserInfo {
+    export interface UserInfo {
         secretId: string;
         secretKey: string;
         token?: string;
@@ -40,71 +41,81 @@ export namespace user {
             const credential = await getCredentailByInput();
             const accessKey = credential.secretId;
             const secretKey = credential.secretKey;
+            const region = credential.region;
 
             // get configuration
             const config = workspace.getConfiguration();
+
             // set in vscode configuration(setting.json)
-            config.update('tcTerraform.properties.secretId', accessKey, ConfigurationTarget.Global)
+            await config.update('tcTerraform.properties.secretId', accessKey, ConfigurationTarget.Global)
                 .then(() => {
                 }, (error) => {
-                    window.showErrorMessage('设置secretId失败: ' + error);
+                    window.showErrorMessage('set secretId failed: ' + error);
                 });
-            config.update('tcTerraform.properties.secretKey', secretKey, ConfigurationTarget.Global)
+            await config.update('tcTerraform.properties.secretKey', secretKey, ConfigurationTarget.Global)
                 .then(() => {
                 }, (error) => {
-                    window.showErrorMessage('设置secretKey失败: ' + error);
+                    window.showErrorMessage('set secretKey failed: ' + error);
+                });
+            await config.update('tcTerraform.properties.region', region, ConfigurationTarget.Global)
+                .then(() => {
+                }, (error) => {
+                    window.showErrorMessage('set region failed: ' + error);
                 });
 
             // set in system environment
             process.env.TENCENTCLOUD_SECRET_ID = accessKey;
             process.env.TENCENTCLOUD_SECRET_KEY = secretKey;
+            process.env.TENCENTCLOUD_REGION = region;
 
-            // query user info
-            const stsResp = await (await getStsClient()).GetCallerIdentity().
-                then(
-                    (result) => {
-                        console.debug('[DEBUG]--------------------------------result:', result);
-                        if (!result) {
-                            throw new Error('[Warn] GetCallerIdentity result.TotalCount is 0.');
+            try {
+                // query user info
+                const stsClient = await getStsClient();
+                const stsResp = await stsClient?.GetCallerIdentity().
+                    then(
+                        (result) => {
+                            console.debug('[DEBUG]--------------------------------result:', result);
+                            if (!result) {
+                                throw new Error('[Warn] GetCallerIdentity result.TotalCount is 0.');
+                            }
+                            return result;
+                        },
+                        (err) => {
+                            throw new Error(err);
                         }
-                        return result;
-                    },
-                    (err) => {
-                        console.error('[TencentCloudSDKError] GetCallerIdentity got a error from SDK.', err.message);
-                        window.showErrorMessage('Login Failed. Reason:' + err.message);
-                        return err;
-                    }
-            );
+                    );
 
-            const camResp = await (await getCamClient()).GetUserAppId().
-                then(
-                    (result) => {
-                        console.debug('[DEBUG]--------------------------------result:', result);
-                        if (!result) {
-                            throw new Error('[Warn] GetUserAppId result.TotalCount is 0.');
+                const camClient = await getCamClient();
+                const camResp = await camClient?.GetUserAppId().
+                    then(
+                        (result) => {
+                            console.debug('[DEBUG]--------------------------------result:', result);
+                            if (!result) {
+                                throw new Error('[Warn] GetUserAppId result.TotalCount is 0.');
+                            }
+                            return result;
+                        },
+                        (err) => {
+                            throw new Error(err);
                         }
-                        return result;
-                    },
-                    (err) => {
-                        console.error('[TencentCloudSDKError] GetUserAppId got a error from SDK.', err.message);
-                        window.showErrorMessage('Login Failed. Reason:' + err.message);
-                        return err;
-                    }
-                );
+                    );
 
-            // set user info
-            let userinfo: UserInfo = {
-                secretId: accessKey,
-                secretKey: secretKey,
-                uin: stsResp.PrincipalId ?? stsResp.UserId ?? "-",
-                type: stsResp.Type ?? "unknow",
-                appid: camResp.AppId ?? "-",
-                arn: stsResp.Arn,
-                region: process.env.TENCENTCLOUD_REGION ?? "unknow",
-            };
-            setInfo(userinfo);
+                // set user info
+                let userinfo: UserInfo = {
+                    secretId: accessKey,
+                    secretKey: secretKey,
+                    uin: stsResp.PrincipalId ?? stsResp.UserId ?? "-",
+                    type: stsResp.Type ?? "unknow",
+                    appid: String(camResp.AppId) ?? "-",
+                    arn: stsResp.Arn,
+                    region: region ?? "unknow",
+                };
+                setInfo(userinfo);
 
-            // tree.refreshTreeData();
+            } catch (err) {
+                console.error('[TencentCloudSDKError]', err.message);
+                window.showErrorMessage('Login Failed. Reason:' + err.message);
+            }
         }
         if (oauth === pick) {
             // to do 
@@ -127,6 +138,7 @@ export namespace user {
 
         await clearInfo();
         loginMgt.clearStatusBar();
+        settingUtils.clearAKSKandRegion();
 
         tree.refreshTreeData();
     }
