@@ -34,14 +34,6 @@ export async function activate(context: vscode.ExtensionContext) {
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Apply);
     }));
 
-    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.import', () => {
-        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Import);
-    }));
-
-    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.validate', () => {
-        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Validate);
-    }));
-
     context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.refresh', () => {
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Refresh);
     }));
@@ -49,39 +41,6 @@ export async function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.destroy', () => {
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Destroy);
     }));
-
-    let disposableGraph = vscode.commands.registerCommand('tcTerraform.visualize', async () => {
-        if (settingUtils.isTerminalSetToCloudShell()) {
-            const choice: vscode.MessageItem = await vscode.window.showInformationMessage(
-                "Visualization only works locally. Would you like to run it in the integrated terminal?",
-                DialogOption.ok,
-                DialogOption.cancel,
-            );
-            if (choice === DialogOption.cancel) {
-                return;
-            }
-        }
-        await terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).visualize();
-    });
-
-    context.subscriptions.push(disposableGraph);
-
-    let disposableTest = vscode.commands.registerCommand('tcTerraform.test', async () => {
-        // to-do
-    });
-
-    context.subscriptions.push(disposableTest);
-
-    // git operations
-    let disposablePush = vscode.commands.registerCommand('tcTerraform.git.push', async () => {
-        if (_.isEmpty(vscode.workspace.workspaceFolders)) {
-            vscode.window.showInformationMessage("Please open a workspace in VS Code first.");
-            return;
-        }
-        await GitUtils.getInstance().submitToGit();
-    });
-
-    context.subscriptions.push(disposablePush);
 
     // terraformer cmd
     let disposableTferImport = vscode.commands.registerCommand('tcTerraformer.import', async () => {
