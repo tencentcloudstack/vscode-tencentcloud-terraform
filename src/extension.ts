@@ -6,7 +6,7 @@ import { init } from "vscode-nls-i18n";
 import { TerraformCommand, TerraformerCommand } from "./commons/customCmdRegister";
 import { terraformShellManager } from "./client/terminal/terraformShellManager";
 import { DialogOption } from "./utils/uiUtils";
-import { TerraformTipsProvider } from './autocomplete/TerraformTipsProvider';
+import { TerraformTipsProvider, TIPS_TRIGGER_CHARACTER } from './autocomplete/TerraformTipsProvider';
 import { TerraformResDocProvider } from './autocomplete/TerraformResDocProvider';
 import { registerExternelCommands, bindExtensionContext } from './commons';
 import { registerView } from './views';
@@ -14,6 +14,7 @@ import { TerraformRunner } from './client/runner/terraformRunner';
 import { TerraformerRunner } from './client/runner/terraformerRunner';
 import { GitUtils } from './utils/gitUtils';
 import _ from 'lodash';
+import * as autocomplete from './autocomplete/TerraformExampleProvider';
 
 const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' };
 const COMPATIBLE_MODE: vscode.DocumentFilter = { scheme: 'file' };
@@ -95,15 +96,22 @@ export async function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposableTferPlan);
 
     // auto-complete
-    console.log('activate the auto complete(snippets and lint) feature');
+    console.log('activate the tips(resource and options) feature');
     const tipsProvider = new TerraformTipsProvider();
+    const exampleProvider = new autocomplete.TerraformExampleProvider();
     context.subscriptions.push(
         vscode.workspace.onDidChangeTextDocument((event) => {
             tipsProvider.handleCharacterEvent(event);
         })
     );
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, tipsProvider, ".", "\""));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, tipsProvider, ...TIPS_TRIGGER_CHARACTER));
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(TF_MODE, new TerraformResDocProvider()));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, exampleProvider, autocomplete.EXAMPLE_TRIGGER_CHARACTER));
+
+    // example
+    console.log('activate the auto complete(example) feature');
+    let disposableExample = vscode.commands.registerCommand(autocomplete.EXAMPLE_CMD, autocomplete.handleExampleCmd());
+    context.subscriptions.push(disposableExample);
 
     // import-resource
     console.log('activate the import feature');
@@ -111,6 +119,8 @@ export async function activate(context: vscode.ExtensionContext) {
     registerExternelCommands();
     registerView();
 }
+
+
 
 // This method is called when your extension is deactivated
 export function deactivate() {

@@ -18,6 +18,9 @@ interface TerraformCompletionContext extends vscode.CompletionContext {
 const TEXT_MIN_SORT = "a";
 const TEXT_FILTER = " ";
 
+export const TIPS_TRIGGER_CHARACTER = [".", "\""];
+export const TIPS_OPTIONS_TRIGGER_CHARACTER = '=';
+
 export class TerraformTipsProvider implements CompletionItemProvider {
     document: TextDocument;
     position: Position;
@@ -95,8 +98,8 @@ export class TerraformTipsProvider implements CompletionItemProvider {
             return this.getHintsForStrings(possibleResources);
         }
 
-        const endwithEqual = lineTillCurrentPosition.endsWith('=');
-        const includeEqual = lineTillCurrentPosition.indexOf('=');
+        const endwithEqual = lineTillCurrentPosition.endsWith(TIPS_OPTIONS_TRIGGER_CHARACTER);
+        const includeEqual = lineTillCurrentPosition.indexOf(TIPS_OPTIONS_TRIGGER_CHARACTER);
         // handle options
         if (this.resourceType) {
             // typing a '=' character
@@ -188,7 +191,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
         let found = [];
         for (let i = 0; i < document.lineCount; i++) {
             let line = document.lineAt(i).text;
-            let result = line.match(r);
+            let result = RegExp(r).exec(line);
             if (result && result.length > 1) {
                 found.push(result[1]);
             }
@@ -291,7 +294,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
         }
 
         const changes = event.contentChanges[0];
-        if (changes.text === '=') {
+        if (changes.text === TIPS_OPTIONS_TRIGGER_CHARACTER) {
             const position = activeEditor.selection.active;
             const resourceType = this.findResourceType(event.document, position);
 
