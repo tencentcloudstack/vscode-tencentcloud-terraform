@@ -2,7 +2,7 @@
     "name": "vscode-tencentcloud-terraform",
     "displayName": "Tencent Cloud Terraform",
     "description": "VS Code extension for developing with Terraform on Tencent Cloud",
-    "version": "0.0.21",
+    "version": "0.0.23",
     "license": "MIT",
     "publisher": "Tencent-Cloud",
     "icon": "images/tc-tf-logo.png",
@@ -114,7 +114,12 @@
         "commands": [
             {
                 "command": "tcTerraform.login",
-                "title": "Login: %TcTerraform.view.login.welcome%",
+                "title": "Login",
+                "category": "TencentCloud Terraform"
+            },
+            {
+                "command": "tcTerraform.logout",
+                "title": "Logout",
                 "category": "TencentCloud Terraform"
             },
             {
@@ -141,16 +146,6 @@
                 "category": "TencentCloud Terraform"
             },
             {
-                "command": "tcTerraform.import",
-                "title": "Import",
-                "category": "TencentCloud Terraform"
-            },
-            {
-                "command": "tcTerraform.validate",
-                "title": "Validate",
-                "category": "TencentCloud Terraform"
-            },
-            {
                 "command": "tcTerraform.refresh",
                 "title": "Refresh",
                 "category": "TencentCloud Terraform"
@@ -158,16 +153,6 @@
             {
                 "command": "tcTerraform.destroy",
                 "title": "Destroy",
-                "category": "TencentCloud Terraform"
-            },
-            {
-                "command": "tcTerraform.visualize",
-                "title": "Visualize",
-                "category": "TencentCloud Terraform"
-            },
-            {
-                "command": "tcTerraform.test",
-                "title": "Test",
                 "category": "TencentCloud Terraform"
             },
             {
@@ -201,13 +186,16 @@
                 },
                 "tcTerraform.properties.secretId": {
                     "type": "string",
-                    "default": "your_secretid",
                     "description": "Input your Tencent Cloud secret Id."
                 },
                 "tcTerraform.properties.secretKey": {
                     "type": "string",
-                    "default": "your_secretkey",
                     "description": "Input your Tencent Cloud secret key."
+                },
+                "tcTerraform.properties.region": {
+                    "type": "string",
+                    "default": "ap-guangzhou",
+                    "description": "Input your region."
                 },
                 "tcTerraform.checkTerraformCmd": {
                     "type": "boolean",
@@ -288,7 +276,9 @@
         "shared": "^0.2.0",
         "strip-ansi": "=6.0.0",
         "tencentcloud-sdk-nodejs": "^4.0.580",
+        "tencentcloud-sdk-nodejs-cam": "^4.0.746",
         "tencentcloud-sdk-nodejs-cvm": "^4.0.580",
+        "tencentcloud-sdk-nodejs-sts": "^4.0.746",
         "tencentcloud-sdk-nodejs-tke": "^4.0.576",
         "vscode-extension-telemetry-wrapper": "^0.13.3",
         "vscode-nls-i18n": "^0.2.4"

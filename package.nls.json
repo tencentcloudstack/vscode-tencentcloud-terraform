@@ -1,6 +1,8 @@
 {
     "TcTerraform.title": "Tencent Cloud Terraform",
-    "TcTerraform.view.login": "Login Tencent Cloud",
+    "TcTerraform.view.login": "Log in Tencent Cloud",
+    "TcTerraform.view.logout": "Log out Tencent Cloud",
+    "TcTerraform.view.logout.confirm": "Are you sure to log out?",
     "TcTerraform.view.login.welcome": "Please login the Tencent Cloud. [Sign up](https://cloud.tencent.com/register) for a Tencent Cloud account if you do not have one.\n[Sign in Tencent Cloud](command:tcTerraform.login)",
     "TcTerraform.view.codesnippet": "Code Snippets and Examples",
     "TcTerraform.view.resource": "Resources Explorer",
@@ -13,12 +15,15 @@
     "TcTerraform.view.help.doc": "Documentation",
     "TcTerraform.view.help.repo": "GitHub Repository",
     "TcTerraform.pickup.aksk": "Sign in with [Secret Id/Secret Key]",
+    "TcTerraform.pickup.region": "Sign in with your [Region]",
     "TcTerraform.pickup.oauth": "Sign in with [Tencent Cloud authoritication] (Coming Soon...)",
-    "TcTerraform.pickup.aksk.placeholder": "Please input your API {0}",
+    "TcTerraform.pickup.aksk.placeholder": "Tencent Cloud {0}",
     "TcTerraform.pickup.aksk.verify.empty": "{0} can not be empty",
     "TcTerraform.welcome": "Welcome to use Tencent Cloud Terraform extension, please wait for the page loading...",
     "TcTerraform.msg.aksk.notfound": "Cannot find TENCENTCLOUD_SECRET_ID and TENCENTCLOUD_SECRET_KEY, please sign in first!",
-    "TcTerraform.logout": "Logout Tencent Cloud ({0})",
     "TcTerraform.login": "Login Tencent Cloud...",
-    "TcTerraform.login.success": "Logged into Tencent Cloud successfully."
+    "TcTerraform.login.msg.success": "Logged into Tencent Cloud successfully.",
+    "TcTerraform.login.msg.need.login": "Please log in Tencent Cloud first.",
+    "TcTerraform.common.yes": "Yes",
+    "TcTerraform.common.no": "No"
 }

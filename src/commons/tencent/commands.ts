@@ -4,7 +4,8 @@ import user from "./user";
 export function registerLoginCmds() {
     commands.registerCommand(command.TENCENT_LOGIN, user.login);
 
-    //   commands.registerCommand(command.TENCENT_LOGINOUT, user.loginOut);
+    commands.registerCommand(command.TENCENT_LOGINOUT, user.loginOut);
+
 }
 
 export namespace command {

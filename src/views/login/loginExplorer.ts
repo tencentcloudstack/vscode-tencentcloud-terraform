@@ -1,8 +1,9 @@
-import * as vscode from "vscode";
 import { localize } from "vscode-nls-i18n";
-
-import { container, tencent, cmds } from "../../commons";
-import { getSecretIdFromEnv, getSecretKeyFromEnv } from "../../utils/settingUtils";
+import { window, ThemeIcon } from "vscode";
+import { container, tencent } from "../../commons";
+import { getSecretIdFromEnv, getSecretKeyFromEnv, clearAKSKandRegion } from "../../utils/settingUtils";
+import { user } from "../../commons/tencent/user/index";
+import * as loginMgt from "./loginMgt";
 
 export class LoginProvider extends tencent.tree.TreeDataProvider {
     private loggedIn = false;
@@ -16,36 +17,42 @@ export class LoginProvider extends tencent.tree.TreeDataProvider {
         this.loggedIn = value;
     }
 
-    isLoggedIn(): boolean {
+    async isLoggedIn(): Promise<boolean> {
         if (getSecretIdFromEnv() && getSecretKeyFromEnv()) {
+            const userInfo = await user.getInfo() as user.UserInfo;
+            if (!userInfo || !userInfo.secretId || userInfo.secretId === '') {
+                return false;
+            }
             return true;
         }
         return false;
     }
 
     async getChildren(element?: tencent.tree.TreeItem | undefined): Promise<tencent.tree.TreeItem[]> {
+        let items: tencent.tree.TreeItem[] = [];
         if (!element) {
-            if (this.isLoggedIn()) {
-                return [new tencent.tree.TreeItem(localize("TcTerraform.login.success"))];
+            if (!this.isLoggedIn()) {
+                window.showInformationMessage(localize("TcTerraform.login.msg.need.login"));
+                clearAKSKandRegion();
+                return items;
             }
 
-            const welcome = [
-                // new tencent.tree.TreeItem(localize("TcTerraform.view.login.welcome"))
-            ];
+            const info = await user.getInfo();
+            if (info) {
+                let welcome = new tencent.tree.TreeItem(`Current Account: [${info.uin}](${info.type})`, {
+                    iconPath: new ThemeIcon("account"),
+                });
+                items.push(welcome);
+                loginMgt.updateStatusBar();
 
-            // const info = await user.getInfo();
-            // if (info) {
-            //     elements.push(
-            //         new TreeItem(localize("tencent.loginout", info.uin), {
-            //             iconPath: Icons.getIcon("account"),
-            //             command: { command: tencent.command.TENCENT_LOGINOUT, title: "" },
-            //         })
-            //     );
-            // }
-
-            return welcome;
+                let logout = new tencent.tree.TreeItem(localize("TcTerraform.view.logout"), {
+                    iconPath: new ThemeIcon("log-out"),
+                    command: { command: tencent.command.TENCENT_LOGINOUT, title: "Log Out" },
+                });
+                items.push(logout);
+            }
         }
-        return [];
+        return items;
     }
 
 }
