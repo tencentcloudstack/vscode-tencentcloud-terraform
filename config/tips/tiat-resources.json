@@ -16705,7 +16705,7 @@
                 "description": "- (Readonly, String) Public ip of the instance."
             }
         ],
-        "url": "/docs/providers/tencentcloud/r/tencentcloud_cvm_instance.html"
+        "url": "/docs/providers/tencentcloud/r/instance.html"
     },
     "tencentcloud_instance_set": {
         "args": [
@@ -17227,294 +17227,791 @@
     "tencentcloud_kubernetes_cluster": {
         "args": [
             {
-                "name": "vpc_id",
-                "description": "- (Required, String, ForceNew) Vpc Id of the cluster."
-            },
-            {
-                "name": "acquire_cluster_admin_role",
-                "description": "- (Optional, Bool) If set to true, it will acquire the ClusterRole tke:admin. NOTE: this arguments cannot revoke to false after acquired."
-            },
-            {
-                "name": "auth_options",
-                "description": "- (Optional, List) Specify cluster authentication configuration. Only available for managed cluster and cluster_version >= 1.20."
-            },
-            {
-                "name": "auto_upgrade_cluster_level",
-                "description": "- (Optional, Bool) Whether the cluster level auto upgraded, valid for managed cluster."
-            },
-            {
-                "name": "base_pod_num",
-                "description": "- (Optional, Int, ForceNew) The number of basic pods. valid when enable_customized_pod_cidr=true."
-            },
-            {
-                "name": "claim_expired_seconds",
-                "description": "- (Optional, Int) Claim expired seconds to recycle ENI. This field can only set when field network_type is 'VPC-CNI'. claim_expired_seconds must greater or equal than 300 and less than 15768000."
-            },
-            {
-                "name": "cluster_as_enabled",
-                "description": "- (Optional, Bool, ForceNew, Deprecated) This argument is deprecated because the TKE auto-scaling group was no longer available. Indicates whether to enable cluster node auto scaling. Default is false."
-            },
-            {
-                "name": "cluster_audit",
-                "description": "- (Optional, List) Specify Cluster Audit config. NOTE: Please make sure your TKE CamRole have permission to access CLS service."
-            },
-            {
-                "name": "cluster_cidr",
-                "description": "- (Optional, String, ForceNew) A network address block of the cluster. Different from vpc cidr and cidr of other clusters within this vpc. Must be in  10./192.168/172.[16-31] segments."
-            },
-            {
-                "name": "cluster_deploy_type",
-                "description": "- (Optional, String, ForceNew) Deployment type of the cluster, the available values include: 'MANAGED_CLUSTER' and 'INDEPENDENT_CLUSTER'. Default is 'MANAGED_CLUSTER'."
+                "name": "cluster_name",
+                "description": "- (Optional, String) Name of the cluster."
             },
             {
                 "name": "cluster_desc",
                 "description": "- (Optional, String) Description of the cluster."
             },
             {
-                "name": "cluster_extra_args",
-                "description": "- (Optional, List, ForceNew) Customized parameters for master component,such as kube-apiserver, kube-controller-manager, kube-scheduler."
-            },
-            {
-                "name": "cluster_internet_domain",
-                "description": "- (Optional, String) Domain name for cluster Kube-apiserver internet access. Be careful if you modify value of this parameter, the cluster_external_endpoint value may be changed automatically too."
-            },
-            {
-                "name": "cluster_internet_security_group",
-                "description": "- (Optional, String) Specify security group, NOTE: This argument must not be empty if cluster internet enabled."
-            },
-            {
-                "name": "cluster_internet",
-                "description": "- (Optional, Bool) Open internet access or not. If this field is set 'true', the field below worker_config must be set. Because only cluster with node is allowed enable access endpoint. You may open it through tencentcloud_kubernetes_cluster_endpoint."
-            },
-            {
-                "name": "cluster_intranet_domain",
-                "description": "- (Optional, String) Domain name for cluster Kube-apiserver intranet access. Be careful if you modify value of this parameter, the pgw_endpoint value may be changed automatically too."
-            },
-            {
-                "name": "cluster_intranet_subnet_id",
-                "description": "- (Optional, String) Subnet id who can access this independent cluster, this field must and can only set  when cluster_intranet is true. cluster_intranet_subnet_id can not modify once be set."
-            },
-            {
-                "name": "cluster_intranet",
-                "description": "- (Optional, Bool) Open intranet access or not. If this field is set 'true', the field below worker_config must be set. Because only cluster with node is allowed enable access endpoint. You may open it through tencentcloud_kubernetes_cluster_endpoint."
-            },
-            {
-                "name": "cluster_ipvs",
-                "description": "- (Optional, Bool, ForceNew) Indicates whether ipvs is enabled. Default is true. False means iptables is enabled."
-            },
-            {
-                "name": "cluster_level",
-                "description": "- (Optional, String) Specify cluster level, valid for managed cluster, use data source tencentcloud_kubernetes_cluster_levels to query available levels. Available value examples L5, L20, L50, L100, etc."
-            },
-            {
-                "name": "cluster_max_pod_num",
-                "description": "- (Optional, Int, ForceNew) The maximum number of Pods per node in the cluster. Default is 256. The minimum value is 4. When its power unequal to 2, it will round upward to the closest power of 2."
-            },
-            {
-                "name": "cluster_max_service_num",
-                "description": "- (Optional, Int, ForceNew) The maximum number of services in the cluster. Default is 256. The range is from 32 to 32768. When its power unequal to 2, it will round upward to the closest power of 2."
-            },
-            {
-                "name": "cluster_name",
-                "description": "- (Optional, String) Name of the cluster."
-            },
-            {
-                "name": "cluster_os_type",
-                "description": "- (Optional, String, ForceNew) Image type of the cluster os, the available values include: 'GENERAL'. Default is 'GENERAL'."
-            },
-            {
                 "name": "cluster_os",
-                "description": "- (Optional, String, ForceNew) Operating system of the cluster, the available values include: 'centos7.6.0_x64','ubuntu18.04.1x86_64','tlinux2.4x86_64'. Default is 'tlinux2.4x86_64'."
+                "description": "- (Optional, String) Operating system of the cluster, the available values include: 'centos7.6.0_x64','ubuntu18.04.1x86_64','tlinux2.4x86_64'. Default is 'tlinux2.4x86_64'.",
+                "options": [
+                    "centos7.6.0_x64",
+                    "ubuntu18.04.1x86_64",
+                    "tlinux2.4x86_64"
+                ]
             },
             {
                 "name": "cluster_subnet_id",
                 "description": "- (Optional, String) Subnet ID of the cluster, such as: subnet-b3p7d7q5."
             },
             {
-                "name": "cluster_version",
-                "description": "- (Optional, String) Version of the cluster. Use tencentcloud_kubernetes_available_cluster_versions to get the upgradable cluster version."
+                "name": "cluster_os_type",
+                "description": "- (Optional, String) Image type of the cluster os, the available values include: 'GENERAL'. Default is 'GENERAL'.",
+                "options": [
+                    "GENERAL"
+                ]
             },
             {
                 "name": "container_runtime",
-                "description": "- (Optional, String, ForceNew) Runtime type of the cluster, the available values include: 'docker' and 'containerd'.The Kubernetes v1.24 has removed dockershim, so please use containerd in v1.24 or higher.Default is 'docker'."
+                "description": "- (Optional, String) Runtime type of the cluster, the available values include: 'docker' and 'containerd'. The Kubernetes v1.24 has removed dockershim, so please use containerd in v1.24 or higher. Default is 'docker'.",
+                "options": [
+                    "docker",
+                    "containerd"
+                ]
             },
             {
-                "name": "deletion_protection",
-                "description": "- (Optional, Bool) Indicates whether cluster deletion protection is enabled. Default is false."
+                "name": "cluster_deploy_type",
+                "description": "- (Optional, String) Deployment type of the cluster, the available values include: 'MANAGED_CLUSTER' and 'INDEPENDENT_CLUSTER'. Default is 'MANAGED_CLUSTER'.",
+                "options": [
+                    "MANAGED_CLUSTER",
+                    "INDEPENDENT_CLUSTER"
+                ]
             },
             {
-                "name": "docker_graph_path",
-                "description": "- (Optional, String, ForceNew) Docker graph path. Default is /var/lib/docker."
-            },
-            {
-                "name": "enable_customized_pod_cidr",
-                "description": "- (Optional, Bool) Whether to enable the custom mode of node podCIDR size. Default is false."
-            },
-            {
-                "name": "eni_subnet_ids",
-                "description": "- (Optional, List: [String]) Subnet Ids for cluster with VPC-CNI network mode. This field can only set when field network_type is 'VPC-CNI'. eni_subnet_ids can not empty once be set."
-            },
-            {
-                "name": "event_persistence",
-                "description": "- (Optional, List) Specify cluster Event Persistence config. NOTE: Please make sure your TKE CamRole have permission to access CLS service."
-            },
-            {
-                "name": "exist_instance",
-                "description": "- (Optional, List, ForceNew) create tke cluster by existed instances."
-            },
-            {
-                "name": "extension_addon",
-                "description": "- (Optional, List) Information of the add-on to be installed."
-            },
-            {
-                "name": "extra_args",
-                "description": "- (Optional, List: [String], ForceNew) Custom parameter information related to the node."
-            },
-            {
-                "name": "globe_desired_pod_num",
-                "description": "- (Optional, Int, ForceNew) Indicate to set desired pod number in node. valid when enable_customized_pod_cidr=true, and it takes effect for all nodes."
-            },
-            {
-                "name": "ignore_cluster_cidr_conflict",
-                "description": "- (Optional, Bool, ForceNew) Indicates whether to ignore the cluster cidr conflict error. Default is false."
-            },
-            {
-                "name": "is_non_static_ip_mode",
-                "description": "- (Optional, Bool, ForceNew) Indicates whether non-static ip mode is enabled. Default is false."
-            },
-            {
-                "name": "kube_proxy_mode",
-                "description": "- (Optional, String) Cluster kube-proxy mode, the available values include: 'kube-proxy-bpf'. Default is not set.When set to kube-proxy-bpf, cluster version greater than 1.14 and with Tencent Linux 2.4 is required."
-            },
-            {
-                "name": "labels",
-                "description": "- (Optional, Map, ForceNew) Labels of tke cluster nodes."
-            },
-            {
-                "name": "log_agent",
-                "description": "- (Optional, List) Specify cluster log agent config."
-            },
-            {
-                "name": "managed_cluster_internet_security_policies",
-                "description": "- (Optional, List: [String], Deprecated) this argument was deprecated, use cluster_internet_security_group instead. Security policies for managed cluster internet, like:'192.168.1.0/24' or '113.116.51.27', '0.0.0.0/0' means all. This field can only set when field cluster_deploy_type is 'MANAGED_CLUSTER' and cluster_internet is true. managed_cluster_internet_security_policies can not delete or empty once be set."
-            },
-            {
-                "name": "master_config",
-                "description": "- (Optional, List, ForceNew) Deploy the machine configuration information of the 'MASTER_ETCD' service, and create <=7 units for common users."
-            },
-            {
-                "name": "mount_target",
-                "description": "- (Optional, String, ForceNew) Mount target. Default is not mounting."
-            },
-            {
-                "name": "network_type",
-                "description": "- (Optional, String, ForceNew) Cluster network type, the available values include: 'GR' and 'VPC-CNI' and 'CiliumOverlay'. Default is GR."
-            },
-            {
-                "name": "node_name_type",
-                "description": "- (Optional, String, ForceNew) Node name type of Cluster, the available values include: 'lan-ip' and 'hostname', Default is 'lan-ip'."
-            },
-            {
-                "name": "node_pool_global_config",
-                "description": "- (Optional, List) Global config effective for all node pools."
-            },
-            {
-                "name": "project_id",
-                "description": "- (Optional, Int) Project ID, default value is 0."
-            },
-            {
-                "name": "runtime_version",
-                "description": "- (Optional, String) Container Runtime version."
-            },
-            {
-                "name": "service_cidr",
-                "description": "- (Optional, String, ForceNew) A network address block of the service. Different from vpc cidr and cidr of other clusters within this vpc. Must be in  10./192.168/172.[16-31] segments."
-            },
-            {
-                "name": "tags",
-                "description": "- (Optional, Map) The tags of the cluster."
-            },
-            {
-                "name": "unschedulable",
-                "description": "- (Optional, Int, ForceNew) Sets whether the joining node participates in the schedule. Default is '0'. Participate in scheduling."
+                "name": "cluster_version",
+                "description": "- (Optional, String) Version of the cluster. Use `tencentcloud_kubernetes_available_cluster_versions` to get the upgradable cluster version."
             },
             {
                 "name": "upgrade_instances_follow_cluster",
                 "description": "- (Optional, Bool) Indicates whether upgrade all instances when cluster_version change. Default is false."
             },
             {
+                "name": "cluster_ipvs",
+                "description": "- (Optional, Bool) Indicates whether `ipvs` is enabled. Default is true. False means `iptables` is enabled."
+            },
+            {
+                "name": "cluster_level",
+                "description": "- (Optional, String) Specify cluster level, valid for managed cluster, use data source `tencentcloud_kubernetes_cluster_levels` to query available levels. Available value examples `L5`, `L20`, `L50`, `L100`, etc."
+            },
+            {
+                "name": "auto_upgrade_cluster_level",
+                "description": "- (Optional, Bool) Whether the cluster level auto upgraded, valid for managed cluster."
+            },
+            {
+                "name": "acquire_cluster_admin_role",
+                "description": "- (Optional, Bool) If set to true, it will acquire the ClusterRole tke:admin. NOTE: this arguments cannot revoke to `false` after acquired."
+            },
+            {
+                "name": "node_pool_global_config",
+                "description": "- (Optional, Maplist) Global config effective for all node pools.",
+                "detail": [
+                    {
+                        "name": "kube_apiserver",
+                        "description": "- (Optional, Bool) Indicates whether to enable scale-in."
+                    },
+                    {
+                        "name": "expander",
+                        "description": "- (Optional, String) Indicates which scale-out method will be used when there are multiple scaling groups. Valid values: `random` - select a random scaling group, `most-pods` - select the scaling group that can schedule the most pods, `least-waste` - select the scaling group that can ensure the fewest remaining resources after Pod scheduling."
+                    },
+                    {
+                        "name": "max_concurrent_acale_in",
+                        "description": "- (Optional, Int) Max concurrent scale-in volume."
+                    },
+                    {
+                        "name": "scale_in_delay",
+                        "description": "- (Optional, Int) Number of minutes after cluster scale-out when the system starts judging whether to perform scale-in."
+                    },
+                    {
+                        "name": "scale_in_unneeded_time",
+                        "description": "- (Optional, Int) Number of consecutive minutes of idleness after which the node is subject to scale-in."
+                    },
+                    {
+                        "name": "scale_in_utilization_threshold",
+                        "description": "- (Optional, Int) Percentage of node resource usage below which the node is considered to be idle."
+                    },
+                    {
+                        "name": "ignore_daemon_sets_utilization",
+                        "description": "- (Optional, Bool) Whether to ignore DaemonSet pods by default when calculating resource usage."
+                    },
+                    {
+                        "name": "skip_nodes_with_local_storage",
+                        "description": "- (Optional, Bool) During scale-in, ignore nodes with local storage pods."
+                    },
+                    {
+                        "name": "skip_nodes_with_system_pods",
+                        "description": "- (Optional, Bool) During scale-in, ignore nodes with pods in the kube-system namespace that are not managed by DaemonSet."
+                    }
+                ]
+            },
+            {
+                "name": "cluster_extra_args",
+                "description": "- (Optional, Maplist) Customized parameters for master component,such as kube-apiserver, kube-controller-manager, kube-scheduler.",
+                "detail": [
+                    {
+                        "name": "kube_apiserver",
+                        "description": "- (Optional, Stringlist) The customized parameters for kube-apiserver."
+                    },
+                    {
+                        "name": "kube_controller_manager",
+                        "description": "- (Optional, Stringlist) The customized parameters for kube-controller-manager."
+                    },
+                    {
+                        "name": "kube_scheduler",
+                        "description": "- (Optional, Stringlist) The customized parameters for kube-scheduler."
+                    }
+                ]
+            },
+            {
+                "name": "node_name_type",
+                "description": "- (Optional, String) Node name type of Cluster, the available values include: 'lan-ip' and 'hostname', Default is 'lan-ip'.",
+                "options": [
+                    "lan-ip",
+                    "hostname"
+                ]
+            },
+            {
+                "name": "network_type",
+                "description": "- (Optional, String) Cluster network type, the available values include: 'GR' and 'VPC-CNI' and 'CiliumOverlay'. Default is GR.",
+                "options": [
+                    "GR",
+                    "VPC-CNI",
+                    "CiliumOverlay"
+                ]
+            },
+            {
+                "name": "enable_customized_pod_cidr",
+                "description": "- (Optional, Bool) Whether to enable the custom mode of node podCIDR size. Default is false."
+            },
+            {
+                "name": "base_pod_num",
+                "description": "- (Optional, Int) The number of basic pods. valid when enable_customized_pod_cidr=true."
+            },
+            {
+                "name": "is_non_static_ip_mode",
+                "description": "- (Optional, Bool) Indicates whether non-static ip mode is enabled. Default is false."
+            },
+            {
+                "name": "deletion_protection",
+                "description": "- (Optional, Bool) Indicates whether cluster deletion protection is enabled. Default is false."
+            },
+            {
+                "name": "kube_proxy_mode",
+                "description": "- (Optional, String) Cluster kube-proxy mode, the available values include: 'kube-proxy-bpf'. Default is not set. When set to kube-proxy-bpf, cluster version greater than 1.14 and with Tencent Linux 2.4 is required."
+            },
+            {
+                "name": "vpc_id",
+                "description": "- (Required, String) Vpc Id of the cluster."
+            },
+            {
+                "name": "cluster_internet",
+                "description": "- (Optional, Bool) Open internet access or not. If this field is set 'true', the field below `worker_config` must be set. Because only cluster with node is allowed enable access endpoint. You may open it through `tencentcloud_kubernetes_cluster_endpoint`."
+            },
+            {
+                "name": "cluster_internet_domain",
+                "description": "- (Optional, String) Domain name for cluster Kube-apiserver internet access. Be careful if you modify value of this parameter, the cluster_external_endpoint value may be changed automatically too."
+            },
+            {
+                "name": "cluster_intranet",
+                "description": "- (Optional, Bool) Open intranet access or not. If this field is set 'true', the field below `worker_config` must be set. Because only cluster with node is allowed enable access endpoint. You may open it through `tencentcloud_kubernetes_cluster_endpoint`."
+            },
+            {
+                "name": "cluster_intranet_domain",
+                "description": "- (Optional, String) Domain name for cluster Kube-apiserver intranet access. Be careful if you modify value of this parameter, the pgw_endpoint value may be changed automatically too."
+            },
+            {
+                "name": "cluster_internet_security_group",
+                "description": "- (Optional, String) Specify security group, NOTE: This argument must not be empty if cluster internet enabled."
+            },
+            {
+                "name": "cluster_intranet_subnet_id",
+                "description": "- (Optional, String) Subnet id who can access this independent cluster, this field must and can only set  when `cluster_intranet` is true. `cluster_intranet_subnet_id` can not modify once be set."
+            },
+            {
+                "name": "project_id",
+                "description": "- (Optional, Int) Project ID, default value is 0."
+            },
+            {
+                "name": "cluster_cidr",
+                "description": "- (Optional, String) A network address block of the cluster. Different from vpc cidr and cidr of other clusters within this vpc. Must be in  10./192.168/172.[16-31] segments."
+            },
+            {
+                "name": "ignore_cluster_cidr_conflict",
+                "description": "- (Optional, Bool) Indicates whether to ignore the cluster cidr conflict error. Default is false."
+            },
+            {
+                "name": "cluster_max_pod_num",
+                "description": "- (Optional, Int) The maximum number of Pods per node in the cluster. Default is 256. The minimum value is 4. When its power unequal to 2, it will round upward to the closest power of 2."
+            },
+            {
+                "name": "cluster_max_service_num",
+                "description": "- (Optional, Int) The maximum number of services in the cluster. Default is 256. The range is from 32 to 32768. When its power unequal to 2, it will round upward to the closest power of 2."
+            },
+            {
+                "name": "service_cidr",
+                "description": "- (Optional, String) A network address block of the service. Different from vpc cidr and cidr of other clusters within this vpc. Must be in  10./192.168/172.[16-31] segments."
+            },
+            {
+                "name": "eni_subnet_ids",
+                "description": "- (Optional, Stringlist) Subnet Ids for cluster with VPC-CNI network mode. This field can only set when field `network_type` is 'VPC-CNI'. `eni_subnet_ids` can not empty once be set."
+            },
+            {
+                "name": "claim_expired_seconds",
+                "description": "- (Optional, Int) Claim expired seconds to recycle ENI. This field can only set when field `network_type` is 'VPC-CNI'. `claim_expired_seconds` must greater or equal than 300 and less than 15768000."
+            },
+            {
+                "name": "master_config",
+                "description": "- (Optional, Maplist) Deploy the machine configuration information of the 'MASTER_ETCD' service, and create <=7 units for common users.",
+                "detail": [
+                    {
+                        "name": "count",
+                        "description": "- (Optional, Int) Number of cvm."
+                    },
+                    {
+                        "name": "availability_zone",
+                        "description": "- (Optional, String) Indicates which availability zone will be used."
+                    },
+                    {
+                        "name": "instance_name",
+                        "description": "- (Optional, String) Name of the CVMs."
+                    },
+                    {
+                        "name": "instance_type",
+                        "description": "- (Optional, String) Specified types of CVM instance."
+                    },
+                    {
+                        "name": "instance_charge_type",
+                        "description": "- (Optional, String) The charge type of instance. Valid values are `PREPAID` and `POSTPAID_BY_HOUR`. The default is `POSTPAID_BY_HOUR`. Note: TencentCloud International only supports `POSTPAID_BY_HOUR`, `PREPAID` instance will not terminated after cluster deleted, and may not allow to delete before expired.",
+                        "options": [
+                            "MASTER_ETCD",
+                            "WORKER"
+                        ]
+                    },
+                    {
+                        "name": "instance_charge_type_prepaid_period",
+                        "description": "- (Optional, Int) The tenancy (time unit is month) of the prepaid instance. NOTE: it only works when instance_charge_type is set to `PREPAID`. Valid values are `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `10`, `11`, `12`, `24`, `36`.",
+                        "options": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            10,
+                            11,
+                            12,
+                            24,
+                            36
+                        ]
+                    },
+                    {
+                        "name": "instance_charge_type_prepaid_renew_flag",
+                        "description": "- (Optional, String) Auto renewal flag. Valid values: `NOTIFY_AND_AUTO_RENEW`: notify upon expiration and renew automatically, `NOTIFY_AND_MANUAL_RENEW`: notify upon expiration but do not renew automatically, `DISABLE_NOTIFY_AND_MANUAL_RENEW`: neither notify upon expiration nor renew automatically. Default value: `NOTIFY_AND_MANUAL_RENEW`. If this parameter is specified as `NOTIFY_AND_AUTO_RENEW`, the instance will be automatically renewed on a monthly basis if the account balance is sufficient. NOTE: it only works when instance_charge_type is set to `PREPAID`.",
+                        "options": [
+                            "NOTIFY_AND_AUTO_RENEW",
+                            "NOTIFY_AND_MANUAL_RENEW",
+                            "DISABLE_NOTIFY_AND_MANUAL_RENEW"
+                        ]
+                    },
+                    {
+                        "name": "subnet_id",
+                        "description": "- (Optional, String) Private network ID."
+                    },
+                    {
+                        "name": "system_disk_type",
+                        "description": "- (Optional, String) System disk type. For more information on limits of system disk types, see [Storage Overview](https://intl.cloud.tencent.com/document/product/213/4952). Valid values: `LOCAL_BASIC`: local disk, `LOCAL_SSD`: local SSD disk, `CLOUD_SSD`: SSD, `CLOUD_PREMIUM`: Premium Cloud Storage. NOTE: `CLOUD_BASIC`, `LOCAL_BASIC` and `LOCAL_SSD` are deprecated."
+                    },
+                    {
+                        "name": "system_disk_size",
+                        "description": "- (Optional, Int) Volume of system disk in GB. Default is `50`."
+                    },
+                    {
+                        "name": "data_disk",
+                        "description": "- (Optional, Maplist) Configurations of data disk.",
+                        "detail": [
+                            {
+                                "name": "disk_type",
+                                "description": "- (Optional, String) Types of disk, available values: `CLOUD_PREMIUM` and `CLOUD_SSD` and `CLOUD_HSSD` and `CLOUD_TSSD`."
+                            },
+                            {
+                                "name": "disk_size",
+                                "description": "- (Optional, Int) Volume of disk in GB. Default is `0`."
+                            },
+                            {
+                                "name": "snapshot_id",
+                                "description": "- (Optional, String) Data disk snapshot ID."
+                            },
+                            {
+                                "name": "encrypt",
+                                "description": "- (Optional, Bool) Indicates whether to encrypt data disk, default `false`."
+                            },
+                            {
+                                "name": "kms_key_id",
+                                "description": "- (Optional, String) ID of the custom CMK in the format of UUID or `kms-abcd1234`. This parameter is used to encrypt cloud disks."
+                            },
+                            {
+                                "name": "file_system",
+                                "description": "- (Optional, String) File system, e.g. `ext3/ext4/xfs`."
+                            },
+                            {
+                                "name": "auto_format_and_mount",
+                                "description": "- (Optional, Bool) Indicate whether to auto format and mount or not. Default is `false`."
+                            },
+                            {
+                                "name": "mount_target",
+                                "description": "- (Optional, String) Mount target."
+                            },
+                            {
+                                "name": "disk_partition",
+                                "description": "- (Optional, String) The name of the device or partition to mount."
+                            }
+                        ]
+                    },
+                    {
+                        "name": "internet_charge_type",
+                        "description": "- (Optional, String) Charge types for network traffic. Available values include `TRAFFIC_POSTPAID_BY_HOUR`."
+                    },
+                    {
+                        "name": "internet_max_bandwidth_out",
+                        "description": "- (Optional, Int) Max bandwidth of Internet access in Mbps. Default is 0."
+                    },
+                    {
+                        "name": "bandwidth_package_id",
+                        "description": "- (Optional, String) bandwidth package id. if user is standard user, then the bandwidth_package_id is needed, or default has bandwidth_package_id."
+                    },
+                    {
+                        "name": "public_ip_assigned",
+                        "description": "- (Optional, String) Specify whether to assign an Internet IP address."
+                    },
+                    {
+                        "name": "password",
+                        "description": "- (Optional, String) Password to access, should be set if `key_ids` not set."
+                    },
+                    {
+                        "name": "key_ids",
+                        "description": "- (Optional, Stringlist) ID list of keys, should be set if `password` not set."
+                    },
+                    {
+                        "name": "security_group_ids",
+                        "description": "- (Optional, Stringlist) Security groups to which a CVM instance belongs."
+                    },
+                    {
+                        "name": "enhanced_security_service",
+                        "description": "- (Optional, Bool) To specify whether to enable cloud security service. Default is TRUE."
+                    },
+                    {
+                        "name": "enhanced_monitor_service",
+                        "description": "- (Optional, Bool) To specify whether to enable cloud monitor service. Default is TRUE."
+                    },
+                    {
+                        "name": "user_data",
+                        "description": "- (Optional, String) ase64-encoded User Data text, the length limit is 16KB."
+                    },
+                    {
+                        "name": "cam_role_name",
+                        "description": "- (Optional, String) CAM role name authorized to access."
+                    },
+                    {
+                        "name": "hostname",
+                        "description": "- (Optional, String) The host name of the attached instance. Dot (.) and dash (-) cannot be used as the first and last characters of HostName and cannot be used consecutively. Windows example: The length of the name character is [2, 15], letters (capitalization is not restricted), numbers and dashes (-) are allowed, dots (.) are not supported, and not all numbers are allowed. Examples of other types (Linux, etc.): The character length is [2, 60], and multiple dots are allowed. There is a segment between the dots. Each segment allows letters (with no limitation on capitalization), numbers and dashes (-)."
+                    },
+                    {
+                        "name": "disaster_recover_group_ids",
+                        "description": "- (Optional, Stringlist) Disaster recover groups to which a CVM instance belongs. Only support maximum 1."
+                    },
+                    {
+                        "name": "img_id",
+                        "description": "- (Optional, Stringlist) The valid image id, format of img-xxx."
+                    },
+                    {
+                        "name": "desired_pod_num",
+                        "description": "- (Optional, Int) Indicate to set desired pod number in node. valid when enable_customized_pod_cidr=true, and it override `[globe_]desired_pod_num` for current node. Either all the fields `desired_pod_num` or none."
+                    },
+                    {
+                        "name": "hpc_cluster_id",
+                        "description": "- (Optional, String) Id of cvm hpc cluster."
+                    }
+                ]
+            },
+            {
                 "name": "worker_config",
-                "description": "- (Optional, List, ForceNew) Deploy the machine configuration information of the 'WORKER' service, and create <=20 units for common users. The other 'WORK' service are added by 'tencentcloud_kubernetes_worker'."
+                "description": "- (Optional, Maplist) Deploy the machine configuration information of the 'WORKER' service, and create <=20 units for common users. The other 'WORK' service are added by 'tencentcloud_kubernetes_worker'.",
+                "detail": [
+                    {
+                        "name": "count",
+                        "description": "- (Optional, Int) Number of cvm."
+                    },
+                    {
+                        "name": "availability_zone",
+                        "description": "- (Optional, String) Indicates which availability zone will be used."
+                    },
+                    {
+                        "name": "instance_name",
+                        "description": "- (Optional, String) Name of the CVMs."
+                    },
+                    {
+                        "name": "instance_type",
+                        "description": "- (Optional, String) Specified types of CVM instance."
+                    },
+                    {
+                        "name": "instance_charge_type",
+                        "description": "- (Optional, String) The charge type of instance. Valid values are `PREPAID` and `POSTPAID_BY_HOUR`. The default is `POSTPAID_BY_HOUR`. Note: TencentCloud International only supports `POSTPAID_BY_HOUR`, `PREPAID` instance will not terminated after cluster deleted, and may not allow to delete before expired.",
+                        "options": [
+                            "MASTER_ETCD",
+                            "WORKER"
+                        ]
+                    },
+                    {
+                        "name": "instance_charge_type_prepaid_period",
+                        "description": "- (Optional, Int) The tenancy (time unit is month) of the prepaid instance. NOTE: it only works when instance_charge_type is set to `PREPAID`. Valid values are `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `10`, `11`, `12`, `24`, `36`.",
+                        "options": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            10,
+                            11,
+                            12,
+                            24,
+                            36
+                        ]
+                    },
+                    {
+                        "name": "instance_charge_type_prepaid_renew_flag",
+                        "description": "- (Optional, String) Auto renewal flag. Valid values: `NOTIFY_AND_AUTO_RENEW`: notify upon expiration and renew automatically, `NOTIFY_AND_MANUAL_RENEW`: notify upon expiration but do not renew automatically, `DISABLE_NOTIFY_AND_MANUAL_RENEW`: neither notify upon expiration nor renew automatically. Default value: `NOTIFY_AND_MANUAL_RENEW`. If this parameter is specified as `NOTIFY_AND_AUTO_RENEW`, the instance will be automatically renewed on a monthly basis if the account balance is sufficient. NOTE: it only works when instance_charge_type is set to `PREPAID`.",
+                        "options": [
+                            "NOTIFY_AND_AUTO_RENEW",
+                            "NOTIFY_AND_MANUAL_RENEW",
+                            "DISABLE_NOTIFY_AND_MANUAL_RENEW"
+                        ]
+                    },
+                    {
+                        "name": "subnet_id",
+                        "description": "- (Optional, String) Private network ID."
+                    },
+                    {
+                        "name": "system_disk_type",
+                        "description": "- (Optional, String) System disk type. For more information on limits of system disk types, see [Storage Overview](https://intl.cloud.tencent.com/document/product/213/4952). Valid values: `LOCAL_BASIC`: local disk, `LOCAL_SSD`: local SSD disk, `CLOUD_SSD`: SSD, `CLOUD_PREMIUM`: Premium Cloud Storage. NOTE: `CLOUD_BASIC`, `LOCAL_BASIC` and `LOCAL_SSD` are deprecated."
+                    },
+                    {
+                        "name": "system_disk_size",
+                        "description": "- (Optional, Int) Volume of system disk in GB. Default is `50`."
+                    },
+                    {
+                        "name": "data_disk",
+                        "description": "- (Optional, Maplist) Configurations of data disk.",
+                        "detail": [
+                            {
+                                "name": "disk_type",
+                                "description": "- (Optional, String) Types of disk, available values: `CLOUD_PREMIUM` and `CLOUD_SSD` and `CLOUD_HSSD` and `CLOUD_TSSD`."
+                            },
+                            {
+                                "name": "disk_size",
+                                "description": "- (Optional, Int) Volume of disk in GB. Default is `0`."
+                            },
+                            {
+                                "name": "snapshot_id",
+                                "description": "- (Optional, String) Data disk snapshot ID."
+                            },
+                            {
+                                "name": "encrypt",
+                                "description": "- (Optional, Bool) Indicates whether to encrypt data disk, default `false`."
+                            },
+                            {
+                                "name": "kms_key_id",
+                                "description": "- (Optional, String) ID of the custom CMK in the format of UUID or `kms-abcd1234`. This parameter is used to encrypt cloud disks."
+                            },
+                            {
+                                "name": "file_system",
+                                "description": "- (Optional, String) File system, e.g. `ext3/ext4/xfs`."
+                            },
+                            {
+                                "name": "auto_format_and_mount",
+                                "description": "- (Optional, Bool) Indicate whether to auto format and mount or not. Default is `false`."
+                            },
+                            {
+                                "name": "mount_target",
+                                "description": "- (Optional, String) Mount target."
+                            },
+                            {
+                                "name": "disk_partition",
+                                "description": "- (Optional, String) The name of the device or partition to mount."
+                            }
+                        ]
+                    },
+                    {
+                        "name": "internet_charge_type",
+                        "description": "- (Optional, String) Charge types for network traffic. Available values include `TRAFFIC_POSTPAID_BY_HOUR`."
+                    },
+                    {
+                        "name": "internet_max_bandwidth_out",
+                        "description": "- (Optional, Int) Max bandwidth of Internet access in Mbps. Default is 0."
+                    },
+                    {
+                        "name": "bandwidth_package_id",
+                        "description": "- (Optional, String) bandwidth package id. if user is standard user, then the bandwidth_package_id is needed, or default has bandwidth_package_id."
+                    },
+                    {
+                        "name": "public_ip_assigned",
+                        "description": "- (Optional, String) Specify whether to assign an Internet IP address."
+                    },
+                    {
+                        "name": "password",
+                        "description": "- (Optional, String) Password to access, should be set if `key_ids` not set."
+                    },
+                    {
+                        "name": "key_ids",
+                        "description": "- (Optional, Stringlist) ID list of keys, should be set if `password` not set."
+                    },
+                    {
+                        "name": "security_group_ids",
+                        "description": "- (Optional, Stringlist) Security groups to which a CVM instance belongs."
+                    },
+                    {
+                        "name": "enhanced_security_service",
+                        "description": "- (Optional, Bool) To specify whether to enable cloud security service. Default is TRUE."
+                    },
+                    {
+                        "name": "enhanced_monitor_service",
+                        "description": "- (Optional, Bool) To specify whether to enable cloud monitor service. Default is TRUE."
+                    },
+                    {
+                        "name": "user_data",
+                        "description": "- (Optional, String) ase64-encoded User Data text, the length limit is 16KB."
+                    },
+                    {
+                        "name": "cam_role_name",
+                        "description": "- (Optional, String) CAM role name authorized to access."
+                    },
+                    {
+                        "name": "hostname",
+                        "description": "- (Optional, String) The host name of the attached instance. Dot (.) and dash (-) cannot be used as the first and last characters of HostName and cannot be used consecutively. Windows example: The length of the name character is [2, 15], letters (capitalization is not restricted), numbers and dashes (-) are allowed, dots (.) are not supported, and not all numbers are allowed. Examples of other types (Linux, etc.): The character length is [2, 60], and multiple dots are allowed. There is a segment between the dots. Each segment allows letters (with no limitation on capitalization), numbers and dashes (-)."
+                    },
+                    {
+                        "name": "disaster_recover_group_ids",
+                        "description": "- (Optional, Stringlist) Disaster recover groups to which a CVM instance belongs. Only support maximum 1."
+                    },
+                    {
+                        "name": "img_id",
+                        "description": "- (Optional, Stringlist) The valid image id, format of img-xxx."
+                    },
+                    {
+                        "name": "desired_pod_num",
+                        "description": "- (Optional, Int) Indicate to set desired pod number in node. valid when enable_customized_pod_cidr=true, and it override `[globe_]desired_pod_num` for current node. Either all the fields `desired_pod_num` or none."
+                    },
+                    {
+                        "name": "hpc_cluster_id",
+                        "description": "- (Optional, String) Id of cvm hpc cluster."
+                    }
+                ]
+            },
+            {
+                "name": "exist_instance",
+                "description": "- (Optional, Maplist) create tke cluster by existed instances.",
+                "detail": [
+                    {
+                        "name": "node_role",
+                        "description": "- (Optional, String) Role of existed node. value:MASTER_ETCD or WORKER.",
+                        "options": [
+                            "MASTER_ETCD",
+                            "WORKER"
+                        ]
+                    },
+                    {
+                        "name": "instances_para",
+                        "description": "- (Optional, Maplist) Reinstallation parameters of an existing instance.",
+                        "detail": [
+                            {
+                                "name": "instance_ids",
+                                "description": "- (Optional, Stringlist) Cluster IDs."
+                            }
+                        ]
+                    },
+                    {
+                        "name": "desired_pod_numbers",
+                        "description": "- (Optional, Intlist) Custom mode cluster, you can specify the number of pods for each node. corresponding to the existed_instances_para.instance_ids parameter."
+                    }
+                ]
+            },
+            {
+                "name": "auth_options",
+                "description": "- (Optional, Maplist) Specify cluster authentication configuration. Only available for managed cluster and `cluster_version` >= 1.20.",
+                "detail": [
+                    {
+                        "name": "use_tke_default",
+                        "description": "- (Optional, Bool) If set to `true`, the issuer and jwks_uri will be generated automatically by tke, please do not set issuer and jwks_uri, and they will be ignored."
+                    },
+                    {
+                        "name": "jwks_uri",
+                        "description": "- (Optional, String) Specify service-account-jwks-uri. If use_tke_default is set to `true`, please do not set this field, it will be ignored anyway."
+                    },
+                    {
+                        "name": "issuer",
+                        "description": "- (Optional, String) Specify service-account-issuer. If use_tke_default is set to `true`, please do not set this field, it will be ignored anyway."
+                    },
+                    {
+                        "name": "auto_create_discovery_anonymous_auth",
+                        "description": "- (Optional, Bool) If set to `true`, the rbac rule will be created automatically which allow anonymous user to access '/.well-known/openid-configuration' and '/openid/v1/jwks'."
+                    }
+                ]
+            },
+            {
+                "name": "extension_addon",
+                "description": "- (Optional, Maplist) Information of the add-on to be installed.",
+                "detail": [
+                    {
+                        "name": "name",
+                        "description": "- (Required, String) Add-on name."
+                    },
+                    {
+                        "name": "param",
+                        "description": "- (Required, String) Parameter of the add-on resource object in JSON string format, please check the example at the top of page for reference."
+                    }
+                ]
+            },
+            {
+                "name": "extension_addon",
+                "description": "- (Optional, Maplist) Information of the add-on to be installed.",
+                "detail": [
+                    {
+                        "name": "name",
+                        "description": "- (Required, String) Add-on name."
+                    },
+                    {
+                        "name": "param",
+                        "description": "- (Required, String) Parameter of the add-on resource object in JSON string format, please check the example at the top of page for reference."
+                    }
+                ]
+            },
+            {
+                "name": "log_agent",
+                "description": "- (Optional, Maplist) Specify cluster log agent config.",
+                "detail": [
+                    {
+                        "name": "enabled",
+                        "description": "- (Required, Bool) Whether the log agent enabled."
+                    },
+                    {
+                        "name": "kubelet_root_dir",
+                        "description": "- (Required, String) Kubelet root directory as the literal."
+                    }
+                ]
+            },
+            {
+                "name": "event_persistence",
+                "description": "- (Optional, Maplist) Specify cluster Event Persistence config. NOTE: Please make sure your TKE CamRole have permission to access CLS service.",
+                "detail": [
+                    {
+                        "name": "enabled",
+                        "description": "- (Required, Bool) Specify weather the Event Persistence enabled."
+                    },
+                    {
+                        "name": "log_set_id",
+                        "description": "- (Optional, String) Specify id of existing CLS log set, or auto create a new set by leave it empty."
+                    },
+                    {
+                        "name": "topic_id",
+                        "description": "- (Optional, String) Specify id of existing CLS log topic, or auto create a new topic by leave it empty."
+                    },
+                    {
+                        "name": "delete_event_log_and_topic",
+                        "description": "- (Optional, Bool) when you want to close the cluster event persistence or delete the cluster, you can use this parameter to determine whether the event persistence log set and topic created by default will be deleted."
+                    }
+                ]
+            },
+            {
+                "name": "cluster_audit",
+                "description": "- (Optional, Maplist) Specify Cluster Audit config. NOTE: Please make sure your TKE CamRole have permission to access CLS service.",
+                "detail": [
+                    {
+                        "name": "enabled",
+                        "description": "- (Required, Bool) Specify weather the Cluster Audit enabled. NOTE: Enable Cluster Audit will also auto install Log Agent."
+                    },
+                    {
+                        "name": "log_set_id",
+                        "description": "- (Optional, String) Specify id of existing CLS log set, or auto create a new set by leave it empty."
+                    },
+                    {
+                        "name": "topic_id",
+                        "description": "- (Optional, String) Specify id of existing CLS log topic, or auto create a new topic by leave it empty."
+                    },
+                    {
+                        "name": "delete_event_log_and_topic",
+                        "description": "- (Optional, Bool) when you want to close the cluster audit log or delete the cluster, you can use this parameter to determine whether the audit log set and topic created by default will be deleted."
+                    }
+                ]
+            },
+            {
+                "name": "tags",
+                "description": "- (Optional, Map) The tags of the cluster."
+            },
+            {
+                "name": "labels",
+                "description": "- (Optional, Map) Labels of tke cluster nodes."
+            },
+            {
+                "name": "unschedulable",
+                "description": "- (Optional, Int) Sets whether the joining node participates in the schedule. Default is '0'. Participate in scheduling."
+            },
+            {
+                "name": "mount_target",
+                "description": "- (Optional, String) Mount target. Default is not mounting."
+            },
+            {
+                "name": "globe_desired_pod_num",
+                "description": "- (Optional, Int) Indicate to set desired pod number in node. valid when enable_customized_pod_cidr=true, and it takes effect for all nodes."
+            },
+            {
+                "name": "docker_graph_path",
+                "description": "- (Optional, String) Docker graph path. Default is `/var/lib/docker`."
+            },
+            {
+                "name": "extra_args",
+                "description": "- (Optional, Stringlist) Custom parameter information related to the node."
+            },
+            {
+                "name": "runtime_version",
+                "description": "- (Optional, String) Container Runtime version."
             }
         ],
         "attrs": [
             {
-                "name": "id",
-                "description": "- ID of the resource."
-            },
-            {
-                "name": "certification_authority",
-                "description": "- The certificate used for access."
-            },
-            {
-                "name": "cluster_external_endpoint",
-                "description": "- External network address to access."
-            },
-            {
                 "name": "cluster_node_num",
-                "description": "- Number of nodes in the cluster."
-            },
-            {
-                "name": "domain",
-                "description": "- Domain name for access."
-            },
-            {
-                "name": "kube_config_intranet",
-                "description": "- Kubernetes config of private network."
-            },
-            {
-                "name": "kube_config",
-                "description": "- Kubernetes config."
-            },
-            {
-                "name": "password",
-                "description": "- Password of account."
-            },
-            {
-                "name": "pgw_endpoint",
-                "description": "- The Intranet address used for access."
-            },
-            {
-                "name": "security_policy",
-                "description": "- Access policy."
-            },
-            {
-                "name": "user_name",
-                "description": "- User name of account."
+                "description": "- (Readonly, Int) Number of nodes in the cluster."
             },
             {
                 "name": "worker_instances_list",
-                "description": "- An information list of cvm within the 'WORKER' clusters. Each element contains the following attributes:"
+                "description": "- (Readonly, Maplist) An information list of cvm within the 'worker' clusters. each element contains the following attributes:",
+                "detail": [
+                    {
+                        "name": "instance_id",
+                        "description": "- (Readonly, String) Id of the cvm."
+                    },
+                    {
+                        "name": "instance_role",
+                        "description": "- (Readonly, String) Role of the cvm."
+                    },
+                    {
+                        "name": "instance_state",
+                        "description": "- (Readonly, String) State of the cvm."
+                    },
+                    {
+                        "name": "failed_reason",
+                        "description": "- (Readonly, String) Information of the cvm when it is failed."
+                    },
+                    {
+                        "name": "lan_ip",
+                        "description": "- (Readonly, String) Lan ip of the cvm."
+                    }
+                ]
             },
             {
-                "name": "failed_reason",
-                "description": "- Information of the cvm when it is failed."
+                "name": "kube_config",
+                "description": "- (Readonly, String) Kubernetes config."
             },
             {
-                "name": "instance_id",
-                "description": "- ID of the cvm."
-            },
-            {
-                "name": "instance_role",
-                "description": "- Role of the cvm."
-            },
-            {
-                "name": "instance_state",
-                "description": "- State of the cvm."
-            },
-            {
-                "name": "lan_ip",
-                "description": "- LAN IP of the cvm."
+                "name": "kube_config_intranet",
+                "description": "- (Readonly, String) Kubernetes config of private network."
             }
         ],
         "url": "/docs/providers/tencentcloud/r/kubernetes_cluster.html"
@@ -21828,15 +22325,23 @@
             },
             {
                 "name": "auto_renew_flag",
-                "description": "- (Optional, Int) Auto renew flag. NOTES: Only supported prepaid instance."
+                "description": "- (Optional, Int) Auto renew flag. NOTES: Only supported prepaid instance.",
+                "options": [
+                    0,
+                    1
+                ]
             },
             {
                 "name": "availability_zone",
-                "description": "- (Optional, String, ForceNew) Indicates which availability zone will be used."
+                "description": "- (Optional, String) Indicates which availability zone will be used."
             },
             {
                 "name": "charge_type",
-                "description": "- (Optional, String, ForceNew) Pay type of instance. Valid values:PREPAID, POSTPAID. Default is POSTPAID."
+                "description": "- (Optional, String) Pay type of instance. Valid values:PREPAID, POSTPAID. Default is POSTPAID.",
+                "options": [
+                    "PREPAID",
+                    "POSTPAID"
+                ]
             },
             {
                 "name": "cpu",
@@ -21848,7 +22353,13 @@
             },
             {
                 "name": "engine_version",
-                "description": "- (Optional, String) The version number of the database engine to use. Supported versions include 5.5/5.6/5.7/8.0, and default is 5.7. Upgrade the instance engine version to support 5.6/5.7 and switch immediately."
+                "description": "- (Optional, String) The version number of the database engine to use. Supported versions include 5.5/5.6/5.7/8.0, and default is 5.7. Upgrade the instance engine version to support 5.6/5.7 and switch immediately.",
+                "options": [
+                    "5.5",
+                    "5.6",
+                    "5.7",
+                    "8.0"
+                ]
             },
             {
                 "name": "fast_upgrade",
@@ -21864,7 +22375,11 @@
             },
             {
                 "name": "internet_service",
-                "description": "- (Optional, Int) Indicates whether to enable the access to an instance from public network: 0 - No, 1 - Yes."
+                "description": "- (Optional, Int) Indicates whether to enable the access to an instance from public network: 0 - No, 1 - Yes.",
+                "options": [
+                    0,
+                    1
+                ]
             },
             {
                 "name": "intranet_port",
@@ -21884,15 +22399,51 @@
             },
             {
                 "name": "pay_type",
-                "description": "- (Optional, Int, Deprecated) It has been deprecated from version 1.36.0. Please use charge_type instead. Pay type of instance. Valid values: 0, 1. 0: prepaid, 1: postpaid."
+                "description": "- (Optional, Int) It has been deprecated from version 1.36.0. Please use charge_type instead. Pay type of instance. Valid values: 0, 1. 0: prepaid, 1: postpaid.",
+                "options": [
+                    0,
+                    1
+                ]
             },
             {
                 "name": "period",
-                "description": "- (Optional, Int, Deprecated) It has been deprecated from version 1.36.0. Please use prepaid_period instead. Period of instance. NOTES: Only supported prepaid instance."
+                "description": "- (Optional, Int) It has been deprecated from version 1.36.0. Please use prepaid_period instead. Period of instance. NOTES: Only supported prepaid instance.",
+                "options": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    24,
+                    36
+                ]
             },
             {
                 "name": "prepaid_period",
-                "description": "- (Optional, Int) Period of instance. NOTES: Only supported prepaid instance."
+                "description": "- (Optional, Int) Period of instance. NOTES: Only supported prepaid instance.",
+                "options": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    24,
+                    36
+                ]
             },
             {
                 "name": "project_id",
@@ -21908,15 +22459,24 @@
             },
             {
                 "name": "security_groups",
-                "description": "- (Optional, Set: [String]) Security groups to use."
+                "description": "- (Optional, Stringlist) Security groups to use."
             },
             {
                 "name": "slave_deploy_mode",
-                "description": "- (Optional, Int) Availability zone deployment method. Available values: 0 - Single availability zone; 1 - Multiple availability zones."
+                "description": "- (Optional, Int) Availability zone deployment method. Available values: 0 - Single availability zone; 1 - Multiple availability zones.",
+                "options": [
+                    0,
+                    1
+                ]
             },
             {
                 "name": "slave_sync_mode",
-                "description": "- (Optional, Int) Data replication mode. 0 - Async replication; 1 - Semisync replication; 2 - Strongsync replication."
+                "description": "- (Optional, Int) Data replication mode. 0 - Async replication; 1 - Semisync replication; 2 - Strongsync replication.",
+                "options": [
+                    0,
+                    1,
+                    2
+                ]
             },
             {
                 "name": "subnet_id",
@@ -21928,7 +22488,11 @@
             },
             {
                 "name": "upgrade_subversion",
-                "description": "- (Optional, Int) Whether it is a kernel subversion upgrade, supported values: 1 - upgrade the kernel subversion; 0 - upgrade the database engine version. Only need to fill in when upgrading kernel subversion and engine version."
+                "description": "- (Optional, Int) Whether it is a kernel subversion upgrade, supported values: 1 - upgrade the kernel subversion; 0 - upgrade the database engine version. Only need to fill in when upgrading kernel subversion and engine version.",
+                "options": [
+                    0,
+                    1
+                ]
             },
             {
                 "name": "vpc_id",
@@ -21938,35 +22502,35 @@
         "attrs": [
             {
                 "name": "id",
-                "description": "- ID of the resource."
+                "description": "- (Readonly, String) Id of the resource."
             },
             {
                 "name": "gtid",
-                "description": "- Indicates whether GTID is enable. 0 - Not enabled; 1 - Enabled."
+                "description": "- (Readonly, String) Indicates whether gtid is enable. 0 not enabled; 1 enabled."
             },
             {
                 "name": "internet_host",
-                "description": "- host for public access."
+                "description": "- (Readonly, String) Host for public access."
             },
             {
                 "name": "internet_port",
-                "description": "- Access port for public access."
+                "description": "- (Readonly, String) Access port for public access."
             },
             {
                 "name": "intranet_ip",
-                "description": "- instance intranet IP."
+                "description": "- (Readonly, String) Instance intranet ip."
             },
             {
                 "name": "locked",
-                "description": "- Indicates whether the instance is locked. Valid values: 0, 1. 0 - No; 1 - Yes."
+                "description": "- (Readonly, String) Indicates whether the instance is locked. valid values: 0, 1. 0 no; 1 yes."
             },
             {
                 "name": "status",
-                "description": "- Instance status. Valid values: 0, 1, 4, 5. 0 - Creating; 1 - Running; 4 - Isolating; 5 - Isolated."
+                "description": "- (Readonly, String) Instance status. valid values: 0, 1, 4, 5. 0 creating; 1 running; 4 isolating; 5 isolated."
             },
             {
                 "name": "task_status",
-                "description": "- Indicates which kind of operations is being executed."
+                "description": "- (Readonly, String) Indicates which kind of operations is being executed."
             }
         ],
         "url": "/docs/providers/tencentcloud/r/mysql_instance.html"

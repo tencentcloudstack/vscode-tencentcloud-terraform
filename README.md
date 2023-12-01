@@ -1,22 +1,30 @@
 # TencentCloud Terraform
 
-The VSCode TIAT（Tencent Infrastructure Automation for Terraform）Terraform extension is designed to increase developer productivity authoring, testing and using Terraform with Tencent Cloud. The extension provides terraform command support, resource graph visualization and CloudShell integration inside VSCode.
+The VSCode TIAT（Tencent Infrastructure Automation for Terraform）Terraform extension is designed to improve the efficiency of DevOps when using Terraform with Tencent Cloud. The extension provides TencentCloud Account login, resource explorer, code auto-complete, argument tips, and command support inside VSCode.
 
 ## Features
 
 This extension supports the following features:
 
-- Terraform commands: init, plan, apply, validate, refresh and destroy.
-- Auto complete: Autocomplete resource types, parameters, and resource definitions.
-- Import resource: display the existing `CVM` resource and then import it as a tf file by [Terraformer](https://github.com/GoogleCloudPlatform/terraformer).
+- Login: log in Tencent Cloud with AKSK.
+- Terraform Commands: init, plan, apply, and destroy through the VSCode command Palette.
+- Auto Complete: provides code suggestions and auto-complete resource types, arguments, and options. Provides ways to go to resource documents.
+- Code Snippets/Example: provides a completed example code when typing the specified resource type.
+- Import Resource: display the existing `CVM` resource and then import it as a tf file by [Terraformer](https://github.com/GoogleCloudPlatform/terraformer).
 
 *TO-DO(Features to be supported in the future):*
 - Visualize: graph the terraform resources and modules.
-- Autocomplete: provider code snippets of the specified resource.
-- Connect to Tencent Cloud: login to Tencent Cloud and sync your account info(eg: obtain AKSK/Token automatically).
+- Autocomplete: provider code snippets explorer of the specified resource.
+- Validate: code check under security and compliance.
 
-## Commands
+## Quick Start
+### 1.Login Tencent Cloud
+Provide Log in entry to Tencent Cloud.
+![login](./images/readme/login.png)
+After logged, you can see your account and detail when hovering the status bar.
+![account_status](./images/readme/account_status.png)
 
+### 2.Terraform Commands
 Open the Command Palette (`Command`+`Shift`+`P` on macOS and `Ctrl`+`Shift`+`P` on Windows/Linux) and type in one of the following commands:
 
 <table>
@@ -34,37 +42,60 @@ Open the Command Palette (`Command`+`Shift`+`P` on macOS and `Ctrl`+`Shift`+`P` 
         <li>TencentCloud Terraform: init</li>
         <li>TencentCloud Terraform: plan</li>
         <li>TencentCloud Terraform: apply</li>
-        <li>TencentCloud Terraform: validate</li>
         <li>TencentCloud Terraform: refresh</li>
         <li>TencentCloud Terraform: destroy</li>
       </ul>
     </td>
     <td>
       Execute terraform command against the current project workspace.
-      If run with terminal set to Cloud Shell, will run the command in Cloud Shell.
     </td>
   </tr>
   <tr>
-    <td>TencentCloud Terraform: visualize(TO-DO)</td>
-    <td>Create a visual representation of the components of the module and save it in <code>graph.png</code>.</td>
-  </tr>
-  <tr>
-    <td>TencentCloud Terraform: push(TO-DO)</td>
-    <td>Push workspace files that meet the filter <code>azureTerraform.files</code> setting in your configuration to Cloud Shell.</td>
-  </tr>
-  <tr>
-    <td>TencentCloud Terraform: Execute Test(TO-DO)</td>
-    <td>
-      Run one of the following test against the current module using a test container: <br>
+    <td width="35%">
+      Login commands:<br>
       <ul>
-        <li>lint: This command will check the formating of the code of the Terraform module.</li>
-        <li>e2e: This command will deploy the current module with the settings specified in the .tfvars file, verify that the deployment pass the controls and destroy the resources that have been created.</li>
+        <li>TencentCloud Terraform: Login</li>
+        <li>TencentCloud Terraform: Logout</li>
       </ul>
+    </td>
+    <td>
+      The shortcut of log in and log out with Tencent Cloud.
     </td>
   </tr>
   </tbody>
 </table>
 
+
+### 3.Auto Complete
+When you typing the resource type, attribute, and options, there is a suggestions dialog.
+#### Resource Type
+![auto_complete_resourcetype](./images/readme/auto_complete_resourcetype.png)
+#### Attribute
+![auto_complete_resourcetype](./images/readme/auto_complete_attr.png)
+#### Options(demo)
+> NOTE: only support on `tencentcloud_instance` resource.
+![auto_complete_resourcetype](./images/readme/auto_complete_attr_options.png)
+
+### 4.Code Snippets/Example
+When you typing the `{` after a resource type and name, there is a example suggestions.
+![example](./images/readme/example.png)
+
+Press `Enter` to insert the whole example.
+
+### 5.Import Resource(demo)
+> NOTE: only support on `tencentcloud_instance` resource.
+When you logged into Tencent Cloud Account, you may see the resources under this account.
+![import](./images/readme/import.png)
+
+Choose one resource to import it.
+After a few minutes, the import resource will be in the `generated` folder.
+
+### 6.Resource definition
+When you place the cursor on a resource type, use the `go to definition` (`Command` on macOS) button to jump to this resource document of the terraform provider website.
+
+![doc_definition](./images/readme/doc_definition.png)
+Or, put cursor under the resource type, press `Command`.
+![doc](./images/readme/doc.png)
 
 ## Requirements
 
