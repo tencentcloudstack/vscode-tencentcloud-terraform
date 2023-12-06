@@ -42,6 +42,15 @@ export async function activate(context: vscode.ExtensionContext) {
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Destroy);
     }));
 
+    // git operations
+    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.git.push', async () => {
+        if (_.isEmpty(vscode.workspace.workspaceFolders)) {
+            vscode.window.showInformationMessage("Please open a workspace in VS Code first.");
+            return;
+        }
+        await GitUtils.getInstance().submitToGit();
+    }));
+
     // terraformer cmd
     let disposableTferImport = vscode.commands.registerCommand('tcTerraformer.import', async () => {
         terraformShellManager.getShell().runTerraformCmd(TerraformerCommand.Import);
