@@ -213,7 +213,8 @@ export class TerraformTipsProvider implements CompletionItemProvider {
         for (const element of topLevelTypes) {
             let topType = element;
             if (topType.startsWith(line)) {
-                const c = new CompletionItem(topType, CompletionItemKind.Enum);
+                const c = new CompletionItem(`${topType}(tencentcloud)`, CompletionItemKind.Enum);
+                c.insertText = topType;
                 c.sortText = TEXT_MIN_SORT;
                 return [c];
             }
