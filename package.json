@@ -42,6 +42,7 @@
         "onCommand:tcTerraform.refresh",
         "onCommand:tcTerraform.destroy",
         "onCommand:tcTerraformer.import",
+        "onCommand:tcTerraform.doc.show",
         "workspaceContains:**/*.tf",
         "onLanguage:terraform"
     ],
@@ -186,8 +187,8 @@
         "keybindings": [
             {
                 "command": "tcTerraform.doc.show",
-                "key": "ctrl+alt+d",
-                "mac": "cmd+alt+d",
+                "key": "ctrl+shift+d",
+                "mac": "ctrl+shift+d",
                 "when": "editorTextFocus"
             }
         ],

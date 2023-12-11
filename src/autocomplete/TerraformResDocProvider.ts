@@ -3,7 +3,6 @@ import * as _ from "lodash";
 import * as fs from "fs";
 import * as path from "path";
 import { marked } from 'marked';
-import { dispose } from "vscode-extension-telemetry-wrapper";
 
 export class TerraformResDocProvider {
     // public provideDefinition(document: TextDocument, position: Position, token: CancellationToken): Definition {
@@ -24,38 +23,30 @@ export class TerraformResDocProvider {
     private readonly _extensionUri: vscode.Uri;
     private _disposables: vscode.Disposable[] = [];
     public static readonly viewType = 'tcTerraform.doc.show.id';
+    private static tempFile: vscode.TextDocument | null = null;
 
     public static async createOrShow(context: vscode.ExtensionContext, resType: string) {
+        // If we already have a panel, clean it.
+        if (TerraformResDocProvider.currentProvider) {
+            // TerraformResDocProvider.currentProvider._panel.reveal(targetColumn);
+            TerraformResDocProvider.currentProvider.dispose();
+        }
+
         const column = vscode.window.activeTextEditor
             ? vscode.window.activeTextEditor.viewColumn
             : undefined;
 
-
         const targetColumn = column + 1;
-        const rightEditor = vscode.window.visibleTextEditors.find((editor) => editor.viewColumn === targetColumn);
-
-        let newEditor = rightEditor;
-
-        if (!newEditor) {
-            // new editor to the right of the current editor
-            const tempFile = await vscode.workspace.openTextDocument({ content: '', language: 'plaintext' });
-            newEditor = await vscode.window.showTextDocument(tempFile, { viewColumn: targetColumn, preview: false });
-        }
-
-        // If we already have a panel, show it.
-        if (TerraformResDocProvider.currentProvider) {
-            // TerraformResDocProvider.currentProvider._panel.reveal(targetColumn);
-            TerraformResDocProvider.currentProvider.dispose();
-            return;
-        }
-
+        // display the definition beside the current editor-begin++++++
         // Otherwise, create a new panel.
         const panel = vscode.window.createWebviewPanel(
             TerraformResDocProvider.viewType,
             `Doc Definition: ${resType}`,
-            newEditor.viewColumn,
+            targetColumn,
             getWebviewOptions(context.extensionUri),
         );
+        // display the definition beside the current editor-end+++++++
+
         // construct the _panel
         TerraformResDocProvider.currentProvider = new TerraformResDocProvider(panel, context.extensionUri);
         const current = TerraformResDocProvider.currentProvider;
@@ -64,6 +55,7 @@ export class TerraformResDocProvider {
         const markdownPath = path.join(docsRoot, `${mdResType}.html.markdown`);
         if (!fs.existsSync(markdownPath)) {
             console.error('Can not find the markdownFile: %s', markdownPath);
+            TerraformResDocProvider.currentProvider.dispose();
             return;
         }
         const markdownFile = fs.readFileSync(markdownPath, 'utf8');
@@ -72,21 +64,25 @@ export class TerraformResDocProvider {
         try {
             const cleanedMarkdownFile = markdownFile.replace(/---[\s\S]*?---/, '');
             markdown = marked(cleanedMarkdownFile);
-            current._panel.webview.html = markdown;
+            const htmlMarkdown = htmlTemplate.replace('{{content}}', markdown);
+            current._panel.webview.html = htmlMarkdown;
         } catch (error) {
             console.error('Error processing the Markdown file:', error);
             return;
         }
         // Listen for when the panel is disposed
-        current._panel.onDidDispose(() => current.dispose(), null, current._disposables);
+        current._panel.onDidDispose(() => {
+            current.dispose();
+        }, null, current._disposables);
     }
 
     dispose() {
-        TerraformResDocProvider.currentProvider = undefined;
-
+        // Close the WebviewPanel
+        if (this._panel) {
+            this._panel.dispose();
+        }
         // Clean up our resources
-        this._panel.dispose();
-
+        TerraformResDocProvider.currentProvider = undefined;
         while (this._disposables.length) {
             const x = this._disposables.pop();
             if (x) {
@@ -110,4 +106,45 @@ function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
         localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media')]
     };
 }
+
+const htmlTemplate = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+                font-size: 14px;
+                line-height: 1.5;
+                word-wrap: break-word;
+            }
+            h2 {
+                font-size: 1.5em;
+                font-weight: 600;
+                padding-bottom: 0.3em;
+                border-bottom: 1px solid #ccc;
+                margin-bottom: 1em;
+            }
+            pre {
+                background-color: #333;
+                color: #fff; /* Change the font color to white for higher contrast */
+                padding: 16px;
+                overflow: auto;
+                font-size: 100%;
+                line-height: 1.45;
+                border-radius: 3px;
+            }
+            pre code.hcl {
+                background-color: transparent; /* Set the background color to transparent */
+                color: #fff;
+            }
+            </style>
+        </head>
+        <body>
+            {{content}}
+        </body>
+        </html>
+    `;
 
