@@ -40,3 +40,20 @@ export async function selectWorkspaceFolder(): Promise<string | undefined> {
     }
     return folder ? folder.uri.fsPath : undefined;
 }
+
+export function getActiveEditorPath(): string {
+    const activeEditor = vscode.window.activeTextEditor;
+    if (!activeEditor) {
+        vscode.window.showInformationMessage('No active editor found.');
+        return "";
+    }
+
+    const activeDocument = activeEditor.document;
+    if (!activeDocument) {
+        vscode.window.showInformationMessage('No active document found.');
+        return "";
+    }
+
+    const activeDocumentPath = activeDocument.uri.fsPath;
+    return activeDocumentPath;
+}

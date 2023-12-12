@@ -2,7 +2,7 @@
     "name": "vscode-tencentcloud-terraform",
     "displayName": "Tencent Cloud Terraform",
     "description": "VS Code extension for developing with Terraform on Tencent Cloud",
-    "version": "0.0.23",
+    "version": "0.0.24",
     "license": "MIT",
     "publisher": "Tencent-Cloud",
     "icon": "images/tc-tf-logo.png",
@@ -42,6 +42,7 @@
         "onCommand:tcTerraform.refresh",
         "onCommand:tcTerraform.destroy",
         "onCommand:tcTerraformer.import",
+        "onCommand:tcTerraform.doc.show",
         "workspaceContains:**/*.tf",
         "onLanguage:terraform"
     ],
@@ -51,6 +52,12 @@
                 {
                     "command": "tcTerraform.resourcesExplorer.refresh",
                     "when": "view == tcTerraform.resourcesExplorer.cvm",
+                    "group": "navigation"
+                }
+            ],
+            "editor/context": [
+                {
+                    "command": "tcTerraform.doc.show",
                     "group": "navigation"
                 }
             ]
@@ -164,12 +171,25 @@
             {
                 "command": "tcTerraformer.import",
                 "title": "Import",
-                "category": "TencentCloud Terraformer"
+                "category": "Hidden"
             },
             {
                 "command": "tcTerraformer.plan",
                 "title": "Plan",
-                "category": "TencentCloud Terraformer"
+                "category": "Hidden"
+            },
+            {
+                "command": "tcTerraform.doc.show",
+                "title": "Go to Terraform Definition",
+                "category": "Hidden"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "tcTerraform.doc.show",
+                "key": "ctrl+shift+d",
+                "mac": "ctrl+shift+d",
+                "when": "editorTextFocus"
             }
         ],
         "configuration": {
@@ -241,6 +261,7 @@
         "@types/fs-extra": "^11.0.1",
         "@types/glob": "^8.0.1",
         "@types/lodash": "^4.14.191",
+        "@types/marked": "^6.0.0",
         "@types/mocha": "^10.0.1",
         "@types/node": "16.x",
         "@types/opn": "^3.0.28",
@@ -270,7 +291,7 @@
         "jsdom": "^22.1.0",
         "lodash": "^4.17.21",
         "lodash-es": "^4.17.21",
-        "marked": "^0.3.6",
+        "marked": "^11.0.1",
         "opn": "^6.0.0",
         "reflect-metadata": "^0.1.13",
         "shared": "^0.2.0",

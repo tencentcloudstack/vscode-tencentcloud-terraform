@@ -42,6 +42,15 @@ export async function activate(context: vscode.ExtensionContext) {
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Destroy);
     }));
 
+    // git operations
+    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.git.push', async () => {
+        if (_.isEmpty(vscode.workspace.workspaceFolders)) {
+            vscode.window.showInformationMessage("Please open a workspace in VS Code first.");
+            return;
+        }
+        await GitUtils.getInstance().submitToGit();
+    }));
+
     // terraformer cmd
     let disposableTferImport = vscode.commands.registerCommand('tcTerraformer.import', async () => {
         terraformShellManager.getShell().runTerraformCmd(TerraformerCommand.Import);
@@ -56,17 +65,38 @@ export async function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposableTferPlan);
 
     // auto-complete
-    console.log('activate the tips(resource and options) feature');
-    const tipsProvider = new TerraformTipsProvider();
+    console.log('activate the auto-complete(resource and argument) feature');
     const exampleProvider = new autocomplete.TerraformExampleProvider();
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, exampleProvider, autocomplete.EXAMPLE_TRIGGER_CHARACTER));
+
+    // tips
+    console.log('activate the tips(options and doc) feature');
+    const tipsProvider = new TerraformTipsProvider();
     context.subscriptions.push(
         vscode.workspace.onDidChangeTextDocument((event) => {
             tipsProvider.handleCharacterEvent(event);
         })
     );
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, tipsProvider, ...TIPS_TRIGGER_CHARACTER));
-    context.subscriptions.push(vscode.languages.registerDefinitionProvider(TF_MODE, new TerraformResDocProvider()));
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(TF_MODE, exampleProvider, autocomplete.EXAMPLE_TRIGGER_CHARACTER));
+
+    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.doc.show', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            return; // no editor opening
+        }
+
+        // get the words under current selection
+        const doc = editor.document;
+        const selection = editor.selection;
+        const words = doc.getWordRangeAtPosition(selection.start);
+        const resType = doc.getText(words);
+
+        const regex = /^tencentcloud(?:_[^\s]+)*$/;
+        if (!regex.test(resType)) {
+            return; // not match the regex
+        }
+        TerraformResDocProvider.createOrShow(context, resType);
+    }));
 
     // example
     console.log('activate the auto complete(example) feature');
