@@ -1,6 +1,8 @@
 # TencentCloud Terraform
 
-The VSCode TIAT（Tencent Infrastructure Automation for Terraform）Terraform extension is designed to improve the efficiency of DevOps when using Terraform with Tencent Cloud. The extension provides TencentCloud Account login, resource explorer, code auto-complete, argument tips, and command support inside VSCode.
+The TIAT（Tencent Infrastructure Automation for Terraform）Terraform VS Code extension is designed to improve the efficiency of DevOps when using Terraform with Tencent Cloud. The extension provides TencentCloud Account login, resource explorer, code auto-complete, argument tips, and command palette inside VSCode.
+
+![demo](./images/readme/demo-overview.gif)
 
 ## Features
 
@@ -8,8 +10,9 @@ This extension supports the following features:
 
 - Login: log in Tencent Cloud with AKSK.
 - Terraform Commands: init, plan, apply, and destroy through the VSCode command Palette.
-- Auto Complete: provides code suggestions and auto-complete resource types, arguments, and options. Provides ways to go to resource documents.
+- Auto Complete: provides code suggestions and auto-complete resource types, arguments, and options. 
 - Code Snippets/Example: provides a completed example code when typing the specified resource type.
+- Tips: provides `Go to Terraform definition` to preview resource documents natively instead of through the official website.
 - Import Resource: display the existing `CVM` resource and then import it as a tf file by [Terraformer](https://github.com/GoogleCloudPlatform/terraformer).
 
 *TO-DO(Features to be supported in the future):*
@@ -20,7 +23,8 @@ This extension supports the following features:
 ## Quick Start
 ### 1.Login Tencent Cloud
 Provide Log in entry to Tencent Cloud.
-![login](./images/readme/login.png)
+![login](./images/readme/demo-login-logout.gif)
+
 After logged, you can see your account and detail when hovering the status bar.
 ![account_status](./images/readme/account_status.png)
 
@@ -65,20 +69,24 @@ Open the Command Palette (`Command`+`Shift`+`P` on macOS and `Ctrl`+`Shift`+`P` 
   </tbody>
 </table>
 
+![demo-cmd](./images/readme/demo-cmd.gif)
 
 ### 3.Auto Complete
 When you typing the resource type, attribute, and options, there is a suggestions dialog.
+
 #### Resource Type
-![auto_complete_resourcetype](./images/readme/auto_complete_resourcetype.png)
-#### Attribute
-![auto_complete_resourcetype](./images/readme/auto_complete_attr.png)
+![auto_complete_resType](./images/readme/demo-auto-complete-resType.gif)
+
+#### Argument
+![auto_complete_argument](./images/readme/demo-auto-complete-argument.gif)
+
 #### Options(demo)
 > NOTE: only support on `tencentcloud_instance` resource.
-![auto_complete_resourcetype](./images/readme/auto_complete_attr_options.png)
+![auto_complete_options](./images/readme/demo-auto-complete-options.gif)
 
 ### 4.Code Snippets/Example
 When you typing the `{` after a resource type and name, there is a example suggestions.
-![example](./images/readme/example.png)
+![example](./images/readme/demo-code-example.gif)
 
 Press `Enter` to insert the whole example.
 
@@ -91,11 +99,9 @@ Choose one resource to import it.
 After a few minutes, the import resource will be in the `generated` folder.
 
 ### 6.Resource definition
-When you place the cursor on a resource type, use the `go to definition` (`Command` on macOS) button to jump to this resource document of the terraform provider website.
+When you open a menu on a terraform resource, click the `Go to Terraform Definition` (`ctrl+shift+D` on macOS/Linux/Windows) item to open a preview panel to display the resource document locally.
 
-![doc_definition](./images/readme/doc_definition.png)
-Or, put cursor under the resource type, press `Command`.
-![doc](./images/readme/doc.png)
+![doc_definition](./images/readme/demo-doc-res.gif)
 
 ## Requirements
 
@@ -118,7 +124,8 @@ This extension requires:
 [MIT](LICENSE.md)
 
 ## Reference
-- [Source code of the tencentcloud terraform provider ](https://github.com/tencentcloudstack/terraform-provider-tencentcloud)
-- [Document of the tencentcloud terraform](https://registry.terraform.io/providers/tencentcloudstack/tencentcloud/latest)
+- [Document - TencnetCloud Terraform Registry](https://registry.terraform.io/providers/tencentcloudstack/tencentcloud/latest/docs)
+- [Repo - TencnetCloud Terraform Provider ](https://github.com/tencentcloudstack/terraform-provider-tencentcloud)
+- [Tencent Cloud Terraform extension - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=Tencent-Cloud.vscode-tencentcloud-terraform)
 
 **Enjoy!**
