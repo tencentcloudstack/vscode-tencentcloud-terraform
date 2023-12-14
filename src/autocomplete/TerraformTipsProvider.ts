@@ -1,7 +1,10 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionItemKind } from "vscode";
-import resources from '../../config/tips/tiat-resources.json';
+// import resources from '../../config/tips/tiat-resources.json';
 import * as _ from "lodash";
 import * as vscode from 'vscode';
+import { executeCommandByExec } from "@/utils/cpUtils";
+import * as fs from "fs";
+import * as path from "path";
 
 let topLevelTypes = ["output", "provider", "resource", "variable", "data"];
 let topLevelRegexes = topLevelTypes.map(o => {
@@ -13,6 +16,29 @@ let topLevelRegexes = topLevelTypes.map(o => {
 
 interface TerraformCompletionContext extends vscode.CompletionContext {
     resourceType?: string;
+}
+
+interface Argument {
+    name: string;
+    description: string;
+    options?: Array<string>;
+    detail?: Array<Argument>;
+}
+
+interface Attribute {
+    name: string;
+    description: string;
+    detail?: Array<Attribute>;
+}
+
+interface Tips {
+    version: string;
+    resource: {
+        [key: string]: {
+            args: Array<Argument>;
+            attrs: Array<Attribute>;
+        };
+    };
 }
 
 const TEXT_MIN_SORT = "a";
@@ -76,15 +102,21 @@ export class TerraformTipsProvider implements CompletionItemProvider {
                 // We're trying to type the exported field for the let
                 const resourceType = parts[0];
                 let resourceName = parts[1];
-                let attrs = resources[resourceType].attrs;
-                let result = _.map(attrs, o => {
-                    let c = new CompletionItem(`${o.name} (${resourceType})`, CompletionItemKind.Property);
-                    c.detail = o.description;
-                    c.insertText = o.name;
-                    c.sortText = TEXT_MIN_SORT;
-                    return c;
+                loadResource().then(tips => {
+                    const resources = tips.resource;
+                    let attrs = resources[resourceType].attrs;
+                    let result = _.map(attrs, o => {
+                        let c = new CompletionItem(`${o.name}(${resourceType})`, CompletionItemKind.Property);
+                        c.detail = o.description;
+                        c.insertText = o.name;
+                        c.sortText = TEXT_MIN_SORT;
+                        return c;
+                    });
+                    return result;
+                }).catch(error => {
+                    console.error("Can not load resource from json.");
+                    return;
                 });
-                return result;
             }
 
             // Which part are we completing for?
@@ -106,12 +138,18 @@ export class TerraformTipsProvider implements CompletionItemProvider {
             if (endwithEqual) {
                 const lineBeforeEqualSign = lineTillCurrentPosition.substring(0, includeEqual).trim();
                 // load options
-                const name = lineBeforeEqualSign;
-                const argStrs = this.findArgByName(resources[this.resourceType].args, name);
-                const options = this.getOptionsFormArg(argStrs);
-                // clear resource type
-                this.resourceType = "";
-                return (options).length ? options : [];
+                loadResource().then(tips => {
+                    const name = lineBeforeEqualSign;
+                    const resources = tips.resource;
+                    const argStrs = this.findArgByName(resources[this.resourceType].args, name);
+                    const options = this.getOptionsFormArg(argStrs);
+                    // clear resource type
+                    this.resourceType = "";
+                    return (options).length ? options : [];
+                }).catch(error => {
+                    console.error("Can not load resource from json.");
+                    return [];
+                });
             }
             this.resourceType = "";
             return [];
@@ -126,8 +164,14 @@ export class TerraformTipsProvider implements CompletionItemProvider {
                 if (parentType && parentType.type === "resource") {
                     // typing a arg in resource
                     const resourceType = this.getResourceTypeFromLine(line);
-                    const ret = this.getItemsForArgs(resources[resourceType].args, resourceType);
-                    return ret;
+                    loadResource().then(tips => {
+                        const resources = tips.resource;
+                        const ret = this.getItemsForArgs(resources[resourceType].args, resourceType);
+                        return ret;
+                    }).catch(error => {
+                        console.error("Can not load resource from json.");
+                        return [];
+                    });
                 }
                 else if (parentType && parentType.type !== "resource") {
                     // We don't want to accidentally include some other containers stuff
@@ -242,13 +286,20 @@ export class TerraformTipsProvider implements CompletionItemProvider {
         if (parts.length === 2 && parts[0] === "resource") {
             let r = parts[1].replace(/"/g, '');
             let regex = new RegExp("^" + r);
-            let possibleResources = _.filter(_.keys(resources), k => {
-                if (regex.test(k)) {
-                    return true;
-                }
-                return false;
+            loadResource().then(tips => {
+                const resources = tips.resource;
+                let possibleResources = _.filter(_.keys(resources), k => {
+                    if (regex.test(k)) {
+                        return true;
+                    }
+                    return false;
+                });
+                return possibleResources;
+            }).catch(error => {
+                console.error("Can not load resource from json.");
+                return [];
             });
-            return possibleResources;
+
         }
         return [];
     }
@@ -305,4 +356,70 @@ export class TerraformTipsProvider implements CompletionItemProvider {
             }
         }
     }
+}
+
+async function sortJsonFiles(dir: string) {
+    const files = fs.readdirSync(dir);
+    const jsonFiles = files.filter(file => path.extname(file) === '.json');
+
+    // import files
+    const versions = await Promise.all(jsonFiles.map(async file => {
+        const jsonPath = path.join(dir, file);
+        const json = await import(jsonPath);
+        const version = json.version as string;
+        return {
+            json,
+            version
+        };
+    }));
+
+    // sort with version desc
+    versions.sort((a, b) => compareVersions(b.version, a.version));
+
+    return versions;
+}
+
+function compareVersions(a, b) {
+    if (a === 'latest') { return 1; }
+    if (b === 'latest') { return -1; }
+    const aParts = a.split('.').map(Number);
+    const bParts = b.split('.').map(Number);
+
+    for (let i = 0; i < aParts.length; i++) {
+        if (aParts[i] > bParts[i]) {
+            return 1;
+        } else if (aParts[i] < bParts[i]) {
+            return -1;
+        }
+    }
+    //equal
+    return 0;
+}
+
+async function loadResource(): Promise<Tips> {
+    let tfVersion: string;
+    await executeCommandByExec("terraform version").then(output => {
+        let match = output.match(/tencentcloudstack\/tencentcloud\ (v\d+\.\d+\.\d+)/);
+
+        if (match) {
+            tfVersion = match[1];
+        } else {
+            tfVersion = "latest";
+        }
+        console.log(`version:v${tfVersion}`);  //1.81.54
+    }).catch(error => {
+        console.error(`execute terraform version failed: ${error}`);
+    });
+
+    const tipFiles = await sortJsonFiles("../../config/tips");
+    let result: Tips | null = null;
+
+    tipFiles.some(file => {
+        if (compareVersions(tfVersion, file.version) >= 0) {
+            result = file.json as Tips;
+            return true;
+        }
+        return false;
+    });
+    return result;
 }

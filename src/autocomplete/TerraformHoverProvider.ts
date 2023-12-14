@@ -1,5 +1,4 @@
 import { HoverProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionItemKind, Hover, ProviderResult } from "vscode";
-import resources from '../../config/tips/tiat-resources.json';
 import * as _ from "lodash";
 
 var topLevelTypes = ["output", "provider", "resource", "variable", "data"];
