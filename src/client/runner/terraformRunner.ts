@@ -61,10 +61,6 @@ export class TerraformRunner extends BaseRunner {
         );
     }
 
-    public async executeVersion(params: type): Promise<string> {
-
-    }
-
     public async preImport(cwd: string, args: any, file: string): Promise<{ importArgs: string, tfFile: string }> {
         const fileName = file ?? args.resource.type + '.tf';
 
