@@ -1,8 +1,5 @@
 name: pre-release
 on:
-    pull_request:
-        types:
-            - closed
     push:
         tags:
             - "v*"
