@@ -16,8 +16,7 @@ export class GitUtils {
 
     public async submitToGit(): Promise<any> {
         console.debug("[DEBUG]#### GitUtils submitToGit begin.");
-        const activeDocumentPath = workspaceUtils.getActiveEditorPath();
-        const gitRootPath = path.dirname(activeDocumentPath);
+        const gitRootPath = workspaceUtils.getActiveEditorPath();
         if (!gitRootPath) {
             vscode.window.showErrorMessage('Please open a workspace folder first!');
             return;

@@ -43,9 +43,12 @@ export async function executeCommand(command: string, args: string[], options: c
     });
 }
 
-export async function executeCommandByExec(command: string): Promise<string> {
+export async function executeCommandByExec(command: string, cwd?: string): Promise<string> {
     return new Promise((resolve, reject) => {
-        cp.exec(command, (error, stdout, stderr) => {
+        const options = {
+            cwd,
+        };
+        cp.exec(command, options, (error, stdout, stderr) => {
             if (error) {
                 reject(`child_process exec failed: error:[${error}], stderr:[${stderr}]`);
             } else {

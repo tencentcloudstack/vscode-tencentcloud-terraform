@@ -8,6 +8,7 @@
 import * as _ from "lodash";
 import * as vscode from "vscode";
 import { DialogOption, showFolderDialog } from "./uiUtils";
+import * as path from "path";
 
 export async function selectWorkspaceFolder(): Promise<string | undefined> {
     let folder: vscode.WorkspaceFolder;
@@ -54,6 +55,6 @@ export function getActiveEditorPath(): string {
         return "";
     }
 
-    const activeDocumentPath = activeDocument.uri.fsPath;
+    const activeDocumentPath = path.dirname(activeDocument.uri.fsPath);
     return activeDocumentPath;
 }
