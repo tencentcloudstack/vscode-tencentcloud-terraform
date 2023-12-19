@@ -449,6 +449,7 @@ async function loadResource(extPath: string): Promise<Tips> {
 
     tipFiles.some(file => {
         if (compareVersions(tfVersion, file.version) >= 0) {
+            console.log(`loaded json version:${file.version}`);
             result = file.json as Tips;
             return true;
         }
