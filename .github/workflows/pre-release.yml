@@ -58,6 +58,6 @@ jobs:
                   repo_token: "${{ secrets.GITHUB_TOKEN }}"
                   automatic_release_tag: ${{ env.NEW_TAG }}
                   prerelease: true
-                  title: "v${{ env.NEW_TAG }}-beta"
+                  title: "${{ env.NEW_TAG }}-beta"
                   files: |
                       vscode-tencentcloud-terraform-*.vsix
