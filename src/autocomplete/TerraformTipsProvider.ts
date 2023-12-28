@@ -1,8 +1,15 @@
 import { CompletionItemProvider, TextDocument, Position, CancellationToken, CompletionItem, CompletionItemKind } from "vscode";
-import resources from '../../config/tips/tiat-resources.json';
+// import resources from '../../config/tips/tiat-resources.json';
 import * as _ from "lodash";
 import * as vscode from 'vscode';
+import { executeCommandByExec } from "@/utils/cpUtils";
+import * as fs from "fs";
+import * as path from "path";
+import * as workspaceUtils from "@/utils/workspaceUtils";
+import * as TelemetryWrapper from "vscode-extension-telemetry-wrapper";
 
+const LATEST_VERSION = "latest";
+const versionPattern = /^v\d+(\.\d+){2}\.json$/;
 let topLevelTypes = ["output", "provider", "resource", "variable", "data"];
 let topLevelRegexes = topLevelTypes.map(o => {
     return {
@@ -13,6 +20,29 @@ let topLevelRegexes = topLevelTypes.map(o => {
 
 interface TerraformCompletionContext extends vscode.CompletionContext {
     resourceType?: string;
+}
+
+interface Argument {
+    name: string;
+    description: string;
+    options?: Array<string>;
+    detail?: Array<Argument>;
+}
+
+interface Attribute {
+    name: string;
+    description: string;
+    detail?: Array<Attribute>;
+}
+
+interface Tips {
+    version: string;
+    resource: {
+        [key: string]: {
+            args: Array<Argument>;
+            attrs: Array<Attribute>;
+        };
+    };
 }
 
 const TEXT_MIN_SORT = "a";
@@ -26,8 +56,12 @@ export class TerraformTipsProvider implements CompletionItemProvider {
     position: Position;
     token: CancellationToken;
     resourceType: string | null = null;
+    private extensionPath: string;
+    constructor(extensionPath: string) {
+        this.extensionPath = extensionPath;
+    }
 
-    public provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: TerraformCompletionContext): CompletionItem[] {
+    public async provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: TerraformCompletionContext): Promise<CompletionItem[]> {
         this.document = document;
         this.position = position;
         this.token = token;
@@ -36,7 +70,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
         const lineText = document.lineAt(position.line).text;
         const lineTillCurrentPosition = lineText.substring(0, position.character);
 
-        // Are we trying to type a top type?
+        // handle top level definition
         if (this.isTopLevelType(lineTillCurrentPosition)) {
             return this.getTopLevelType(lineTillCurrentPosition);
         }
@@ -76,15 +110,23 @@ export class TerraformTipsProvider implements CompletionItemProvider {
                 // We're trying to type the exported field for the let
                 const resourceType = parts[0];
                 let resourceName = parts[1];
-                let attrs = resources[resourceType].attrs;
-                let result = _.map(attrs, o => {
-                    let c = new CompletionItem(`${o.name} (${resourceType})`, CompletionItemKind.Property);
-                    c.detail = o.description;
-                    c.insertText = o.name;
-                    c.sortText = TEXT_MIN_SORT;
-                    return c;
-                });
-                return result;
+                try {
+                    // async load resource config 
+                    const tips = await loadResource(this.extensionPath);
+                    const resources = tips.resource;
+                    let attrs = resources[resourceType].attrs;
+                    let result = _.map(attrs, o => {
+                        let c = new CompletionItem(`${o.name}(${resourceType})`, CompletionItemKind.Property);
+                        c.detail = o.description;
+                        c.insertText = o.name;
+                        c.sortText = TEXT_MIN_SORT;
+                        return c;
+                    });
+                    return result;
+
+                } catch (error) {
+                    console.error(`Can not load resource from json. error:[${error}]`);
+                }
             }
 
             // Which part are we completing for?
@@ -92,8 +134,8 @@ export class TerraformTipsProvider implements CompletionItemProvider {
         }
 
         // Are we trying to type a parameter to a resource?
-        let possibleResources = this.checkTopLevelResource(lineTillCurrentPosition);
-        // typing a resource type
+        let possibleResources = await this.checkTopLevelResource(lineTillCurrentPosition);
+        // handle resource type
         if (possibleResources.length > 0) {
             return this.getHintsForStrings(possibleResources);
         }
@@ -106,28 +148,43 @@ export class TerraformTipsProvider implements CompletionItemProvider {
             if (endwithEqual) {
                 const lineBeforeEqualSign = lineTillCurrentPosition.substring(0, includeEqual).trim();
                 // load options
-                const name = lineBeforeEqualSign;
-                const argStrs = this.findArgByName(resources[this.resourceType].args, name);
-                const options = this.getOptionsFormArg(argStrs);
-                // clear resource type
-                this.resourceType = "";
-                return (options).length ? options : [];
+                try {
+                    // async load resource config 
+                    const tips = await loadResource(this.extensionPath);
+                    const name = lineBeforeEqualSign;
+                    const resources = tips.resource;
+                    const argStrs = this.findArgByName(resources[this.resourceType].args, name);
+                    const options = this.getOptionsFormArg(argStrs);
+                    // clear resource type
+                    this.resourceType = "";
+                    return (options).length ? options : [];
+                } catch (error) {
+                    console.error(`Can not load resource from json when loading options. error:[${error}]`);
+                }
             }
             this.resourceType = "";
             return [];
         }
 
-        // Check if we're in a resource definition
+        // handle argument
         if (includeEqual < 0 && !endwithEqual) {
             // we're not in options case
             for (let i = position.line - 1; i >= 0; i--) {
                 let line = document.lineAt(i).text;
                 let parentType = this.getParentType(line);
                 if (parentType && parentType.type === "resource") {
-                    // typing a arg in resource
+                    // typing a argument in resource
                     const resourceType = this.getResourceTypeFromLine(line);
-                    const ret = this.getItemsForArgs(resources[resourceType].args, resourceType);
-                    return ret;
+                    try {
+                        // async load resource config 
+                        const tips = await loadResource(this.extensionPath);
+                        const resources = tips.resource;
+                        const ret = this.getItemsForArgs(resources[resourceType].args, resourceType);
+                        return ret;
+                    } catch (error) {
+                        console.error(`Can not load resource from json when loading argument. error:[${error}]`);
+                        return [];
+                    }
                 }
                 else if (parentType && parentType.type !== "resource") {
                     // We don't want to accidentally include some other containers stuff
@@ -237,18 +294,27 @@ export class TerraformTipsProvider implements CompletionItemProvider {
         return "";
     }
 
-    checkTopLevelResource(lineTillCurrentPosition: string): any[] {
+    async checkTopLevelResource(lineTillCurrentPosition: string): Promise<any[]> {
         let parts = lineTillCurrentPosition.split(" ");
         if (parts.length === 2 && parts[0] === "resource") {
             let r = parts[1].replace(/"/g, '');
             let regex = new RegExp("^" + r);
-            let possibleResources = _.filter(_.keys(resources), k => {
-                if (regex.test(k)) {
-                    return true;
-                }
-                return false;
-            });
-            return possibleResources;
+            // handle resource
+            try {
+                // async load resource config 
+                const tips = await loadResource(this.extensionPath);
+                const resources = tips.resource;
+                let possibleResources = _.filter(_.keys(resources), k => {
+                    if (regex.test(k)) {
+                        return true;
+                    }
+                    return false;
+                });
+                return possibleResources;
+            } catch (error) {
+                console.error(`Can not load resource from json when loading resource type. error:[${error}]`);
+                return [];
+            }
         }
         return [];
     }
@@ -295,7 +361,7 @@ export class TerraformTipsProvider implements CompletionItemProvider {
         }
 
         const changes = event.contentChanges[0];
-        if (changes.text === TIPS_OPTIONS_TRIGGER_CHARACTER) {
+        if (changes && changes.text === TIPS_OPTIONS_TRIGGER_CHARACTER) {
             const position = activeEditor.selection.active;
             const resourceType = this.findResourceType(event.document, position);
 
@@ -305,4 +371,94 @@ export class TerraformTipsProvider implements CompletionItemProvider {
             }
         }
     }
+}
+
+async function sortJsonFiles(dir: string) {
+    let jsonFiles: string[];
+    try {
+        const files = fs.readdirSync(dir);
+        jsonFiles = files.filter(file => path.extname(file) === '.json' && versionPattern.test(file));
+        // const jsonFiles: string[] = ["v1.81.50.json", "v1.81.54.json"]; // debug data
+    } catch (error) {
+        console.error(`read dir failed. error:[${error}]`);
+        return null;
+    }
+
+    // import files
+    const versions = await Promise.all(jsonFiles.map(async file => {
+        const jsonPath = path.join("../config/tips/", file);
+        // const json = await import(jsonPath);
+        const json = require(jsonPath);
+        const version = json.version as string;
+        return {
+            json,
+            version
+        };
+    }));
+
+    // sort with version desc
+    versions.sort((a, b) => compareVersions(b.version, a.version));
+    return versions;
+}
+
+function compareVersions(a, b) {
+    if (a && !b) { return 1; }
+    if (!a && b) { return -1; }
+    if (a === 'latest') { return 1; }
+    if (b === 'latest') { return -1; }
+    const aParts = a.split('.').map(Number);
+    const bParts = b.split('.').map(Number);
+
+    for (let i = 0; i < aParts.length; i++) {
+        if (aParts[i] > bParts[i]) {
+            return 1;
+        } else if (aParts[i] < bParts[i]) {
+            return -1;
+        }
+    }
+    //equal
+    return 0;
+}
+
+// load resource config from json files based on the appropriate version
+async function loadResource(extPath: string): Promise<Tips> {
+    let tfVersion: string;
+    const cwd = workspaceUtils.getActiveEditorPath();
+    if (!cwd) {
+        TelemetryWrapper.sendError(Error("noWorkspaceSelected"));
+        console.error(`can not get path from active editor`);
+    }
+
+    await executeCommandByExec("terraform version", cwd).then(output => {
+        let match = RegExp(/tencentcloudstack\/tencentcloud (v\d+\.\d+\.\d+)/).exec(output);
+
+        if (match) {
+            tfVersion = match[1];
+        } else {
+            // gives the latest JSON if not tf provider version found
+            tfVersion = LATEST_VERSION;
+        }
+        console.log(`tf provider version:[${tfVersion}], cwd:[${cwd}]`);
+    }).catch(error => {
+        console.error(`execute terraform version failed: ${error}`);
+    });
+
+    let result: Tips | null = null;
+    const tipsDir = path.join(extPath, 'config', 'tips');
+    const tipFiles = await sortJsonFiles(tipsDir);
+
+    tipFiles.some(file => {
+        if (compareVersions(tfVersion, file.version) >= 0) {
+            result = file.json as Tips;
+            return true;
+        }
+        // gives the latest JSON if not one JSON files matched
+        result = file.json as Tips;
+        return false;
+    });
+
+    console.log(`Loaded json. tf version:[${tfVersion}], json version:[${result.version}]`);
+    // vscode.window.showInformationMessage(`Loaded json. tf version:[${tfVersion}], json version:[${result.version}]`);
+
+    return result;
 }

@@ -16,7 +16,8 @@ export enum TerraformCommand {
     Destroy = "terraform destroy",
     Validate = "terraform validate",
     Show = "terraform show",
-    State = "terraform state"
+    State = "terraform state",
+    Version = "terraform version"
 }
 
 export enum TerraformerCommand {

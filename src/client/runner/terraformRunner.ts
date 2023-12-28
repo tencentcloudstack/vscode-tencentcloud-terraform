@@ -34,6 +34,7 @@ export class TerraformRunner extends BaseRunner {
 
         this.setAKSK();
 
+        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Version);
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Init);
 
         return "init success";
@@ -61,7 +62,7 @@ export class TerraformRunner extends BaseRunner {
     }
 
     public async preImport(cwd: string, args: any, file: string): Promise<{ importArgs: string, tfFile: string }> {
-        const fileName = (file === undefined) ? args.resource.type + '.tf' : file;
+        const fileName = file ?? args.resource.type + '.tf';
 
         const defaultContents = `resource "${args.resource.type}" "${args.resource.name}" {}`;
         const resAddress = `${args.resource.type}.${args.resource.name}`;

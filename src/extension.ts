@@ -71,7 +71,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     // tips
     console.log('activate the tips(options and doc) feature');
-    const tipsProvider = new TerraformTipsProvider();
+    const tipsProvider = new TerraformTipsProvider(context.extensionPath);
     context.subscriptions.push(
         vscode.workspace.onDidChangeTextDocument((event) => {
             tipsProvider.handleCharacterEvent(event);
