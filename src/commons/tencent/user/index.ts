@@ -1,5 +1,5 @@
 import { localize } from "vscode-nls-i18n";
-import { ExtensionContext, workspace, ConfigurationTarget, window, ProgressLocation, MessageItem } from "vscode";
+import { ExtensionContext, workspace, ConfigurationTarget, window, ProgressLocation, MessageItem, extensions } from "vscode";
 
 import { container } from "../../container";
 import { Context } from "../../context";
@@ -25,6 +25,7 @@ export namespace user {
         arn?: string;
     }
 
+    export const REQUEST_CLIENT_PREFIX = "Terraform-Vscode-";//Terraform-1.81.61@vscode";
     export const AKSK_TITLE = "TcTerraform.pickup.aksk";
     export const OAUTH_TITLE = "TcTerraform.pickup.oauth";
     export const AKSK_PLACEHOLD = "TcTerraform.pickup.aksk.placeholder";
@@ -129,6 +130,12 @@ export namespace user {
         if (oauth === pick) {
             // to do 
         }
+    }
+
+    function getExtensionVersion(): string {
+        let extension = extensions.getExtension('Tencent-Cloud.vscode-tencentcloud-terraform');
+        let currentVersion = extension.packageJSON.version;
+        return currentVersion;
     }
 
     export async function loginOut() {
