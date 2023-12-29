@@ -1,5 +1,5 @@
 import { localize } from "vscode-nls-i18n";
-import { ExtensionContext, workspace, ConfigurationTarget, window, ProgressLocation, MessageItem } from "vscode";
+import { ExtensionContext, workspace, ConfigurationTarget, window, ProgressLocation, MessageItem, extensions } from "vscode";
 
 import { container } from "../../container";
 import { Context } from "../../context";
@@ -7,7 +7,7 @@ import { tree } from "../treeDataProvider";
 import { getCredentailByInput } from "./auth";
 import { AbstractClient } from "tencentcloud-sdk-nodejs/tencentcloud/common/abstract_client";
 import { Credential } from "tencentcloud-sdk-nodejs/tencentcloud/common/interface";
-import { getCamClient, getStsClient } from "@/connectivity/client";
+import { getCamClient, getCommonClient, getStsClient } from "@/connectivity/client";
 import * as loginMgt from "../../../views/login/loginMgt";
 import * as settingUtils from "../../../utils/settingUtils";
 
@@ -24,6 +24,7 @@ export namespace user {
         arn?: string;
     }
 
+    export const REQUEST_CLIENT_PREFIX = "Terraform-Vscode-";//Terraform-1.81.61@vscode";
     export const AKSK_TITLE = "TcTerraform.pickup.aksk";
     export const OAUTH_TITLE = "TcTerraform.pickup.oauth";
     export const AKSK_PLACEHOLD = "TcTerraform.pickup.aksk.placeholder";
@@ -71,10 +72,16 @@ export namespace user {
             try {
                 // query user info
                 const stsClient = await getStsClient();
-                const stsResp = await stsClient?.GetCallerIdentity().
+                const currentVersion = getExtensionVersion();
+                const reqCli = `${REQUEST_CLIENT_PREFIX}v${currentVersion}`;
+                stsClient.sdkVersion = reqCli;
+                console.log('[DEBUG]--------------------getStsClient:', stsClient);
+                // const stsClient = await getCommonClient("sts.tencentcloudapi.com", "2018-08-13");
+                // const stsResp = await stsClient.request("GetCallerIdentity", req).
+                const stsResp = await stsClient?.GetCallerIdentity(null).
                     then(
                         (result) => {
-                            console.debug('[DEBUG]--------------------------------result:', result);
+                            console.debug('[DEBUG]--------------------------------GetCallerIdentity result:', result);
                             if (!result) {
                                 throw new Error('[Warn] GetCallerIdentity result.TotalCount is 0.');
                             }
@@ -84,12 +91,15 @@ export namespace user {
                             throw new Error(err);
                         }
                     );
+                // ) as stsModels.GetCallerIdentityResponse;
 
                 const camClient = await getCamClient();
-                const camResp = await camClient?.GetUserAppId().
+                camClient.sdkVersion = reqCli;
+                console.log('[DEBUG]--------------------getCamClient:', camClient);
+                const camResp = await camClient?.GetUserAppId(null).
                     then(
                         (result) => {
-                            console.debug('[DEBUG]--------------------------------result:', result);
+                            console.debug('[DEBUG]--------------------------------GetUserAppId result:', result);
                             if (!result) {
                                 throw new Error('[Warn] GetUserAppId result.TotalCount is 0.');
                             }
@@ -120,6 +130,12 @@ export namespace user {
         if (oauth === pick) {
             // to do 
         }
+    }
+
+    function getExtensionVersion(): string {
+        let extension = extensions.getExtension('Tencent-Cloud.vscode-tencentcloud-terraform');
+        let currentVersion = extension.packageJSON.version;
+        return currentVersion;
     }
 
     export async function loginOut() {

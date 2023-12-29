@@ -11,6 +11,7 @@ import * as tencentcloud from "tencentcloud-sdk-nodejs";
 import { localize } from "vscode-nls-i18n";
 import * as settingUtils from "../utils/settingUtils";
 
+const DefaultReqCliHeader = { "X-TC-RequestClient": "Terraform-Vscode-v0.0.26" };
 
 export async function getTkeClient(): Promise<TkeClient> {
     const [secretId, secretKey, region] = settingUtils.getAKSKandRegion();
@@ -32,6 +33,7 @@ export async function getTkeClient(): Promise<TkeClient> {
             httpProfile: {
                 reqMethod: "POST", // 请求方法
                 reqTimeout: 30, // 请求超时时间，默认60s
+                headers: DefaultReqCliHeader,
             },
         },
     });
@@ -60,12 +62,13 @@ export async function getCvmClient(): Promise<CvmClient> {
                 reqMethod: "POST", // 请求方法
                 // reqTimeout: 60, // 请求超时时间，默认60s
                 endpoint: "cvm.tencentcloudapi.com",
+                headers: DefaultReqCliHeader,
             },
         },
     });
 }
 
-export async function getCommonClient(): Promise<AbstractClient> {
+export async function getCommonClient(ep?, version?, reqCli?: string): Promise<AbstractClient> {
     const [secretId, secretKey, region] = settingUtils.getAKSKandRegion();
 
     if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null || secretId === '' || secretKey === '') {
@@ -75,20 +78,24 @@ export async function getCommonClient(): Promise<AbstractClient> {
     }
 
     const client = new AbstractClient(
-        "open.test.tencentcloudapi.com",
-        "2018-12-25",
+        ep ?? "open.test.tencentcloudapi.com",
+        version ?? "2018-12-25",
         {
             credential: {
                 secretId: secretId,
                 secretKey: secretKey,
             },
+            region: region ?? "ap-guangzhou",
             profile: {
                 httpProfile: {
-                    proxy: "http://9.135.97.58:8899",
+                    reqMethod: "POST", // 请求方法
+                    endpoint: ep ?? "open.test.tencentcloudapi.com",
+                    headers: DefaultReqCliHeader,
                 },
             },
         }
     );
+    client.sdkVersion = reqCli ?? "Terraform-1.81.61@vscode";
 
     return client;
 }
