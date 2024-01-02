@@ -27,7 +27,7 @@ export class CvmService implements ITencentCloudAPI {
             (result) => {
                 // console.debug('[DEBUG]--------------------------------result:', result);
                 if (result.TotalCount === 0) {
-                    throw new Error('[Warn] DescribeInstances result.TotalCount is 0.');
+                    console.warn('[Warn] DescribeInstances result.TotalCount is 0.');
                 }
                 return result.InstanceSet;
             },

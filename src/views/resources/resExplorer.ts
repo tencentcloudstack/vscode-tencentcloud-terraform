@@ -21,8 +21,12 @@ export class CvmResProvider extends tencent.tree.TreeDataProvider {
                 const service = new CvmService();
                 const instances = await service.describeInstances();
                 const config = await service.getConfig();
+                let items: tencent.tree.TreeItem[] = [];
+                if (!Array.isArray(instances)) {
+                    return items;// return [] if instances nil
+                }
 
-                const items: tencent.tree.TreeItem[] = Array.isArray(instances)
+                items = instances.length > 0
                     ? instances.map(instance => ({
                         label: `${instance.InstanceName}(${instance.InstanceId})`,
                         id: instance.InstanceId,
@@ -42,12 +46,12 @@ export class CvmResProvider extends tencent.tree.TreeDataProvider {
                             }],
                         },
                     }))
-                    : [];// return [] if instances nil
+                    : [{ label: "No instance." }]; // return none tips if instance is empty
 
                 return items;
             } catch (error) {
                 console.error('[Error]#### getChildren got a error:[%s] from CvmService. stack:%s', error.message, error.stack);
-                return error;
+                return [];
             }
 
         } else {
