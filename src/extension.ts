@@ -1,7 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import * as settingUtils from "./utils/settingUtils";
 import { init } from "vscode-nls-i18n";
 import { TerraformCommand, TerraformerCommand } from "./commons/customCmdRegister";
 import { terraformShellManager } from "./client/terminal/terraformShellManager";
@@ -16,6 +15,8 @@ import { GitUtils } from './utils/gitUtils';
 import _ from 'lodash';
 import * as autocomplete from './autocomplete/TerraformExampleProvider';
 import * as loginMgt from './views/login/loginMgt';
+import * as context from './commons/context';
+import { Constants } from './commons/constants';
 
 const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' };
 const COMPATIBLE_MODE: vscode.DocumentFilter = { scheme: 'file' };
@@ -29,6 +30,8 @@ export async function activate(context: vscode.ExtensionContext) {
     await TerraformRunner.getInstance().checkInstalled();
     await TerraformerRunner.getInstance().checkInstalled();
 
+    // set request client
+    await setRequestClient();
     // terraform cmd
     context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.apply', () => {
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Apply);
@@ -115,9 +118,31 @@ export async function activate(context: vscode.ExtensionContext) {
 
 }
 
+async function setRequestClient() {
+    const config = vscode.workspace.getConfiguration('terminal.integrated.env');
+    const os = getOSPlatform();
+    const curConfig = config[os] || {};
 
+    // env[Constants.REQUEST_CLIENT] = context.genRequestClient();
+    const updatedConfig = { ...curConfig, [Constants.REQUEST_CLIENT]: context.genRequestClient() };
+
+    await config.update(os, updatedConfig, vscode.ConfigurationTarget.Global);
+}
+
+function getOSPlatform(): string {
+    const platform = process.platform;
+    switch (platform) {
+        case 'win32':
+            return 'windows';
+        case 'darwin':
+            return 'osx';
+        case 'linux':
+        default:
+            return 'linux';
+    }
+}
 
 // This method is called when your extension is deactivated
 export function deactivate() {
-    /* TODO document why this function 'deactivate' is empty */
+
 }
