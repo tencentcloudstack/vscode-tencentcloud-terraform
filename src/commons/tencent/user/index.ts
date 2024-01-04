@@ -1,5 +1,5 @@
 import { localize } from "vscode-nls-i18n";
-import { ExtensionContext, workspace, ConfigurationTarget, window, ProgressLocation, MessageItem, extensions } from "vscode";
+import { ExtensionContext, workspace, ConfigurationTarget, window, ProgressLocation, MessageItem } from "vscode";
 
 import { container } from "../../container";
 import { Context } from "../../context";
@@ -10,6 +10,7 @@ import { Credential } from "tencentcloud-sdk-nodejs/tencentcloud/common/interfac
 import { getCamClient, getCommonClient, getStsClient } from "@/connectivity/client";
 import * as loginMgt from "../../../views/login/loginMgt";
 import * as settingUtils from "../../../utils/settingUtils";
+import * as context from "../../context";
 
 export namespace user {
     export interface UserInfo {
@@ -24,7 +25,6 @@ export namespace user {
         arn?: string;
     }
 
-    export const REQUEST_CLIENT_PREFIX = "Terraform-Vscode-";//Terraform-1.81.61@vscode";
     export const AKSK_TITLE = "TcTerraform.pickup.aksk";
     export const OAUTH_TITLE = "TcTerraform.pickup.oauth";
     export const AKSK_PLACEHOLD = "TcTerraform.pickup.aksk.placeholder";
@@ -72,8 +72,7 @@ export namespace user {
             try {
                 // query user info
                 const stsClient = await getStsClient();
-                const currentVersion = getExtensionVersion();
-                const reqCli = `${REQUEST_CLIENT_PREFIX}v${currentVersion}`;
+                const reqCli = context.genRequestClient();
                 stsClient.sdkVersion = reqCli;
                 console.log('[DEBUG]--------------------getStsClient:', stsClient);
                 // const stsClient = await getCommonClient("sts.tencentcloudapi.com", "2018-08-13");
@@ -130,12 +129,6 @@ export namespace user {
         if (oauth === pick) {
             // to do 
         }
-    }
-
-    function getExtensionVersion(): string {
-        let extension = extensions.getExtension('Tencent-Cloud.vscode-tencentcloud-terraform');
-        let currentVersion = extension.packageJSON.version;
-        return currentVersion;
     }
 
     export async function loginOut() {

@@ -32,7 +32,7 @@ export class TerraformRunner extends BaseRunner {
     public async init(): Promise<any> {
         console.debug("[DEBUG]#### TerraformRunner init begin.");
 
-        this.setAKSK();
+        // this.setAKSK();
 
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Version);
         terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Init);

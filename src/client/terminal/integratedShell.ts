@@ -23,17 +23,18 @@ import { BaseRunner } from "../runner/baseRunner";
 import { TerraformerRunner, CommandType, FlagType, FlagsMap, defaultProduct } from "../../client/runner/terraformerRunner";
 import { TerraformRunner } from "../runner/terraformRunner";
 
-// import stripAnsi from 'strip-ansi';
 
 export class IntegratedShell extends BaseShell {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     private static readonly GRAPH_FILE_NAME = "graph.png";
     private readonly runner: BaseRunner;
+    private readonly env: { [key: string]: string | null | undefined };
 
-    constructor(rr: BaseRunner) {
+    constructor(rr: BaseRunner, ee: any) {
         super();
         // terraform or terraformer?
         this.runner = rr;
+        this.env = ee;
     }
 
     // Creates a png of terraform resource graph to visualize the resources under management.
@@ -179,7 +180,7 @@ export class IntegratedShell extends BaseShell {
     }
 
     public async runTerraformCmd(tfCommand: string, args?: string[]) {
-        this.checkCreateTerminal();
+        this.createTerminal(Constants.TerraformTerminalName);
         this.terminal.show();
 
         // const cmd= [tfCommand, args.values].join(' ');
@@ -193,7 +194,7 @@ export class IntegratedShell extends BaseShell {
     }
 
     public async runNormalCmd(tfCommand: string, newLine = true) {
-        this.checkCreateTerminal();
+        this.createTerminal(Constants.TerraformTerminalName);
         this.terminal.show();
         this.terminal.sendText(tfCommand, newLine);
     }
@@ -220,9 +221,13 @@ export class IntegratedShell extends BaseShell {
         }
     }
 
-    private checkCreateTerminal(): void {
+    private createTerminal(name: string): void {
         if (!this.terminal) {
-            this.terminal = vscode.window.createTerminal(Constants.TerraformTerminalName);
+            const options: vscode.TerminalOptions = {
+                name: name,
+                env: this.env,
+            };
+            this.terminal = vscode.window.createTerminal(options);
         }
     }
 }
