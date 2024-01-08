@@ -17,6 +17,7 @@ import * as autocomplete from './autocomplete/TerraformExampleProvider';
 import * as loginMgt from './views/login/loginMgt';
 import * as context from './commons/context';
 import { Constants } from './commons/constants';
+import user from "@/commons/tencent/user/index";
 
 const TF_MODE: vscode.DocumentFilter = { language: 'terraform', scheme: 'file' };
 const COMPATIBLE_MODE: vscode.DocumentFilter = { scheme: 'file' };
@@ -30,19 +31,19 @@ export async function activate(context: vscode.ExtensionContext) {
     await TerraformRunner.getInstance().checkInstalled();
     await TerraformerRunner.getInstance().checkInstalled();
 
-    // set request client
-    await setRequestClient();
+    // set request client for all of Terminal
+    await setRequestClientOnTerminal();
     // terraform cmd
-    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.apply', () => {
-        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Apply);
+    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.apply', async () => {
+        (await terraformShellManager.getShell()).runTerraformCmd(TerraformCommand.Apply);
     }));
 
-    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.refresh', () => {
-        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Refresh);
+    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.refresh', async () => {
+        (await terraformShellManager.getShell()).runTerraformCmd(TerraformCommand.Refresh);
     }));
 
-    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.destroy', () => {
-        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Destroy);
+    context.subscriptions.push(vscode.commands.registerCommand('tcTerraform.destroy', async () => {
+        (await terraformShellManager.getShell()).runTerraformCmd(TerraformCommand.Destroy);
     }));
 
     // git operations
@@ -56,13 +57,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
     // terraformer cmd
     let disposableTferImport = vscode.commands.registerCommand('tcTerraformer.import', async () => {
-        terraformShellManager.getShell().runTerraformCmd(TerraformerCommand.Import);
+        (await terraformShellManager.getShell()).runTerraformCmd(TerraformerCommand.Import);
     });
 
     context.subscriptions.push(disposableTferImport);
 
     let disposableTferPlan = vscode.commands.registerCommand('tcTerraformer.plan', async () => {
-        terraformShellManager.getShell().runTerraformCmd(TerraformerCommand.Plan);
+        (await terraformShellManager.getShell()).runTerraformCmd(TerraformerCommand.Plan);
     });
 
     context.subscriptions.push(disposableTferPlan);
@@ -118,13 +119,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
 }
 
-async function setRequestClient() {
+async function setRequestClientOnTerminal() {
     const config = vscode.workspace.getConfiguration('terminal.integrated.env');
     const os = getOSPlatform();
     const curConfig = config[os] || {};
 
-    // env[Constants.REQUEST_CLIENT] = context.genRequestClient();
-    const updatedConfig = { ...curConfig, [Constants.REQUEST_CLIENT]: context.genRequestClient() };
+    const reqCli = await context.genRequestClient();
+    const updatedConfig = { ...curConfig, [Constants.REQUEST_CLIENT]: reqCli }; // set ReqCli for all Terminal
 
     await config.update(os, updatedConfig, vscode.ConfigurationTarget.Global);
 }
@@ -143,6 +144,6 @@ function getOSPlatform(): string {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {
-
+export async function deactivate() {
+    await user.clearInfo();
 }

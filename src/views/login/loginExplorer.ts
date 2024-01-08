@@ -19,7 +19,7 @@ export class LoginProvider extends tencent.tree.TreeDataProvider {
 
     async isLoggedIn(): Promise<boolean> {
         if (getSecretIdFromEnv() && getSecretKeyFromEnv()) {
-            const userInfo = await user.getInfo() as user.UserInfo;
+            const userInfo = await user.getInfo();
             if (!userInfo || !userInfo.secretId || userInfo.secretId === '') {
                 return false;
             }
@@ -31,7 +31,7 @@ export class LoginProvider extends tencent.tree.TreeDataProvider {
     async getChildren(element?: tencent.tree.TreeItem | undefined): Promise<tencent.tree.TreeItem[]> {
         let items: tencent.tree.TreeItem[] = [];
         if (!element) {
-            if (!this.isLoggedIn()) {
+            if (!await this.isLoggedIn()) {
                 window.showInformationMessage(localize("TcTerraform.login.msg.need.login"));
                 clearAKSKandRegion();
                 return items;

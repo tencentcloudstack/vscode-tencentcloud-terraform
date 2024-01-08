@@ -37,6 +37,10 @@ export class IntegratedShell extends BaseShell {
         this.env = ee;
     }
 
+    public getEnv() {
+        return this.env;
+    }
+
     // Creates a png of terraform resource graph to visualize the resources under management.
     public async visualize(): Promise<void> {
         console.debug("[DEBUG]#### IntegratedShell visualize begin.");
