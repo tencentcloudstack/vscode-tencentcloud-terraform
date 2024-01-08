@@ -17,7 +17,9 @@ import { Constants } from "../../commons/constants";
 
 export interface ITerraformShellManager {
     getShell(): Promise<BaseShell>;
+    getShell(): Promise<BaseShell>;
     // getCloudShell(): TCCloudShell;
+    getIntegratedShell(runner?: any): Promise<IntegratedShell>;
     getIntegratedShell(runner?: any): Promise<IntegratedShell>;
     dispose(): void;
 }

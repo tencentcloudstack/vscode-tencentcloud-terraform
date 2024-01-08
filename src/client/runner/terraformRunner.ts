@@ -14,6 +14,7 @@ import { executeCommand } from "../../utils/cpUtils";
 import * as settingUtils from "../../utils/settingUtils";
 import { openUrlHintOrNotShowAgain } from "../../utils/uiUtils";
 import { localize } from "vscode-nls-i18n";
+import { localize } from "vscode-nls-i18n";
 
 
 export class TerraformRunner extends BaseRunner {
