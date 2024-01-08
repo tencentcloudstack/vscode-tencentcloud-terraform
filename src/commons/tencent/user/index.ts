@@ -40,85 +40,15 @@ export namespace user {
         // only support aksk way right now
         if (aksk === pick) {
             const credential = await getCredentailByInput();
-            const accessKey = credential.secretId;
-            const secretKey = credential.secretKey;
-            const region = credential.region;
-
-            // get configuration
-            const config = workspace.getConfiguration();
-
-            // set in vscode configuration(setting.json)
-            await config.update('tcTerraform.properties.secretId', accessKey, ConfigurationTarget.Global)
-                .then(() => {
-                }, (error) => {
-                    window.showErrorMessage('set secretId failed: ' + error);
-                });
-            await config.update('tcTerraform.properties.secretKey', secretKey, ConfigurationTarget.Global)
-                .then(() => {
-                }, (error) => {
-                    window.showErrorMessage('set secretKey failed: ' + error);
-                });
-            await config.update('tcTerraform.properties.region', region, ConfigurationTarget.Global)
-                .then(() => {
-                }, (error) => {
-                    window.showErrorMessage('set region failed: ' + error);
-                });
 
             // set in system environment
-            process.env.TENCENTCLOUD_SECRET_ID = accessKey;
-            process.env.TENCENTCLOUD_SECRET_KEY = secretKey;
-            process.env.TENCENTCLOUD_REGION = region;
+            process.env.TENCENTCLOUD_SECRET_ID = credential.secretId;
+            process.env.TENCENTCLOUD_SECRET_KEY = credential.secretKey;
+            process.env.TENCENTCLOUD_REGION = credential.region;
 
             try {
                 // query user info
-                const stsClient = await getStsClient();
-                const reqCli = context.genRequestClient();
-                stsClient.sdkVersion = reqCli;
-                console.log('[DEBUG]--------------------getStsClient:', stsClient);
-                // const stsClient = await getCommonClient("sts.tencentcloudapi.com", "2018-08-13");
-                // const stsResp = await stsClient.request("GetCallerIdentity", req).
-                const stsResp = await stsClient?.GetCallerIdentity(null).
-                    then(
-                        (result) => {
-                            console.debug('[DEBUG]--------------------------------GetCallerIdentity result:', result);
-                            if (!result) {
-                                throw new Error('[Warn] GetCallerIdentity result.TotalCount is 0.');
-                            }
-                            return result;
-                        },
-                        (err) => {
-                            throw new Error(err);
-                        }
-                    );
-                // ) as stsModels.GetCallerIdentityResponse;
-
-                const camClient = await getCamClient();
-                camClient.sdkVersion = reqCli;
-                console.log('[DEBUG]--------------------getCamClient:', camClient);
-                const camResp = await camClient?.GetUserAppId(null).
-                    then(
-                        (result) => {
-                            console.debug('[DEBUG]--------------------------------GetUserAppId result:', result);
-                            if (!result) {
-                                throw new Error('[Warn] GetUserAppId result.TotalCount is 0.');
-                            }
-                            return result;
-                        },
-                        (err) => {
-                            throw new Error(err);
-                        }
-                    );
-
-                // set user info
-                let userinfo: UserInfo = {
-                    secretId: accessKey,
-                    secretKey: secretKey,
-                    uin: stsResp.PrincipalId ?? stsResp.UserId ?? "-",
-                    type: stsResp.Type ?? "unknow",
-                    appid: String(camResp.AppId) ?? "-",
-                    arn: stsResp.Arn,
-                    region: region ?? "unknow",
-                };
+                const userinfo = await queryUserInfo(credential);
                 setInfo(userinfo);
 
             } catch (err) {
@@ -146,8 +76,6 @@ export namespace user {
         }
 
         await clearInfo();
-        loginMgt.clearStatusBar();
-        settingUtils.clearAKSKandRegion();
 
         tree.refreshTreeData();
     }
@@ -227,8 +155,11 @@ export namespace user {
 
     export async function clearInfo() {
         const { secrets } = container.get<ExtensionContext>(Context);
-
         await secrets.delete(USER_INFO);
+
+        loginMgt.clearStatusBar();
+        settingUtils.clearAKSKandRegion();
+
         tree.refreshTreeData();
     }
 
@@ -241,6 +172,57 @@ export namespace user {
         }
 
         return undefined;
+    }
+
+    export async function queryUserInfo(credential: any): Promise<user.UserInfo> {
+        const stsClient = await getStsClient();
+        const reqCli = await context.genRequestClient(); // set ReqCli for login scenario
+        stsClient.sdkVersion = reqCli;
+        console.log('[DEBUG]--------------------getStsClient:', stsClient);
+        // const stsClient = await getCommonClient("sts.tencentcloudapi.com", "2018-08-13");
+        // const stsResp = await stsClient.request("GetCallerIdentity", req).
+        const stsResp = await stsClient?.GetCallerIdentity(null).
+            then(
+                (result) => {
+                    console.debug('[DEBUG]--------------------------------GetCallerIdentity result:', result);
+                    if (!result) {
+                        throw new Error('[Warn] GetCallerIdentity result.TotalCount is 0.');
+                    }
+                    return result;
+                },
+                (err) => {
+                    throw new Error(err);
+                }
+            );
+        // ) as stsModels.GetCallerIdentityResponse;
+        const camClient = await getCamClient();
+        camClient.sdkVersion = reqCli;
+        console.log('[DEBUG]--------------------getCamClient:', camClient);
+        const camResp = await camClient?.GetUserAppId(null).
+            then(
+                (result) => {
+                    console.debug('[DEBUG]--------------------------------GetUserAppId result:', result);
+                    if (!result) {
+                        throw new Error('[Warn] GetUserAppId result.TotalCount is 0.');
+                    }
+                    return result;
+                },
+                (err) => {
+                    throw new Error(err);
+                }
+            );
+
+        // set user info
+        let userinfo: user.UserInfo = {
+            secretId: credential.secretId,
+            secretKey: credential.secretKey,
+            uin: stsResp.PrincipalId ?? stsResp.UserId ?? "-",
+            type: stsResp.Type ?? "unknow",
+            appid: String(camResp.AppId ?? "-"),
+            arn: stsResp.Arn,
+            region: credential.region ?? "unknow",
+        };
+        return userinfo;
     }
 }
 

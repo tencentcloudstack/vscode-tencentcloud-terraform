@@ -42,16 +42,16 @@ export function regHelpCommands() {
 }
 
 export function regResourceRelatedCommands() {
-    commands.registerCommand(cmds.executeTferImport, function (param: any) {
-        terraformShellManager.getIntegratedShell(TerraformerRunner.getInstance()).import(param, param.fileName);
+    commands.registerCommand(cmds.executeTferImport, async function (param: any) {
+        (await terraformShellManager.getIntegratedShell(TerraformerRunner.getInstance())).import(param, param.fileName);
     });
 
-    commands.registerCommand("tcTerraform.init", function (param: any) {
-        terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).init();
+    commands.registerCommand("tcTerraform.init", async function (param: any) {
+        (await terraformShellManager.getIntegratedShell(TerraformRunner.getInstance())).init();
     });
 
-    commands.registerCommand("tcTerraform.plan", function (param: any) {
-        terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()).plan(param);
+    commands.registerCommand("tcTerraform.plan", async function (param: any) {
+        (await terraformShellManager.getIntegratedShell(TerraformRunner.getInstance())).plan(param);
     });
 
     commands.registerCommand(resourceRefresh, function (param: any) {
