@@ -1,5 +1,5 @@
 import { localize } from "vscode-nls-i18n";
-import { ExtensionContext, workspace, ConfigurationTarget, window, ProgressLocation, MessageItem, extensions } from "vscode";
+import { ExtensionContext, workspace, ConfigurationTarget, window, ProgressLocation, MessageItem } from "vscode";
 
 import { container } from "../../container";
 import { Context } from "../../context";
@@ -10,6 +10,7 @@ import { Credential } from "tencentcloud-sdk-nodejs/tencentcloud/common/interfac
 import { getCamClient, getCommonClient, getStsClient } from "@/connectivity/client";
 import * as loginMgt from "../../../views/login/loginMgt";
 import * as settingUtils from "../../../utils/settingUtils";
+import * as context from "../../context";
 
 export namespace user {
     export interface UserInfo {
@@ -24,7 +25,6 @@ export namespace user {
         arn?: string;
     }
 
-    export const REQUEST_CLIENT_PREFIX = "Terraform-Vscode-";//Terraform-1.81.61@vscode";
     export const AKSK_TITLE = "TcTerraform.pickup.aksk";
     export const OAUTH_TITLE = "TcTerraform.pickup.oauth";
     export const AKSK_PLACEHOLD = "TcTerraform.pickup.aksk.placeholder";
@@ -40,86 +40,15 @@ export namespace user {
         // only support aksk way right now
         if (aksk === pick) {
             const credential = await getCredentailByInput();
-            const accessKey = credential.secretId;
-            const secretKey = credential.secretKey;
-            const region = credential.region;
-
-            // get configuration
-            const config = workspace.getConfiguration();
-
-            // set in vscode configuration(setting.json)
-            await config.update('tcTerraform.properties.secretId', accessKey, ConfigurationTarget.Global)
-                .then(() => {
-                }, (error) => {
-                    window.showErrorMessage('set secretId failed: ' + error);
-                });
-            await config.update('tcTerraform.properties.secretKey', secretKey, ConfigurationTarget.Global)
-                .then(() => {
-                }, (error) => {
-                    window.showErrorMessage('set secretKey failed: ' + error);
-                });
-            await config.update('tcTerraform.properties.region', region, ConfigurationTarget.Global)
-                .then(() => {
-                }, (error) => {
-                    window.showErrorMessage('set region failed: ' + error);
-                });
 
             // set in system environment
-            process.env.TENCENTCLOUD_SECRET_ID = accessKey;
-            process.env.TENCENTCLOUD_SECRET_KEY = secretKey;
-            process.env.TENCENTCLOUD_REGION = region;
+            process.env.TENCENTCLOUD_SECRET_ID = credential.secretId;
+            process.env.TENCENTCLOUD_SECRET_KEY = credential.secretKey;
+            process.env.TENCENTCLOUD_REGION = credential.region;
 
             try {
                 // query user info
-                const stsClient = await getStsClient();
-                const currentVersion = getExtensionVersion();
-                const reqCli = `${REQUEST_CLIENT_PREFIX}v${currentVersion}`;
-                stsClient.sdkVersion = reqCli;
-                console.log('[DEBUG]--------------------getStsClient:', stsClient);
-                // const stsClient = await getCommonClient("sts.tencentcloudapi.com", "2018-08-13");
-                // const stsResp = await stsClient.request("GetCallerIdentity", req).
-                const stsResp = await stsClient?.GetCallerIdentity(null).
-                    then(
-                        (result) => {
-                            console.debug('[DEBUG]--------------------------------GetCallerIdentity result:', result);
-                            if (!result) {
-                                throw new Error('[Warn] GetCallerIdentity result.TotalCount is 0.');
-                            }
-                            return result;
-                        },
-                        (err) => {
-                            throw new Error(err);
-                        }
-                    );
-                // ) as stsModels.GetCallerIdentityResponse;
-
-                const camClient = await getCamClient();
-                camClient.sdkVersion = reqCli;
-                console.log('[DEBUG]--------------------getCamClient:', camClient);
-                const camResp = await camClient?.GetUserAppId(null).
-                    then(
-                        (result) => {
-                            console.debug('[DEBUG]--------------------------------GetUserAppId result:', result);
-                            if (!result) {
-                                throw new Error('[Warn] GetUserAppId result.TotalCount is 0.');
-                            }
-                            return result;
-                        },
-                        (err) => {
-                            throw new Error(err);
-                        }
-                    );
-
-                // set user info
-                let userinfo: UserInfo = {
-                    secretId: accessKey,
-                    secretKey: secretKey,
-                    uin: stsResp.PrincipalId ?? stsResp.UserId ?? "-",
-                    type: stsResp.Type ?? "unknow",
-                    appid: String(camResp.AppId) ?? "-",
-                    arn: stsResp.Arn,
-                    region: region ?? "unknow",
-                };
+                const userinfo = await queryUserInfo(credential);
                 setInfo(userinfo);
 
             } catch (err) {
@@ -130,12 +59,6 @@ export namespace user {
         if (oauth === pick) {
             // to do 
         }
-    }
-
-    function getExtensionVersion(): string {
-        let extension = extensions.getExtension('Tencent-Cloud.vscode-tencentcloud-terraform');
-        let currentVersion = extension.packageJSON.version;
-        return currentVersion;
     }
 
     export async function loginOut() {
@@ -153,8 +76,6 @@ export namespace user {
         }
 
         await clearInfo();
-        loginMgt.clearStatusBar();
-        settingUtils.clearAKSKandRegion();
 
         tree.refreshTreeData();
     }
@@ -234,8 +155,11 @@ export namespace user {
 
     export async function clearInfo() {
         const { secrets } = container.get<ExtensionContext>(Context);
-
         await secrets.delete(USER_INFO);
+
+        loginMgt.clearStatusBar();
+        settingUtils.clearAKSKandRegion();
+
         tree.refreshTreeData();
     }
 
@@ -248,6 +172,57 @@ export namespace user {
         }
 
         return undefined;
+    }
+
+    export async function queryUserInfo(credential: any): Promise<user.UserInfo> {
+        const stsClient = await getStsClient();
+        const reqCli = await context.genRequestClient(); // set ReqCli for login scenario
+        stsClient.sdkVersion = reqCli;
+        console.log('[DEBUG]--------------------getStsClient:', stsClient);
+        // const stsClient = await getCommonClient("sts.tencentcloudapi.com", "2018-08-13");
+        // const stsResp = await stsClient.request("GetCallerIdentity", req).
+        const stsResp = await stsClient?.GetCallerIdentity(null).
+            then(
+                (result) => {
+                    console.debug('[DEBUG]--------------------------------GetCallerIdentity result:', result);
+                    if (!result) {
+                        throw new Error('[Warn] GetCallerIdentity result.TotalCount is 0.');
+                    }
+                    return result;
+                },
+                (err) => {
+                    throw new Error(err);
+                }
+            );
+        // ) as stsModels.GetCallerIdentityResponse;
+        const camClient = await getCamClient();
+        camClient.sdkVersion = reqCli;
+        console.log('[DEBUG]--------------------getCamClient:', camClient);
+        const camResp = await camClient?.GetUserAppId(null).
+            then(
+                (result) => {
+                    console.debug('[DEBUG]--------------------------------GetUserAppId result:', result);
+                    if (!result) {
+                        throw new Error('[Warn] GetUserAppId result.TotalCount is 0.');
+                    }
+                    return result;
+                },
+                (err) => {
+                    throw new Error(err);
+                }
+            );
+
+        // set user info
+        let userinfo: user.UserInfo = {
+            secretId: credential.secretId,
+            secretKey: credential.secretKey,
+            uin: stsResp.PrincipalId ?? stsResp.UserId ?? "-",
+            type: stsResp.Type ?? "unknow",
+            appid: String(camResp.AppId ?? "-"),
+            arn: stsResp.Arn,
+            region: credential.region ?? "unknow",
+        };
+        return userinfo;
     }
 }
 
