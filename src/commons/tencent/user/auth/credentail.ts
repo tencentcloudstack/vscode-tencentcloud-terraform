@@ -2,7 +2,6 @@ import MultiStepInput from "../../../multiStepInput";
 import { Credential } from "tencentcloud-sdk-nodejs/tencentcloud/common/interface";
 import { localize } from "vscode-nls-i18n";
 import constant from "../index";
-import * as vscode from "vscode";
 
 export async function getCredentailByInput() {
     const defaultRegion = "ap-guangzhou";

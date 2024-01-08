@@ -66,7 +66,7 @@ export function getAKSKandRegion(): [string, string, string] {
     const regionConfig = getRegionFromUI();
     const regionEnv = getRegionFromEnv();
 
-    return [secretIdConfig ?? secretIdEnv, secretKeyConfig ?? secretKeyEnv, regionConfig ?? regionEnv];
+    return [secretIdConfig || secretIdEnv, secretKeyConfig || secretKeyEnv, regionConfig || regionEnv];
 }
 
 export function clearAKSKandRegion() {
