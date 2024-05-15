@@ -13,6 +13,7 @@ import { terraformShellManager } from "../terminal/terraformShellManager";
 import { executeCommand } from "../../utils/cpUtils";
 import * as settingUtils from "../../utils/settingUtils";
 import { openUrlHintOrNotShowAgain } from "../../utils/uiUtils";
+import { localize } from "vscode-nls-i18n";
 
 
 export class TerraformRunner extends BaseRunner {
@@ -32,10 +33,12 @@ export class TerraformRunner extends BaseRunner {
     public async init(): Promise<any> {
         console.debug("[DEBUG]#### TerraformRunner init begin.");
 
-        this.setAKSK();
+        if (!checkAKSK()) {
+            return "plan abort";
+        }
 
-        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Version);
-        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Init);
+        (await terraformShellManager.getShell()).runTerraformCmd(TerraformCommand.Version);
+        (await terraformShellManager.getShell()).runTerraformCmd(TerraformCommand.Init);
 
         return "init success";
     }
@@ -43,9 +46,11 @@ export class TerraformRunner extends BaseRunner {
     public async executePlan(cwd: string, args: any): Promise<string> {
         console.debug("[DEBUG]#### TerraformRunner executePlan begin.");
 
-        // this.setAKSK();
+        if (!checkAKSK()) {
+            return "plan abort";
+        }
 
-        terraformShellManager.getShell().runTerraformCmd(TerraformCommand.Plan);
+        (await terraformShellManager.getShell()).runTerraformCmd(TerraformCommand.Plan);
 
         return "plan success";
     }
@@ -112,7 +117,6 @@ export class TerraformRunner extends BaseRunner {
                     setCheckTerraformCmd(false);
                 });
         }
-        return;
     }
 
     private async resetFileContent(tfFile: string, defaultContents: string) {
@@ -126,14 +130,8 @@ export class TerraformRunner extends BaseRunner {
     public async resetTFState(resAddress: string) {
         console.debug("[DEBUG]#### TerraformRunner resetTFState begin.");
 
-        await terraformShellManager.getIntegratedShell(TerraformRunner.getInstance())
+        await (await terraformShellManager.getIntegratedShell(TerraformRunner.getInstance()))
             .runTerraformCmd(TerraformCommand.State, ['rm', '-lock=false', resAddress]);
-    }
-
-    private setAKSK(runner?: any) {
-        const [ak, sk, region] = settingUtils.getAKSKandRegion();
-        terraformShellManager.getIntegratedShell(runner).runNormalCmd("export TENCENTCLOUD_SECRET_ID=" + ak);
-        terraformShellManager.getIntegratedShell(runner).runNormalCmd("export TENCENTCLOUD_SECRET_KEY=" + sk);
     }
 }
 
@@ -143,4 +141,16 @@ export function getCheckTerraformCmd(): boolean {
 
 export function setCheckTerraformCmd(checked: boolean): void {
     vscode.workspace.getConfiguration().update("tcTerraform.checkTerraformCmd", checked);
+}
+
+export function checkAKSK(): boolean {
+    const [secretId, secretKey, _] = settingUtils.getAKSKandRegion();
+
+    if (secretId === undefined || secretKey === undefined || secretId === null || secretKey === null || secretId === '' || secretKey === '') {
+        let msg = localize("TcTerraform.msg.aksk.notfound");
+        console.error(msg);
+        vscode.window.showInformationMessage(msg);
+        return false;
+    }
+    return true;
 }

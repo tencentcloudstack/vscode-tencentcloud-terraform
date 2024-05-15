@@ -20,7 +20,7 @@
     "TcTerraform.pickup.aksk.placeholder": "Tencent Cloud {0}",
     "TcTerraform.pickup.aksk.verify.empty": "{0} can not be empty",
     "TcTerraform.welcome": "Welcome to use Tencent Cloud Terraform extension, please wait for the page loading...",
-    "TcTerraform.msg.aksk.notfound": "Cannot find TENCENTCLOUD_SECRET_ID and TENCENTCLOUD_SECRET_KEY, please sign in first!",
+    "TcTerraform.msg.aksk.notfound": "Cannot find user info, please sign in first!",
     "TcTerraform.login": "Login Tencent Cloud...",
     "TcTerraform.login.msg.success": "Logged into Tencent Cloud successfully.",
     "TcTerraform.login.msg.need.login": "Please log in Tencent Cloud first.",

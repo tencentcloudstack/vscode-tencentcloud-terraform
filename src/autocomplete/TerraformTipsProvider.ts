@@ -2,13 +2,10 @@ import { CompletionItemProvider, TextDocument, Position, CancellationToken, Comp
 // import resources from '../../config/tips/tiat-resources.json';
 import * as _ from "lodash";
 import * as vscode from 'vscode';
-import { executeCommandByExec } from "@/utils/cpUtils";
 import * as fs from "fs";
 import * as path from "path";
-import * as workspaceUtils from "@/utils/workspaceUtils";
-import * as TelemetryWrapper from "vscode-extension-telemetry-wrapper";
+import * as context from "@/commons/context";
 
-const LATEST_VERSION = "latest";
 const versionPattern = /^v\d+(\.\d+){2}\.json$/;
 let topLevelTypes = ["output", "provider", "resource", "variable", "data"];
 let topLevelRegexes = topLevelTypes.map(o => {
@@ -422,26 +419,7 @@ function compareVersions(a, b) {
 
 // load resource config from json files based on the appropriate version
 async function loadResource(extPath: string): Promise<Tips> {
-    let tfVersion: string;
-    const cwd = workspaceUtils.getActiveEditorPath();
-    if (!cwd) {
-        TelemetryWrapper.sendError(Error("noWorkspaceSelected"));
-        console.error(`can not get path from active editor`);
-    }
-
-    await executeCommandByExec("terraform version", cwd).then(output => {
-        let match = RegExp(/tencentcloudstack\/tencentcloud (v\d+\.\d+\.\d+)/).exec(output);
-
-        if (match) {
-            tfVersion = match[1];
-        } else {
-            // gives the latest JSON if not tf provider version found
-            tfVersion = LATEST_VERSION;
-        }
-        console.log(`tf provider version:[${tfVersion}], cwd:[${cwd}]`);
-    }).catch(error => {
-        console.error(`execute terraform version failed: ${error}`);
-    });
+    const tfVersion = await context.getTfVersion();
 
     let result: Tips | null = null;
     const tipsDir = path.join(extPath, 'config', 'tips');
